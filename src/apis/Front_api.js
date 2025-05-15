@@ -1,9 +1,7 @@
-import axios from "axios";
-
-const baseURL = import.meta.env.VITE_API_URL || window.location.origin;
+import { axiosInstance } from "./axios_config";
 
 export const getFrontImages = async (category = "") => {
-  const response = await axios.get(`${baseURL}/api/topic/front/`, {
+  const response = await axiosInstance.get(`/api/topic/front/`, {
     params: {
       category,
     },
@@ -15,7 +13,7 @@ export const getFrontImages = async (category = "") => {
 };
 
 export const updateFrontImage = async (category, imageURL) => {
-  const response = await axios.put(`${baseURL}/api/topic/front/`, {
+  const response = await axiosInstance.put(`/api/topic/front/`, {
     category,
     imageURL,
   });

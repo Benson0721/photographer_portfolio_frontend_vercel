@@ -1,9 +1,7 @@
-import axios from "axios";
-
-const baseURL = import.meta.env.VITE_API_URL || window.location.origin;
+import { axiosInstance } from "./axios_config";
 
 export const register = async (formData) => {
-  const response = await axios.post(`${baseURL}/api/register`, formData);
+  const response = await axiosInstance.post(`/api/register`, formData);
   if (response.status === 200) {
     return response.data;
   }
@@ -11,7 +9,7 @@ export const register = async (formData) => {
 };
 
 export const login = async (formData) => {
-  const response = await axios.post(`${baseURL}/api/login`, formData);
+  const response = await axiosInstance.post(`/api/login`, formData);
   if (response.status === 200) {
     return response.data;
   }
@@ -19,7 +17,7 @@ export const login = async (formData) => {
 };
 
 export const logout = async () => {
-  const response = await axios.get(`${baseURL}/api/logout`);
+  const response = await axiosInstance.get(`/api/logout`);
   if (response.status === 200) {
     return response.data;
   }
@@ -27,7 +25,7 @@ export const logout = async () => {
 };
 
 export const checkAuth = async () => {
-  const response = await axios.get(`${baseURL}/api/checkAuth`);
+  const response = await axiosInstance.get(`/api/checkAuth`);
   if (response.status === 200) {
     return response.data;
   }

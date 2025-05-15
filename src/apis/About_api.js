@@ -1,9 +1,7 @@
-import axios from "axios";
-
-const baseURL = import.meta.env.VITE_API_URL || window.location.origin;
+import { axiosInstance } from "./axios_config";
 
 export const getAboutImages = async (folderPath) => {
-  const response = await axios.get(`${baseURL}/api/about/${folderPath}`);
+  const response = await axiosInstance.get(`/api/about/${folderPath}`);
   if (response.status === 200) {
     return response.data.AboutImages;
   }
@@ -11,8 +9,8 @@ export const getAboutImages = async (folderPath) => {
 };
 
 export const updateAboutImage = async (folderPath, formData, publicID, id) => {
-  const response = await axios.put(
-    `${baseURL}/api/about/${folderPath}`,
+  const response = await axiosInstance.put(
+    `/api/about/${folderPath}`,
     formData,
     {
       params: {

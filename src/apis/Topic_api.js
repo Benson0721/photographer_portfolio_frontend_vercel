@@ -1,9 +1,7 @@
-import axios from "axios";
-
-const baseURL = import.meta.env.VITE_API_URL || window.location.origin;
+import { axiosInstance } from "./axios_config";
 
 export const getTopicImages = async (folderPath = "", category = "") => {
-  const response = await axios.get(`${baseURL}/api/topic/${folderPath}`, {
+  const response = await axiosInstance.get(`/api/topic/${folderPath}`, {
     params: {
       category,
     },
@@ -15,8 +13,8 @@ export const getTopicImages = async (folderPath = "", category = "") => {
 };
 
 export const addTopicImage = async (folderPath, formData, info) => {
-  const response = await axios.post(
-    `${baseURL}/api/topic/${folderPath}`,
+  const response = await axiosInstance.post(
+    `/api/topic/${folderPath}`,
     formData,
     {
       params: {
@@ -33,10 +31,7 @@ export const addTopicImage = async (folderPath, formData, info) => {
 };
 
 export const updateTopicImage = async (folderPath, formData) => {
-  const response = await axios.put(
-    `${baseURL}/api/topic/${folderPath}`,
-    formData
-  );
+  const response = await axiosInstance.put(`/api/topic/${folderPath}`, formData);
   if (response.status === 200) {
     return response.data.message;
   }
@@ -44,7 +39,7 @@ export const updateTopicImage = async (folderPath, formData) => {
 };
 
 export const deleteTopicImage = async (folderPath, publicId, id) => {
-  const response = await axios.delete(`${baseURL}/api/topic/${folderPath}`, {
+  const response = await axiosInstance.delete(`/api/topic/${folderPath}`, {
     params: {
       publicId,
       id,

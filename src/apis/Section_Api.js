@@ -1,9 +1,7 @@
-import axios from "axios";
-
-const baseURL = import.meta.env.VITE_API_URL || window.location.origin;
+import { axiosInstance } from "./axios_config";
 
 export const getSectionImages = async (folderPath) => {
-  const response = await axios.get(`${baseURL}/api/section/${folderPath}`);
+  const response = await axiosInstance.get(`/api/section/${folderPath}`);
   if (response.status === 200) {
     return response.data.sectionImages;
   }
@@ -17,8 +15,8 @@ export const updateSectionImage = async (
   id,
   publicID
 ) => {
-  const response = await axios.put(
-    `${baseURL}/api/section/${folderPath}`,
+  const response = await axiosInstance.put(
+    `/api/section/${folderPath}`,
     formData,
     {
       params: {
@@ -35,7 +33,7 @@ export const updateSectionImage = async (
 };
 
 export const adjustOffsetY = async (folderPath, id, offsetY) => {
-  const response = await axios.patch(`${baseURL}/api/section/${folderPath}`, {
+  const response = await axiosInstance.patch(`/api/section/${folderPath}`, {
     offsetY,
     id,
   });
@@ -46,7 +44,7 @@ export const adjustOffsetY = async (folderPath, id, offsetY) => {
 };
 
 export const updateSectionName = async (id, title) => {
-  const response = await axios.patch(`${baseURL}/api/section/name`, {
+  const response = await axiosInstance.patch(`/api/section/name`, {
     id,
     title,
   });

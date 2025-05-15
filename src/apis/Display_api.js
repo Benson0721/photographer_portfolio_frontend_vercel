@@ -1,8 +1,6 @@
-import axios from "axios";
-const baseURL = import.meta.env.VITE_API_URL || window.location.origin;
 
 export const getDisplayImages = async (folderPath, topicID) => {
-  const response = await axios.get(`${baseURL}/api/display/${folderPath}`, {
+  const response = await axiosInstance.get(`/api/display/${folderPath}`, {
     params: { topicID },
   });
   if (response.status === 200) {
@@ -12,8 +10,8 @@ export const getDisplayImages = async (folderPath, topicID) => {
 };
 
 export const addDisplayImage = async (folderPath, formData) => {
-  const response = await axios.post(
-    `${baseURL}/api/display/${folderPath}`,
+  const response = await axiosInstance.post(
+    `/api/display/${folderPath}`,
     formData,
     {
       headers: {
@@ -28,7 +26,7 @@ export const addDisplayImage = async (folderPath, formData) => {
 };
 
 export const deleteDisplayImage = async (folderPath, publicId, id) => {
-  const response = await axios.delete(`${baseURL}/api/display/${folderPath}`, {
+  const response = await axiosInstance.delete(`/api/display/${folderPath}`, {
     params: { publicId, id },
   });
   if (response.status === 200) {
