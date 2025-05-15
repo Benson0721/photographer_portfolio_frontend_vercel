@@ -17,7 +17,7 @@ export const useTopicStore = defineStore("topicStore", {
     async fetchImages(category: string | undefined) {
       const folderPath = `portfolio`;
       this.topicImages = await getTopicImages(folderPath, category);
-      this.frontImage = await getFrontImages(category || "All");
+      this.frontImage = await getFrontImages(category);
     },
     async addImage(
       files: File[],
@@ -59,7 +59,7 @@ export const useTopicStore = defineStore("topicStore", {
     },
     async updateFrontImage(category: string, imageURL: string) {
       const res = await updateFrontImage(category, imageURL);
-      this.frontImage = await getFrontImages(category || "All");
+      this.frontImage = await getFrontImages(category);
       return res;
     },
     async deleteImage(public_Id: string, id: string) {
