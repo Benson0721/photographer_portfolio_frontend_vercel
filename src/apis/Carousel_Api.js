@@ -1,5 +1,5 @@
 import axios from "axios";
-const baseURL = window.location.origin;
+const baseURL = import.meta.env.VITE_API_URL || window.location.origin;
 
 export const getCarouselImages = async (folderPath) => {
   const response = await axios.get(`${baseURL}/api/carousel/${folderPath}`);

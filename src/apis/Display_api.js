@@ -1,5 +1,5 @@
 import axios from "axios";
-const baseURL = window.location.origin;
+const baseURL = import.meta.env.VITE_API_URL || window.location.origin;
 
 export const getDisplayImages = async (folderPath, topicID) => {
   const response = await axios.get(`${baseURL}/api/display/${folderPath}`, {
