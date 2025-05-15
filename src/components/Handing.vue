@@ -3,6 +3,9 @@ import { Typed } from "@duskmoon/vue3-typed-js";
 import type { TypedOptions } from "@duskmoon/vue3-typed-js";
 
 import { defineProps, defineModel, ref, watch, computed } from "vue";
+import { useRoute } from "vue-router";
+
+const route = useRoute();
 
 const props = defineProps({
   title: String,
@@ -18,11 +21,14 @@ const notes = defineModel<string>("notes");
 const title = ref(props.title);
 const content = ref(props.content);
 
-watch(category, (newVal) => {
-  if (newVal === "All") {
-    category.value = "Portfolio";
+watch(
+  () => route.params.category,
+  (newVal) => {
+    if (newVal === "All") {
+      category.value = "Portfolio";
+    }
   }
-});
+);
 
 const TitleOptions = computed<TypedOptions>(() => ({
   strings: [title.value || topic.value || category.value || ""],

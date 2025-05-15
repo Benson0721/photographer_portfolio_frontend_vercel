@@ -10,14 +10,14 @@ import { TopicImage, FrontImage } from "../types/apiType";
 export const useTopicStore = defineStore("topicStore", {
   state: () => ({
     topicImages: [] as TopicImage[],
-    frontImage: {} as FrontImage,
+    frontImages: [] as FrontImage[],
   }),
 
   actions: {
     async fetchImages(category: string | undefined) {
       const folderPath = `portfolio`;
       this.topicImages = await getTopicImages(folderPath, category);
-      this.frontImage = await getFrontImages(category);
+      this.frontImages = await getFrontImages(category || "All");
     },
     async addImage(
       files: File[],
@@ -59,7 +59,7 @@ export const useTopicStore = defineStore("topicStore", {
     },
     async updateFrontImage(category: string, imageURL: string) {
       const res = await updateFrontImage(category, imageURL);
-      this.frontImage = await getFrontImages(category);
+      this.frontImages = await getFrontImages(category);
       return res;
     },
     async deleteImage(public_Id: string, id: string) {

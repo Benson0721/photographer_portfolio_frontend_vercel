@@ -7,7 +7,7 @@ export const getFrontImages = async (category = "") => {
     },
   });
   if (response.status === 200) {
-    return response.data.frontImage[0];
+    return response.data.frontImages;
   }
   return { error: "Failed to fetch images" };
 };

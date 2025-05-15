@@ -1,10 +1,10 @@
 <script setup>
-import { onMounted, computed, ref, nextTick } from "vue";
+import { onMounted, computed, ref, nextTick, watch } from "vue";
 import Navbar from "../../components/Navbar/Navbar.vue";
 import Footer from "../../components/Footer.vue";
 import NewTopic from "../../components/ImageSystem/PortfolioDialog/TopicSystem/NewTopic/NewTopic.vue";
 import NewDisplay from "../../components/ImageSystem/PortfolioDialog/DisplaySystem/NewDisplay.vue";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { useUserStore } from "../../stores/userPinia.ts";
 import { useTopicStore } from "../../stores/topicPinia";
 import { useWindowSize } from "../../utils/useWindowSize.js";
@@ -18,6 +18,7 @@ const { device } = useWindowSize();
 const topicStore = useTopicStore();
 const userStore = useUserStore();
 const route = useRoute();
+const router = useRouter();
 const curCategory = ref("");
 const curTopic = ref("");
 const curNotes = ref("");
@@ -25,6 +26,7 @@ const mode = ref("Topic");
 const curTopicID = ref("");
 const deleteMode = ref(false);
 const isLoading = ref(true);
+const fade = ref(false);
 const HeadingStyle = ref(
   "mt-4 text-[36px] md:text-[72px] lg:text-[96px] font-playfair text-white"
 );
@@ -45,30 +47,23 @@ const categorys = ref([
 const selectCategory = ref("");
 
 const onCategoryChange = async (category) => {
-  route.params.category = category;
+  await router.push(`/portfolio/${category}`);
   mode.value = "Topic";
   curTopicID.value = "";
-  await loadImage();
 };
 
 const loadImage = async () => {
   const category = route.params.category;
-  curCategory.value = category;
+  curCategory.value = route.params.category;
 
   if (category && category !== "All") {
     await topicStore.fetchImages(category);
+    preloadImages(topicStore.frontImages.map((image) => image.imageURL));
   } else {
     await topicStore.fetchImages();
+    preloadImages(topicStore.frontImages.map((image) => image.imageURL));
   }
 };
-
-/*const loadSectionCategory = async () => {
-  await sectionStore.fetchImages();
-  sectionStore.sectionImages.map((image) => {
-    sectionCategorys.value.push(image.title);
-  });
-  console.log(sectionCategorys.value);
-};*/
 
 const backgroundStyle = computed(() => {
   if (device.value !== "mobile") {
@@ -80,12 +75,13 @@ const backgroundStyle = computed(() => {
         backgroundImage: `url(${image?.imageURL})`,
       };
     } else {
+      const image = topicStore.frontImages.find(
+        (image) => image.category === route.params.category
+      );
       return {
-        backgroundImage: `url(${topicStore.frontImage.imageURL})`,
+        backgroundImage: `url(${image?.imageURL})`,
       };
     }
-  } else {
-    return {};
   }
 });
 
@@ -97,16 +93,34 @@ const frontImageStyle = computed(() => {
       );
       return image?.imageURL;
     } else {
-      return topicStore.frontImage.imageURL;
+      const image = topicStore.frontImages.find(
+        (image) => image.category === route.params.category
+      );
+      return image?.imageURL;
     }
   }
 });
+
+const preloadImages = (imageURLs) => {
+  //預載圖片
+  imageURLs.forEach((url) => {
+    const img = new Image();
+    img.src = url;
+  });
+};
 
 onMounted(async () => {
   await loadImage();
   await nextTick();
   isLoading.value = false;
 });
+
+watch(
+  () => route.params.category, //()=>在變化時監聽，若直接用值則只監聽初始值
+  () => {
+    curCategory.value = route.params.category;
+  }
+);
 </script>
 <template>
   <main class="portfolio__bg transition" :style="backgroundStyle">
@@ -213,4 +227,19 @@ onMounted(async () => {
     <Footer />
   </main>
 </template>
-<style scoped></style>
+<style scoped>
+.fade-out {
+  animation: fade-out 1s forwards;
+}
+
+@keyframes fade-out {
+  0% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(80px);
+  }
+}
+</style>
