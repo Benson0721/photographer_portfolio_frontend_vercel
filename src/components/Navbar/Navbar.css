@@ -1,0 +1,54 @@
+.navbar {
+  width: 100%;
+  padding: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  transition: all ease 0.2s;
+  z-index: 3;
+}
+.navbar__list {
+  display: flex;
+  visibility: hidden;
+  width: 100%;
+  height: 100vh;
+  padding: 2.5rem;
+  align-items: center;
+  z-index: 1;
+  position: absolute;
+  inset: 0;
+  flex-direction: column;
+  gap: 2rem;
+  background-color: rgba(110, 120, 135, 0.7411764706);
+  opacity: 0;
+  transition: opacity 0.5s, visibility 0.5s;
+}
+.navbar__list--open {
+  visibility: visible;
+  opacity: 1;
+}
+
+@media only screen and (min-width: 768px) {
+  .navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 1;
+    padding: 1rem 5rem;
+    position: fixed;
+  }
+  .navbar__list {
+    visibility: visible;
+    padding: 1.5rem;
+    opacity: 1;
+    position: static;
+    width: auto;
+    height: auto;
+    background-color: inherit;
+    display: flex;
+    flex-direction: row;
+    gap: 2rem;
+    align-items: center;
+  }
+}/*# sourceMappingURL=Navbar.css.map */

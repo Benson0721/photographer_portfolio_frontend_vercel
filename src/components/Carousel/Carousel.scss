@@ -1,0 +1,40 @@
+.carousel {
+  width: 100vw;
+  height: 66vw;
+  position: relative;
+  overflow: hidden;
+  &__image {
+    position: absolute;
+    transition: all ease-in-out 1.5s;
+    opacity: 0;
+    &--active {
+      opacity: 1;
+    }
+    &--editing {
+      position: relative;
+      flex-basis: 45%;
+    }
+  }
+  &__text {
+    position: absolute;
+    top: 36%;
+    left: 28%;
+  }
+}
+
+@media only screen and (min-width: 768px) {
+  .carousel {
+    height: 100vh;
+    margin-bottom: 0;
+    &__image {
+      &--editing {
+        position: relative;
+        flex-basis: 32%;
+      }
+    }
+    &__text {
+      top: 35%;
+      left: 35%;
+    }
+  }
+}
