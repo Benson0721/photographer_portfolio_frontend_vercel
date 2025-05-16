@@ -5,7 +5,7 @@ import { useUploadHandler } from "../../../../../utils/useUploadHandler.ts";
 import { useWindowSize } from "../../../../../utils/useWindowSize.js";
 import { ref, computed } from "vue";
 import UploadArea from "./UploadArea.vue";
-import Loading from "../../../../../components/Loading.vue";
+import DialogLoading from "../../../../../components/DialogLoading.vue";
 
 const userStore = useUserStore();
 const topicStore = useTopicStore();
@@ -64,7 +64,7 @@ const previewUrl = computed(() => {
         text="新增"
         variant="flat"
         :disabled="!userStore.isEditing"
-        class="bg-green-500 "
+        class="bg-green-500"
         @click="handleOpen"
         :class="!userStore.isEditing ? 'hidden' : 'block'"
       ></v-btn>
@@ -72,17 +72,12 @@ const previewUrl = computed(() => {
 
     <template #default="{ isActive }">
       <v-card title="新增主題" class="p-4 z-20">
-        <Loading :isLoading="isLoading" :loadingmessage="loadingmessage" />
-        <v-card-text
-          class="absolute top-1/12 right-1/10 text-red-500"
-          v-if="errormessage"
-          >{{ errormessage }}</v-card-text
-        >
-        <v-card-text
-          class="absolute top-1/12 right-1/10 text-green-500"
-          v-if="successmessage"
-          >{{ successmessage }}</v-card-text
-        >
+        <DialogLoading
+          :isLoading="isLoading"
+          :loadingmessage="loadingmessage"
+          :errormessage="errormessage"
+          :successmessage="successmessage"
+        />
         <FormKit
           type="form"
           :actions="false"
@@ -103,7 +98,9 @@ const previewUrl = computed(() => {
               />
             </div>
             <div v-if="previewUrl" class="mb-10 md:flex-2">
-              <v-card-text>以下為即將更新的圖片</v-card-text>
+              <v-card-text
+                >以下為即將更新的圖片(單張圖片大小請勿超過10MB)</v-card-text
+              >
               <img
                 :src="previewUrl"
                 alt="previewImage"
@@ -114,13 +111,13 @@ const previewUrl = computed(() => {
           </div>
           <v-card-actions>
             <div
-              class="flex gap-2 justify-center absolute left-1/2 -translate-x-1/2 -translate-y-1/2"
+              class="flex gap-2 justify-center absolute left-1/2 md:left-8/10 -translate-x-1/2 -translate-y-1/2"
             >
               <FormKit
                 type="submit"
                 label="送出"
                 :classes="{
-                  outer: 'mt-2 text-center  transform',
+                  outer: 'mt-2 text-center transform',
                   input: 'text-black rounded bg-white transition duration-300',
                 }"
               />

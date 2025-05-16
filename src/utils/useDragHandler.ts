@@ -12,7 +12,7 @@ export function useDragHandler(
   device: Ref<"mobile" | "tablet" | "desktop"> //ref才會響應，一般的型別只會傳入初始化結果
 ) {
   const offsetY = ref(initialOffsetY);
-
+  const dragMessage = ref("");
   let startY = 0;
   let dragging = ref(false);
   let updateTimer;
@@ -47,8 +47,9 @@ export function useDragHandler(
     offsetY,
     (newVal) => {
       clearTimeout(updateTimer);
-      updateTimer = setTimeout(() => {
-        useOffsetYHandler(path, id, newVal);
+      updateTimer = setTimeout(async () => {
+        const message = await useOffsetYHandler(path, id, newVal);
+        dragMessage.value = message;
       }, 3000); // <-- 自由調整等待時間
     },
     { deep: true }
@@ -56,6 +57,7 @@ export function useDragHandler(
 
   return {
     offsetY,
+    dragMessage,
     startDrag,
     onDrag,
     endDrag,

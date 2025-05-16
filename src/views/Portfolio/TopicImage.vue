@@ -20,8 +20,7 @@ const curTopic = defineModel("curTopic", { type: String });
 const curNotes = defineModel("curNotes", { type: String });
 
 const props = defineProps({
-  TopicImage: Array,
-  mode: String,
+  curCategory: String,
 });
 
 const mode = defineModel("mode", { type: String });
@@ -115,11 +114,13 @@ onBeforeUnmount(() => {
             :category="item.category"
             :imageURL="item.imageURL"
             :publicId="item.public_id"
+            :curCategory="curCategory"
           />
           <DeleteTopic
             :topic="item.topic"
             :id="item._id"
             :publicId="item.public_id"
+            :curCategory="curCategory"
           />
         </div>
         <img

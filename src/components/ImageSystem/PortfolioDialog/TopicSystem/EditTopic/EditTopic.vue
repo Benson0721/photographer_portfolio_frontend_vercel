@@ -5,7 +5,7 @@ import { useUploadHandler } from "../../../../../utils/useUploadHandler.ts";
 import { useWindowSize } from "../../../../../utils/useWindowSize.js";
 import { ref, computed, defineProps } from "vue";
 import UploadArea from "./UploadArea.vue";
-import Loading from "../../../../../components/Loading.vue";
+import DialogLoading from "../../../../../components/DialogLoading.vue";
 
 const props = defineProps({
   id: String,
@@ -14,6 +14,7 @@ const props = defineProps({
   notes: String,
   category: String,
   imageURL: String,
+  curCategory: String,
 });
 
 const userStore = useUserStore();
@@ -32,12 +33,8 @@ const handleOpen = async () => {
 };
 
 const handleEdit = async (data) => {
-  console.log(data);
   try {
-    console.log("upload image");
     const { category, notes, topic } = data;
-    console.log(selectedFiles.value);
-    console.log(category, notes, topic);
     const newData = {
       image: selectedFiles.value,
       category,
@@ -49,11 +46,20 @@ const handleEdit = async (data) => {
     const res = await topicStore.updateImage(newData);
     resetUpload();
     successmessage.value = res.data.message;
-    await topicStore.fetchImages();
+    if (props.curCategory === "All") {
+      await topicStore.fetchImages();
+    
+    } else {
+      await topicStore.fetchImages(props.curCategory);
+    }
   } catch (error) {
     errormessage.value = error?.response?.data?.message;
     resetUpload();
-    await topicStore.fetchImages();
+    if (props.curCategory === "All") {
+      await topicStore.fetchImages();
+    } else {
+      await topicStore.fetchImages(props.curCategory);
+    }
     console.error(error);
     console.error("上傳失敗：", error?.response?.data?.message);
   }
@@ -79,15 +85,14 @@ const previewUrl = computed(() => {
       ></v-btn>
     </template>
 
-    <template #default="{ isActive }">
+    <template v-slot:default="{ isActive }">
       <v-card title="編輯圖片" class="p-4 z-20">
-        <Loading :isLoading="isLoading" :loadingmessage="loadingmessage" />
-        <v-card-text class="text-red-500" v-if="errormessage">{{
-          errormessage
-        }}</v-card-text>
-        <v-card-text class="text-green-500" v-if="successmessage">{{
-          successmessage
-        }}</v-card-text>
+        <DialogLoading
+          :isLoading="isLoading"
+          :loadingmessage="loadingmessage"
+          :errormessage="errormessage"
+          :successmessage="successmessage"
+        />
         <FormKit
           type="form"
           :actions="false"
@@ -110,7 +115,7 @@ const previewUrl = computed(() => {
                 :selectedFiles="selectedFiles"
               />
             </div>
-            <div class="mb-10 md:flex-2">
+            <div class="mb-10 md:flex-1">
               <div class="w-full h-full">
                 <img
                   v-if="previewUrl"
@@ -131,7 +136,7 @@ const previewUrl = computed(() => {
           </div>
           <v-card-actions>
             <div
-              class="flex gap-2 absolute left-1/2 -translate-x-1/2 -translate-y-1/2"
+              class="flex gap-2 absolute left-1/2 md:left-8/10 -translate-x-1/2 -translate-y-1/2"
             >
               <FormKit
                 type="submit"

@@ -7,7 +7,8 @@ const useOffsetYHandler = async (
 ) => {
   const sectionStore = useSectionStore();
   if (path === "section") {
-    await sectionStore.adjustOffsetY(id, newOffset);
+    const message = await sectionStore.adjustOffsetY(id, newOffset);
+    return message;
   } else {
     console.warn(`Unknown path: ${path}`);
   }

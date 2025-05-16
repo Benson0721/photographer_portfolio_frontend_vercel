@@ -30,9 +30,21 @@ const props = withDefaults(
 </script>
 <template>
   <div class="flex" v-if="editMode === ''">
-    <v-btn v-if="props.orderMode" text="調整順序" @click="editMode = 'order'"></v-btn>
-    <v-btn v-if="props.uploadMode" text="上傳" @click="editMode = 'upload'"></v-btn>
-    <v-btn v-if="props.deleteMode" text="刪除" @click="editMode = 'delete'"></v-btn>
+    <v-btn
+      v-if="props.orderMode"
+      text="調整順序"
+      @click="editMode = 'order'"
+    ></v-btn>
+    <v-btn
+      v-if="props.uploadMode"
+      text="上傳"
+      @click="editMode = 'upload'"
+    ></v-btn>
+    <v-btn
+      v-if="props.deleteMode"
+      text="刪除"
+      @click="editMode = 'delete'"
+    ></v-btn>
     <v-btn
       v-if="props.changeTitleMode"
       text="更改標題"
@@ -47,18 +59,6 @@ const props = withDefaults(
     class="flex w-[600px] h-[150px] items-center relative"
     v-if="editMode === 'upload'"
   >
-    <div class="flex gap-2 flex-wrap w-[400px] absolute top-1/12 left-1/12">
-      <v-chip
-        v-for="(file, index) in props.selectedFiles"
-        :key="index"
-        class="me-2"
-        color="primary"
-        size="small"
-        label
-      >
-        {{ file.name }}
-      </v-chip>
-    </div>
     <v-file-input
       class="w-full h-[50px]"
       name="images"

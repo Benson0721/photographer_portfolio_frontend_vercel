@@ -1,8 +1,8 @@
 import emailjs from "@emailjs/browser";
 
-const EMAILJS_SERVICE_ID = "service_zus6nig";
-const EMAILJS_TEMPLATE_ID = "template_kzv5rbv";
-const EMAILJS_USER_ID = "vkXwHwAPV2buEf4Sp";
+const EMAILJS_SERVICE_ID = import.meta.env.EMAILJS_SERVICE_ID;
+const EMAILJS_TEMPLATE_ID = import.meta.env.EMAILJS_TEMPLATE_ID;
+const EMAILJS_USER_ID = import.meta.env.EMAILJS_USER_ID;
 
 export const sendEmail = async (data) => {
   try {

@@ -26,7 +26,6 @@ const mode = ref("Topic");
 const curTopicID = ref("");
 const deleteMode = ref(false);
 const isLoading = ref(true);
-const fade = ref(false);
 const HeadingStyle = ref(
   "mt-4 text-[36px] md:text-[72px] lg:text-[96px] font-playfair text-white"
 );
@@ -117,8 +116,13 @@ onMounted(async () => {
 
 watch(
   () => route.params.category, //()=>在變化時監聽，若直接用值則只監聽初始值
-  () => {
+  async () => {
     curCategory.value = route.params.category;
+    if (curCategory.value === "All") {
+      await topicStore.fetchImages();
+    } else {
+      await topicStore.fetchImages(curCategory.value);
+    }
   }
 );
 </script>
@@ -216,6 +220,7 @@ watch(
         v-model:curTopicID="curTopicID"
         v-model:curTopic="curTopic"
         v-model:curNotes="curNotes"
+        :curCategory="curCategory"
       />
       <DisplayImage
         v-else

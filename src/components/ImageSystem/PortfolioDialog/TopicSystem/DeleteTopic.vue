@@ -4,10 +4,11 @@ import { useTopicStore } from "../../../../stores/topicPinia.ts";
 
 import { ref, defineProps } from "vue";
 
-const { id, publicId, topic } = defineProps({
+const { id, publicId, topic, curCategory } = defineProps({
   id: String,
   publicId: String,
   topic: String,
+  curCategory: String,
 });
 
 const userStore = useUserStore();
@@ -15,19 +16,26 @@ const topicStore = useTopicStore();
 const errormessage = ref("");
 const successmessage = ref("");
 
-const handleOpen = async () => {
-  console.log("handleOpen");
+const handleOpen = () => {
+  return true;
 };
 
 const handleDelete = async () => {
   try {
-    console.log("delete image");
     const res = await topicStore.deleteImage(publicId, id);
     successmessage.value = res.data.message;
-    await topicStore.fetchImages();
+    if (curCategory === "All") {
+      await topicStore.fetchImages();
+    } else {
+      await topicStore.fetchImages(curCategory);
+    }
   } catch (error) {
     errormessage.value = error?.response?.data?.message;
-    await topicStore.fetchImages();
+    if (props.curCategory === "All") {
+      await topicStore.fetchImages();
+    } else {
+      await topicStore.fetchImages(props.curCategory);
+    }
     console.error("上傳失敗：", error?.response?.data?.message);
   }
 };

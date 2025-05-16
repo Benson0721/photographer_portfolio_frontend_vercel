@@ -43,6 +43,7 @@ export const useCarouselStore = defineStore("carouselStore", {
       );
       const carouselPath = "home/carousel";
       const res = await deleteCarouselImage(carouselPath, public_Id, id);
+      return res;
     },
   },
 });

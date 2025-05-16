@@ -17,7 +17,6 @@ export const useDisplayStore = defineStore("displayStore", {
       this.displayImages = await getDisplayImages(path, topicID);
     },
     async addImages(files: File[], topicID: string) {
-      console.log("前端");
       const path = "portfolio/display";
       const formData = new FormData();
       files.forEach((file) => {

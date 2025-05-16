@@ -31,9 +31,13 @@ export const addTopicImage = async (folderPath, formData, info) => {
 };
 
 export const updateTopicImage = async (folderPath, formData) => {
-  const response = await axiosInstance.put(`/api/topic/${folderPath}`, formData);
+  const response = await axiosInstance.put(
+    `/api/topic/${folderPath}`,
+    formData
+  );
+  console.log(response);
   if (response.status === 200) {
-    return response.data.message;
+    return response;
   }
   return { error: response.data.error };
 };

@@ -29,8 +29,6 @@ export const useSectionStore = defineStore("sectionStore", {
       files.forEach((file) => {
         formData.append(`image`, file);
       });
-      console.log(formData);
-      console.log("前端");
       const message = await updateSectionImage(
         sectionPath,
         formData,
@@ -42,7 +40,6 @@ export const useSectionStore = defineStore("sectionStore", {
     },
     async adjustOffsetY(id: string, offsetY: object) {
       const sectionPath = "home/sections";
-      console.log(offsetY);
       const message = await adjustOffsetY(sectionPath, id, offsetY);
       return message;
     },

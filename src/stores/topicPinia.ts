@@ -48,10 +48,11 @@ export const useTopicStore = defineStore("topicStore", {
 
       const { image } = newData;
       const formData = new FormData();
-      image.forEach((file) => {
-        formData.append(`image`, file);
-      });
-
+      if (image.length > 0) {
+        image.forEach((file) => {
+          formData.append(`image`, file);
+        });
+      }
       formData.append("newData", JSON.stringify(newData));
       const res = await updateTopicImage(path, formData);
       console.log(res);

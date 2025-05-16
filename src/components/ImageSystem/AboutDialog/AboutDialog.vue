@@ -4,7 +4,7 @@ import { ref, watch, defineProps, computed } from "vue";
 import { useUploadHandler } from "../../../utils/useUploadHandler.ts";
 import { useAboutStore } from "../../../stores/aboutPinia.ts";
 import { useWindowSize } from "../../../utils/useWindowSize.js";
-import Loading from "../../Loading.vue";
+import DialogLoading from "../../DialogLoading.vue";
 
 const { device } = useWindowSize();
 const aboutStore = useAboutStore();
@@ -38,8 +38,6 @@ const handleOpen = async () => {
 const handleUpload = async () => {
   if (selectedFiles.value.length === 0) return;
   try {
-    console.log("upload image");
-    console.log(selectedFiles.value, props.publicID, props.id);
     isLoading.value = true;
     loadingmessage.value = "更新圖片中...";
     const message = await aboutStore.updateImage(
@@ -68,16 +66,9 @@ const previewImage = computed(() => {
   return props.url;
 });
 
-watch(previewUrls, () => {
-  console.log("selectedFile changed!");
-});
-
 watch(handleOpen, () => {
   errormessage.value = ""; // 切換模式時清空錯誤訊息
   successmessage.value = "";
-});
-watch(props, () => {
-  console.log(props);
 });
 </script>
 
@@ -102,14 +93,13 @@ watch(props, () => {
 
     <template #default="{ isActive }">
       <v-card title="編輯圖片" class="p-4">
-        <Loading :isLoading="isLoading" :loadingmessage="loadingmessage" />
-        <v-card-text class="text-red-500" v-if="errormessage">{{
-          errormessage
-        }}</v-card-text>
-        <v-card-text class="text-green-500" v-if="successmessage">{{
-          successmessage
-        }}</v-card-text>
-        <v-card-text> 以下是現有的圖片... </v-card-text>
+        <DialogLoading
+          :isLoading="isLoading"
+          :loadingmessage="loadingmessage"
+          :errormessage="errormessage"
+          :successmessage="successmessage"
+        />
+        <v-card-text> 以下是現有的圖片...(請勿上傳超過10MB的圖片) </v-card-text>
         <div
           class="flex gap-2 flex-wrap my-2"
           :style="{

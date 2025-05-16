@@ -6,7 +6,7 @@ import { useWindowSize } from "../../../utils/useWindowSize.js";
 import { useDragHandler } from "../../../utils/useDragHandler.ts";
 import { useUploadHandler } from "../../../utils/useUploadHandler.ts";
 import ButtonArea from "./ButtonArea.vue";
-import Loading from "../../Loading.vue";
+import DialogLoading from "../../DialogLoading.vue";
 const {
   selectedFiles,
   previewUrls,
@@ -54,13 +54,8 @@ const props = withDefaults(
   }
 );
 
-const { offsetY, startDrag, onDrag, endDrag, isDragging } = useDragHandler(
-  720,
-  "section",
-  props.id,
-  props.curOffsetY,
-  device
-);
+const { offsetY, startDrag, onDrag, endDrag, isDragging, dragMessage } =
+  useDragHandler(720, "section", props.id, props.curOffsetY, device);
 
 const handleOpen = async () => {
   await sectionStore.fetchImages();
@@ -137,6 +132,13 @@ watch(handleOpen, () => {
 watch(isDragging, async () => {
   await sectionStore.fetchImages();
 });
+
+watch(dragMessage, async () => {
+  successmessage.value = dragMessage.value;
+  setTimeout(() => {
+    successmessage.value = "";
+  }, 3000);
+});
 </script>
 
 <template>
@@ -160,14 +162,15 @@ watch(isDragging, async () => {
 
     <template #default="{ isActive }">
       <v-card title="編輯分區圖片" class="p-4 z-20">
-        <Loading :isLoading="isLoading" :loadingmessage="loadingmessage" />
-        <v-card-text class="text-red-500" v-if="errormessage">{{
-          errormessage
-        }}</v-card-text>
-        <v-card-text class="text-green-500" v-if="successmessage">{{
-          successmessage
-        }}</v-card-text>
-        <v-card-text> 以下是現有的分區圖片... </v-card-text>
+        <DialogLoading
+          :isLoading="isLoading"
+          :loadingmessage="loadingmessage"
+          :errormessage="errormessage"
+          :successmessage="successmessage"
+        />
+        <v-card-text>
+          以下是現有的分區圖片...(可拖移圖片調整位置!)
+        </v-card-text>
         <div class="flex justify-center gap-2 flex-wrap">
           <div
             @mousedown="startDrag"

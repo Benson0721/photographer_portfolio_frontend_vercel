@@ -4,7 +4,7 @@ import { useUploadHandler } from "../../../../utils/useUploadHandler.ts";
 import { useDisplayStore } from "../../../../stores/displayPinia.ts";
 import { defineProps, ref } from "vue";
 import { useWindowSize } from "../../../../utils/useWindowSize.js";
-import Loading from "../../../../components/Loading.vue";
+import DialogLoading from "../../../../components/DialogLoading.vue";
 const userStore = useUserStore();
 const displayStore = useDisplayStore();
 const {
@@ -18,6 +18,7 @@ const {
 const props = defineProps({
   curTopicID: String,
 });
+const dialog = ref(false);
 const { device } = useWindowSize();
 const successmessage = ref("");
 const errormessage = ref("");
@@ -30,15 +31,12 @@ const handleOpen = () => {
 const handleUpload = async () => {
   if (selectedFiles.value.length === 0) return;
   try {
-    console.log(selectedFiles.value, props.curTopicID);
-    console.log("upload image");
     loadingmessage.value = "上傳圖片中...";
     isLoading.value = true;
     const message = await displayStore.addImages(
       selectedFiles.value,
       props.curTopicID
     );
-    console.log(message);
     resetUpload();
     successmessage.value = message;
     displayStore.fetchImages(props.curTopicID);
@@ -53,33 +51,32 @@ const handleUpload = async () => {
   }
 };
 </script>
+
 <template>
-  <v-dialog :max-width="device !== 'mobile' ? '60vw' : '100vw'" @dragover="handleDragOver" @drop="handleDrop">
-    <template v-slot:activator="{ props: activatorProps }">
-      <v-btn
-        v-bind="activatorProps"
-        color="surface-variant"
-        text="新增展示"
-        variant="flat"
-        :disabled="!userStore.isEditing"
-        class="bg-green-500"
-        @click="handleOpen"
-        :class="!userStore.isEditing ? 'hidden' : 'block'"
-      ></v-btn>
-    </template>
-    <template #default="{ isActive }">
+  <div>
+    <v-btn
+      color="surface-variant"
+      text="新增展示圖片"
+      variant="flat"
+      :disabled="!userStore.isEditing"
+      class="bg-green-500"
+      @click="dialog = true"
+      :class="!userStore.isEditing ? 'hidden' : 'block'"
+    ></v-btn>
+
+    <v-dialog
+      v-model="dialog"
+      :max-width="device !== 'mobile' ? '60vw' : '100vw'"
+      @dragover="handleDragOver"
+      @drop="handleDrop"
+    >
       <v-card title="新增展示圖片" class="p-1 md:p-4 relative">
-        <Loading :isLoading="isLoading" :loadingmessage="loadingmessage" />
-        <v-card-text
-          class="text-red-500 absolute top-1/10 right-1/8"
-          v-if="errormessage"
-          >{{ errormessage }}</v-card-text
-        >
-        <v-card-text
-          class="text-green-500 absolute top-1/10 right-1/8"
-          v-if="successmessage"
-          >{{ successmessage }}</v-card-text
-        >
+        <DialogLoading
+          :isLoading="isLoading"
+          :loadingmessage="loadingmessage"
+          :errormessage="errormessage"
+          :successmessage="successmessage"
+        />
         <v-card-text v-if="selectedFiles.length > 0">
           以下是你即將新增的圖片(單張圖片大小請勿超過10MB)
         </v-card-text>
@@ -101,7 +98,6 @@ const handleUpload = async () => {
         </div>
         <v-card-actions>
           <v-spacer></v-spacer>
-
           <div
             class="flex h-auto flex-col md:flex-row items-center relative"
             :class="selectedFiles.length > 0 ? 'w-auto' : 'w-[300px]'"
@@ -120,11 +116,11 @@ const handleUpload = async () => {
             </v-file-input>
             <div class="flex gap-2">
               <v-btn text="送出" @click="handleUpload"></v-btn>
-              <v-btn text="關閉" @click="isActive.value = false"></v-btn>
+              <v-btn text="關閉" @click="dialog = false"></v-btn>
             </div>
           </div>
         </v-card-actions>
       </v-card>
-    </template>
-  </v-dialog>
+    </v-dialog>
+  </div>
 </template>

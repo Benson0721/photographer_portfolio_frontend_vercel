@@ -1,3 +1,5 @@
+import { axiosInstance } from "./axios_config";
+
 
 export const getDisplayImages = async (folderPath, topicID) => {
   const response = await axiosInstance.get(`/api/display/${folderPath}`, {

@@ -4,7 +4,7 @@ import { useTopicStore } from "../../../../stores/topicPinia.ts";
 import { useWindowSize } from "../../../../utils/useWindowSize.js";
 import { useRoute } from "vue-router";
 import { ref } from "vue";
-import Loading from "../../../../components/Loading.vue";
+import DialogLoading from "../../../../components/DialogLoading.vue";
 
 const userStore = useUserStore();
 const topicStore = useTopicStore();
@@ -58,17 +58,12 @@ const handleChangeImage = async () => {
 
     <template #default="{ isActive }">
       <v-card title="更改封面" class="p-4 relative">
-        <Loading :isLoading="isLoading" :loadingmessage="loadingmessage" />
-        <v-card-text
-          class="text-red-500 absolute top-1/10 right-1/8"
-          v-if="errormessage"
-          >{{ errormessage }}</v-card-text
-        >
-        <v-card-text
-          class="text-green-500 absolute top-1/10 right-1/8"
-          v-if="successmessage"
-          >{{ successmessage }}</v-card-text
-        >
+        <DialogLoading
+          :isLoading="isLoading"
+          :loadingmessage="loadingmessage"
+          :errormessage="errormessage"
+          :successmessage="successmessage"
+        />
         <v-card-text> 以下是現有的封面圖片...(不推薦長圖) </v-card-text>
         <div class="grid grid-cols-2 gap-0.5 lg:grid-cols-3 lg:gap-2">
           <div v-if="topicStore.topicImages.length === 0">
