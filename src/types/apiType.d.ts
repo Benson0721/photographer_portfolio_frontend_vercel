@@ -31,7 +31,7 @@ export type CarouselImage = {
   public_id: string;
 };
 
-export type TopicImage = {
+export type AlbumImage = {
   _id: string;
   category: string;
   topic: string;
@@ -40,6 +40,16 @@ export type TopicImage = {
   public_id: string;
   createdAt: Date;
 };
+
+export type GalleryImage = {
+  _id: string;
+  category: string;
+  notes: string;
+  imageURL: string;
+  public_id: string;
+  createdAt: Date;
+};
+
 export type DisplayImage = {
   _id: string;
   topicID: string;

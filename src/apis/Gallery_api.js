@@ -1,25 +1,24 @@
 import { axiosInstance } from "./axios_config";
 
-export const getTopicImages = async (folderPath = "", category = "") => {
-  const response = await axiosInstance.get(`/api/topic/${folderPath}`, {
+export const getGalleryImages = async (folderPath = "", category = "") => {
+  const response = await axiosInstance.get(`/api/gallery/${folderPath}`, {
     params: {
       category,
     },
   });
   if (response.status === 200) {
-    return response.data.topicImages;
+    return response.data.galleryImages;
   }
   return { error: "Failed to fetch images" };
 };
 
-export const addTopicImage = async (folderPath, formData, info) => {
+export const addGalleryImage = async (folderPath, formData, info) => {
   const response = await axiosInstance.post(
-    `/api/topic/${folderPath}`,
+    `/api/gallery/${folderPath}`,
     formData,
     {
       params: {
         category: info.category,
-        topic: info.topic,
         notes: info.notes,
       },
     }
@@ -30,9 +29,9 @@ export const addTopicImage = async (folderPath, formData, info) => {
   return { error: response.data.error };
 };
 
-export const updateTopicImage = async (folderPath, formData) => {
+export const updateGalleryImage = async (folderPath, formData) => {
   const response = await axiosInstance.put(
-    `/api/topic/${folderPath}`,
+    `/api/gallery/${folderPath}`,
     formData
   );
   console.log(response);
@@ -42,8 +41,8 @@ export const updateTopicImage = async (folderPath, formData) => {
   return { error: response.data.error };
 };
 
-export const deleteTopicImage = async (folderPath, publicId, id) => {
-  const response = await axiosInstance.delete(`/api/topic/${folderPath}`, {
+export const deleteGalleryImage = async (folderPath, publicId, id) => {
+  const response = await axiosInstance.delete(`/api/gallery/${folderPath}`, {
     params: {
       publicId,
       id,

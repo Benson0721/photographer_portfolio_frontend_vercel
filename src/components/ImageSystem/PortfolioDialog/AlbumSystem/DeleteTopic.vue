@@ -1,6 +1,6 @@
 <script setup>
 import { useUserStore } from "../../../../stores/userPinia.ts";
-import { useTopicStore } from "../../../../stores/topicPinia.ts";
+import { useTopicStore } from "../../../../stores/albumPinia.ts";
 
 import { ref, defineProps } from "vue";
 

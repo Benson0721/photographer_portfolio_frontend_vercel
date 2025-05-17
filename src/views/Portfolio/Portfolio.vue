@@ -6,7 +6,7 @@ import NewTopic from "../../components/ImageSystem/PortfolioDialog/TopicSystem/N
 import NewDisplay from "../../components/ImageSystem/PortfolioDialog/DisplaySystem/NewDisplay.vue";
 import { useRoute, useRouter } from "vue-router";
 import { useUserStore } from "../../stores/userPinia.ts";
-import { useTopicStore } from "../../stores/topicPinia";
+import { useTopicStore } from "../../stores/albumPinia.ts";
 import { useWindowSize } from "../../utils/useWindowSize.js";
 import Handing from "../../components/Handing.vue";
 import TopicImage from "./TopicImage.vue";
@@ -38,7 +38,7 @@ const categorys = ref([
   "Architecture",
   "Landscape",
   "Portrait",
-  "Street",
+  "Album",
   "Motorcycle",
   "Others",
 ]);

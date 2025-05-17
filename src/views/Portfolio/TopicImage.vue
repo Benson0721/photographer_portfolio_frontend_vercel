@@ -9,7 +9,7 @@ import {
 } from "vue";
 import EditTopic from "../../components/ImageSystem/PortfolioDialog/TopicSystem/EditTopic/EditTopic.vue";
 import DeleteTopic from "../../components/ImageSystem/PortfolioDialog/TopicSystem/DeleteTopic.vue";
-import { useTopicStore } from "../../stores/topicPinia.ts";
+import { useTopicStore } from "../../stores/albumPinia.ts";
 import { useUserStore } from "../../stores/userPinia.ts";
 
 const userStore = useUserStore();

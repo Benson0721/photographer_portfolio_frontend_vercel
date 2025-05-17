@@ -1,22 +1,22 @@
 import { defineStore } from "pinia";
 import {
-  getTopicImages,
-  updateTopicImage,
-  deleteTopicImage,
-  addTopicImage,
-} from "../apis/Topic_api";
+  getAlbumImages,
+  updateAlbumImage,
+  deleteAlbumImage,
+  addAlbumImage,
+} from "../apis/Album_api";
 import { updateFrontImage, getFrontImages } from "../apis/Front_api";
-import { TopicImage, FrontImage } from "../types/apiType";
-export const useTopicStore = defineStore("topicStore", {
+import { AlbumImage, FrontImage } from "../types/apiType";
+export const useAlbumStore = defineStore("albumStore", {
   state: () => ({
-    topicImages: [] as TopicImage[],
+    albumImages: [] as AlbumImage[],
     frontImages: [] as FrontImage[],
   }),
 
   actions: {
     async fetchImages(category: string | undefined) {
       const folderPath = `portfolio`;
-      this.topicImages = await getTopicImages(folderPath, category);
+      this.albumImages = await getAlbumImages(folderPath, category);
       this.frontImages = await getFrontImages(category || "All");
     },
     async addImage(
@@ -28,7 +28,7 @@ export const useTopicStore = defineStore("topicStore", {
       const path = "portfolio";
       const formData = new FormData();
       files.forEach((file) => formData.append("image", file));
-      const message = await addTopicImage(path, formData, {
+      const message = await addAlbumImage(path, formData, {
         category,
         topic,
         notes,
@@ -54,7 +54,7 @@ export const useTopicStore = defineStore("topicStore", {
         });
       }
       formData.append("newData", JSON.stringify(newData));
-      const res = await updateTopicImage(path, formData);
+      const res = await updateAlbumImage(path, formData);
       console.log(res);
       return res;
     },
@@ -64,11 +64,11 @@ export const useTopicStore = defineStore("topicStore", {
       return res;
     },
     async deleteImage(public_Id: string, id: string) {
-      this.topicImages = this.topicImages.filter(
+      this.albumImages = this.albumImages.filter(
         (image) => image.public_id !== public_Id
       );
       const sectionPath = "portfolio";
-      const res = await deleteTopicImage(sectionPath, public_Id, id);
+      const res = await deleteAlbumImage(sectionPath, public_Id, id);
       return res;
     },
   },
