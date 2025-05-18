@@ -1,17 +1,18 @@
 <script setup>
-import { useUserStore } from "../../../../stores/userPinia.ts";
-import { useTopicStore } from "../../../../stores/topicPinia.ts";
-import { useWindowSize } from "../../../../utils/useWindowSize.js";
+import { useUserStore } from "../../../stores/userPinia.ts";
+import { useWindowSize } from "../../../utils/useWindowSize.js";
 import { useRoute } from "vue-router";
-import { ref } from "vue";
-import DialogLoading from "../../../../components/DialogLoading.vue";
+import { ref, defineProps } from "vue";
+import DialogLoading from "../../../components/DialogLoading.vue";
 
 const userStore = useUserStore();
-const topicStore = useTopicStore();
 const errormessage = ref("");
 const successmessage = ref("");
 const loadingmessage = ref("");
 const isLoading = ref(false);
+const props = defineProps({
+  Images: Array,
+});
 
 const { device } = useWindowSize();
 const selectedImage = ref("");
@@ -66,12 +67,12 @@ const handleChangeImage = async () => {
         />
         <v-card-text> 以下是現有的封面圖片...(不推薦長圖) </v-card-text>
         <div class="grid grid-cols-2 gap-0.5 lg:grid-cols-3 lg:gap-2">
-          <div v-if="topicStore.topicImages.length === 0">
+          <div v-if="props.Images.length === 0">
             <v-card-text> 沒有圖片 </v-card-text>
           </div>
           <!--自製checked屬性 -->
           <div
-            v-for="(image, index) in topicStore.topicImages"
+            v-for="(image, index) in props.Images"
             :key="index"
             class="relative cursor-pointer w-[144px] h-[81px] md:w-[216px] md:h-[121px] lg:w-[288px] lg:h-[162px]"
             :class="

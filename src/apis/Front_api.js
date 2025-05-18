@@ -1,7 +1,7 @@
 import { axiosInstance } from "./axios_config";
 
 export const getFrontImages = async (category = "") => {
-  const response = await axiosInstance.get(`/api/topic/front/`, {
+  const response = await axiosInstance.get(`/api/front/`, {
     params: {
       category,
     },
@@ -13,7 +13,7 @@ export const getFrontImages = async (category = "") => {
 };
 
 export const updateFrontImage = async (category, imageURL) => {
-  const response = await axiosInstance.put(`/api/topic/front/`, {
+  const response = await axiosInstance.put(`/api/front/`, {
     category,
     imageURL,
   });

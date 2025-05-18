@@ -13,20 +13,13 @@ export const useGalleryStore = defineStore("galleryStore", {
 
   actions: {
     async fetchImages(category: string | undefined) {
-      const folderPath = `portfolio`;
-      this.galleryImages = await getGalleryImages(folderPath, category);
+      this.galleryImages = await getGalleryImages(category);
     },
-    async addImage(
-      files: File[],
-      category: string,
-      notes: string
-    ) {
-      const path = "portfolio";
+    async addImage(files: File[], category: string) {
       const formData = new FormData();
       files.forEach((file) => formData.append("image", file));
-      const message = await addGalleryImage(path, formData, {
+      const message = await addGalleryImage(formData, {
         category,
-        notes,
       });
       console.log(message);
       return message;
@@ -56,8 +49,7 @@ export const useGalleryStore = defineStore("galleryStore", {
       this.galleryImages = this.galleryImages.filter(
         (image) => image.public_id !== public_Id
       );
-      const sectionPath = "portfolio";
-      const res = await deleteGalleryImage(sectionPath, public_Id, id);
+      const res = await deleteGalleryImage(public_Id, id);
       return res;
     },
   },

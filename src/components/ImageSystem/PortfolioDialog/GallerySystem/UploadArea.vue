@@ -48,26 +48,6 @@ const formData = reactive({
       }"
     />
     <FormKit
-      v-model="formData.topic"
-      type="text"
-      name="topic"
-      label="主題"
-      outerClass="mb-4 w-3/5 md:w-1/2"
-      innerClass="mt-4 border-b-2 border-black"
-      labelClass="text-black font-noto "
-      validation="required"
-      messages-class="text-red-500 text-sm"
-      :validation-messages="{
-        required: '請輸入主題',
-      }"
-      :classes="{
-        outer: '',
-        inner: 'mt-4 border-b-2',
-        input: 'w-full border-none bg-transparent focus:outline-none',
-        inputInvalid: 'border-red-500', // 加紅線
-      }"
-    />
-    <FormKit
       v-model="formData.notes"
       type="text"
       name="notes"
@@ -94,7 +74,7 @@ const formData = reactive({
       prepend-icon=""
       @change="props.handleSingleFileChange"
       variant="outlined"
-      label="主題封面上傳"
+      label="上傳圖片"
       multiple
       accept=".jpg,.jpeg,.png,.gif,.webp"
       show-size

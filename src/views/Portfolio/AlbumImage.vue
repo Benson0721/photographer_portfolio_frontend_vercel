@@ -7,21 +7,17 @@ import {
   onBeforeUnmount,
   nextTick,
 } from "vue";
-import EditTopic from "../../components/ImageSystem/PortfolioDialog/TopicSystem/EditTopic/EditTopic.vue";
-import DeleteTopic from "../../components/ImageSystem/PortfolioDialog/TopicSystem/DeleteTopic.vue";
-import { useTopicStore } from "../../stores/albumPinia.ts";
+import EditAlbum from "../../components/ImageSystem/PortfolioDialog/AlbumSystem/EditAlbum/EditAlbum.vue";
+import DeleteAlbum from "../../components/ImageSystem/PortfolioDialog/AlbumSystem/DeleteAlbum.vue";
+import { useAlbumStore } from "../../stores/albumPinia.ts";
 import { useUserStore } from "../../stores/userPinia.ts";
 
 const userStore = useUserStore();
-const topicStore = useTopicStore();
+const albumStore = useAlbumStore();
 
 const curTopicID = defineModel("curTopicID", { type: String });
 const curTopic = defineModel("curTopic", { type: String });
 const curNotes = defineModel("curNotes", { type: String });
-
-const props = defineProps({
-  curCategory: String,
-});
 
 const mode = defineModel("mode", { type: String });
 
@@ -39,7 +35,7 @@ const imageStates = ref(new Map());
 const setupObserver = async () => {
   let attempts = 0;
   const maxAttempts = 5;
-  const expectedImages = topicStore.topicImages.length;
+  const expectedImages = albumStore.albumImages.length;
 
   while (attempts < maxAttempts) {
     //以多次嘗試確保圖片已載入
@@ -71,7 +67,7 @@ const setupObserver = async () => {
 
 // 監控 TopicImage 變化
 watch(
-  () => topicStore.topicImages,
+  () => albumStore.albumImages,
   async () => {
     if (observer) {
       observer.disconnect();
@@ -82,6 +78,10 @@ watch(
   { deep: true, immediate: true } // 立即執行以初始化
 );
 
+onMounted(async () => {
+  await albumStore.fetchImages();
+});
+
 onBeforeUnmount(() => {
   if (observer) {
     observer.disconnect();
@@ -90,7 +90,7 @@ onBeforeUnmount(() => {
 </script>
 <template>
   <masonry-wall
-    :items="topicStore.topicImages"
+    :items="albumStore.albumImages"
     :ssr-columns="2"
     :column-width="500"
     :gap="4"
@@ -107,20 +107,18 @@ onBeforeUnmount(() => {
           class="flex gap-0.5 md:gap-2 absolute z-10 top-1/18 left-11/18 md:top-1/10 md:left-6/8"
           :class="userStore.showEdit() ? 'block' : 'hidden'"
         >
-          <EditTopic
+          <EditAlbum
             :id="item._id"
             :topic="item.topic"
             :notes="item.notes"
             :category="item.category"
             :imageURL="item.imageURL"
             :publicId="item.public_id"
-            :curCategory="curCategory"
           />
-          <DeleteTopic
+          <DeleteAlbum
             :topic="item.topic"
             :id="item._id"
             :publicId="item.public_id"
-            :curCategory="curCategory"
           />
         </div>
         <img

@@ -30,20 +30,16 @@ export const addAlbumImage = async (folderPath, formData, info) => {
   return { error: response.data.error };
 };
 
-export const updateAlbumImage = async (folderPath, formData) => {
-  const response = await axiosInstance.put(
-    `/api/album/${folderPath}`,
-    formData
-  );
-  console.log(response);
+export const updateAlbumImage = async (formData) => {
+  const response = await axiosInstance.put(`/api/album/`, formData);
   if (response.status === 200) {
     return response;
   }
   return { error: response.data.error };
 };
 
-export const deleteAlbumImage = async (folderPath, publicId, id) => {
-  const response = await axiosInstance.delete(`/api/album/${folderPath}`, {
+export const deleteAlbumImage = async (publicId, id) => {
+  const response = await axiosInstance.delete(`/api/album/`, {
     params: {
       publicId,
       id,

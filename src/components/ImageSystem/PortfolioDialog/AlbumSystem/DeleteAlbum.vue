@@ -1,6 +1,6 @@
 <script setup>
 import { useUserStore } from "../../../../stores/userPinia.ts";
-import { useTopicStore } from "../../../../stores/albumPinia.ts";
+import { useAlbumStore } from "../../../../stores/albumPinia.ts";
 
 import { ref, defineProps } from "vue";
 
@@ -12,7 +12,7 @@ const { id, publicId, topic, curCategory } = defineProps({
 });
 
 const userStore = useUserStore();
-const topicStore = useTopicStore();
+const albumStore = useAlbumStore();
 const errormessage = ref("");
 const successmessage = ref("");
 
@@ -22,20 +22,12 @@ const handleOpen = () => {
 
 const handleDelete = async () => {
   try {
-    const res = await topicStore.deleteImage(publicId, id);
+    const res = await albumStore.deleteImage(publicId, id);
     successmessage.value = res.data.message;
-    if (curCategory === "All") {
-      await topicStore.fetchImages();
-    } else {
-      await topicStore.fetchImages(curCategory);
-    }
+    await albumStore.fetchImages(curCategory);
   } catch (error) {
     errormessage.value = error?.response?.data?.message;
-    if (props.curCategory === "All") {
-      await topicStore.fetchImages();
-    } else {
-      await topicStore.fetchImages(props.curCategory);
-    }
+    await albumStore.fetchImages(curCategory);
     console.error("上傳失敗：", error?.response?.data?.message);
   }
 };

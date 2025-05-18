@@ -1,132 +1,141 @@
 <script setup>
-import { useUserStore } from "../../../../../stores/userPinia.ts";
-import { useTopicStore } from "../../../../../stores/topicPinia.ts";
-import { useUploadHandler } from "../../../../../utils/useUploadHandler.ts";
-import { useWindowSize } from "../../../../../utils/useWindowSize.js";
-import { ref, computed } from "vue";
-import UploadArea from "./UploadArea.vue";
-import DialogLoading from "../../../../../components/DialogLoading.vue";
-
+import { useUserStore } from "../../../../stores/userPinia.ts";
+import { useUploadHandler } from "../../../../utils/useUploadHandler.ts";
+import { useGalleryStore } from "../../../../stores/galleryPinia.ts";
+import { ref } from "vue";
+import { useWindowSize } from "../../../../utils/useWindowSize.js";
+import DialogLoading from "../../../../components/DialogLoading.vue";
 const userStore = useUserStore();
-const topicStore = useTopicStore();
-const errormessage = ref("");
-const successmessage = ref("");
-const loadingmessage = ref("");
-const isLoading = ref(false);
+const galleryStore = useGalleryStore();
+const {
+  selectedFiles,
+  previewUrls,
+  handleFileChange,
+  resetUpload,
+  handleDragOver,
+  handleDrop,
+} = useUploadHandler();
 
+const categorys = ref([
+  "Architecture",
+  "Landscape",
+  "Portrait",
+  "Motorcycle",
+  "Others",
+  "Album",
+]);
+
+const dialog = ref(false);
 const { device } = useWindowSize();
-const { selectedFiles, handleSingleFileChange, resetUpload, previewUrls } =
-  useUploadHandler();
-
-const handleOpen = async () => {
-  errormessage.value = "";
-  successmessage.value = "";
+const selectCategory = ref("");
+const successmessage = ref("");
+const errormessage = ref("");
+const isLoading = ref(false);
+const loadingmessage = ref("");
+const handleOpen = () => {
+  userStore.isEditing = true;
+  resetUpload();
 };
-
-const handleAddImage = async (data) => {
+const handleUpload = async () => {
   if (selectedFiles.value.length === 0) return;
-  console.log(data);
   try {
-    console.log("upload image");
-    const { category, notes, topic } = data;
+    loadingmessage.value = "上傳圖片中...";
     isLoading.value = true;
-    loadingmessage.value = "新增主題中...";
-    const message = await topicStore.addImage(
+    const message = await galleryStore.addImage(
       selectedFiles.value,
-      category,
-      topic,
-      notes
+      selectCategory.value
     );
     resetUpload();
     successmessage.value = message;
+    galleryStore.fetchImages(selectCategory.value);
     isLoading.value = false;
-    await topicStore.fetchImages();
   } catch (error) {
+    console.error(error);
+    isLoading.value = false;
     errormessage.value = error?.response?.data?.message;
     resetUpload();
-    await topicStore.fetchImages();
-    isLoading.value = false;
+    galleryStore.fetchImages(selectCategory.value);
     console.error("上傳失敗：", error?.response?.data?.message);
   }
 };
-
-const previewUrl = computed(() => {
-  return previewUrls.value[0]?.src;
-});
 </script>
 
 <template>
-  <v-dialog :max-width="device !== 'mobile' ? '60vw' : '100vw'">
-    <template v-slot:activator="{ props: activatorProps }">
-      <v-btn
-        v-bind="activatorProps"
-        color="surface-variant"
-        text="新增"
-        variant="flat"
-        :disabled="!userStore.isEditing"
-        class="bg-green-500"
-        @click="handleOpen"
-        :class="!userStore.isEditing ? 'hidden' : 'block'"
-      ></v-btn>
-    </template>
+  <div>
+    <v-btn
+      color="surface-variant"
+      text="新增展示圖片"
+      variant="flat"
+      :disabled="!userStore.isEditing"
+      class="bg-green-500"
+      @click="dialog = true"
+      :class="!userStore.isEditing ? 'hidden' : 'block'"
+    ></v-btn>
 
-    <template #default="{ isActive }">
-      <v-card title="新增主題" class="p-4 z-20">
+    <v-dialog
+      v-model="dialog"
+      :max-width="device !== 'mobile' ? '60vw' : '100vw'"
+      @dragover="handleDragOver"
+      @drop="handleDrop"
+    >
+      <v-card title="新增圖片" class="p-1 md:p-4 relative">
         <DialogLoading
           :isLoading="isLoading"
           :loadingmessage="loadingmessage"
           :errormessage="errormessage"
           :successmessage="successmessage"
         />
-        <FormKit
-          type="form"
-          :actions="false"
-          @submit="handleAddImage"
-          outerClass="w-full"
-          validation="required"
-          :validation-visibility="'submit'"
-          incomplete-message="請填入必要資訊以完成新增"
-          messages-class="text-red-500 text-lg absolute sm:top-1/5 md:top-1/4"
-        >
-          <div class="flex flex-col md:flex-row w-full h-full gap-2">
-            <div class="md:flex-1 pl-10 md:pl-16 mt-8">
-              <UploadArea
-                :handleSingleFileChange="handleSingleFileChange"
-                :handleAddImage="handleAddImage"
-                :selectedFiles="selectedFiles"
-                :previewUrl="previewUrl"
-              />
-            </div>
-            <div v-if="previewUrl" class="mb-10 md:flex-2">
-              <v-card-text
-                >以下為即將更新的圖片(單張圖片大小請勿超過10MB)</v-card-text
-              >
-              <img
-                :src="previewUrl"
-                alt="previewImage"
-                class="flex-1 w-full h-full object-contain"
-                draggable="false"
-              />
+        <v-select
+          label="選擇主題"
+          :items="categorys"
+          variant="outlined"
+          v-model="selectCategory"
+        ></v-select>
+
+        <v-card-text v-if="selectedFiles.length > 0">
+          以下是你即將新增的圖片(單張圖片大小請勿超過10MB)
+        </v-card-text>
+        <v-card-text v-else> 請點擊新增按鈕來新增圖片 </v-card-text>
+        <div class="flex gap-1 md:gap-2 flex-wrap my-2">
+          <div
+            class="carousel__image--editing"
+            v-for="(image, index) in previewUrls"
+            :key="index"
+            v-if="selectedFiles"
+          >
+            <img
+              :src="image.src"
+              alt="carousel__image__tmp"
+              class="w-full h-full object-cover"
+              loading="lazy"
+            />
+          </div>
+        </div>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <div
+            class="flex h-auto flex-col md:flex-row items-center relative"
+            :class="selectedFiles.length > 0 ? 'w-auto' : 'w-[300px]'"
+          >
+            <v-file-input
+              class="w-full h-auto"
+              name="images"
+              @change="handleFileChange"
+              variant="outlined"
+              label="圖片上傳"
+              multiple
+              show-size
+              clip
+              prepend-icon=""
+            >
+            </v-file-input>
+            <div class="flex gap-2">
+              <v-btn text="送出" @click="handleUpload"></v-btn>
+              <v-btn text="關閉" @click="dialog = false"></v-btn>
             </div>
           </div>
-          <v-card-actions>
-            <div
-              class="flex gap-2 justify-center absolute left-1/2 md:left-8/10 -translate-x-1/2 -translate-y-1/2"
-            >
-              <FormKit
-                type="submit"
-                label="送出"
-                :classes="{
-                  outer: 'mt-2 text-center transform',
-                  input: 'text-black rounded bg-white transition duration-300',
-                }"
-              />
-              <v-btn text="關閉" @click="isActive.value = false"></v-btn>
-            </div>
-          </v-card-actions>
-        </FormKit>
+        </v-card-actions>
       </v-card>
-    </template>
-  </v-dialog>
+    </v-dialog>
+  </div>
 </template>
-<style scoped lang="scss"></style>

@@ -1,8 +1,8 @@
 import { axiosInstance } from "./axios_config";
 
 
-export const getDisplayImages = async (folderPath, topicID) => {
-  const response = await axiosInstance.get(`/api/display/${folderPath}`, {
+export const getDisplayImages = async (topicID) => {
+  const response = await axiosInstance.get(`/api/display/`, {
     params: { topicID },
   });
   if (response.status === 200) {
@@ -11,24 +11,20 @@ export const getDisplayImages = async (folderPath, topicID) => {
   return { error: "Failed to fetch images" };
 };
 
-export const addDisplayImage = async (folderPath, formData) => {
-  const response = await axiosInstance.post(
-    `/api/display/${folderPath}`,
-    formData,
-    {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    }
-  );
+export const addDisplayImage = async (formData) => {
+  const response = await axiosInstance.post(`/api/display/`, formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
   if (response.status === 200) {
     return response.data.message;
   }
   return { error: response.data.error };
 };
 
-export const deleteDisplayImage = async (folderPath, publicId, id) => {
-  const response = await axiosInstance.delete(`/api/display/${folderPath}`, {
+export const deleteDisplayImage = async (publicId, id) => {
+  const response = await axiosInstance.delete(`/api/display/`, {
     params: { publicId, id },
   });
   if (response.status === 200) {

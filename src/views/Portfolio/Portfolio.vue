@@ -2,27 +2,33 @@
 import { onMounted, computed, ref, nextTick, watch } from "vue";
 import Navbar from "../../components/Navbar/Navbar.vue";
 import Footer from "../../components/Footer.vue";
-import NewTopic from "../../components/ImageSystem/PortfolioDialog/TopicSystem/NewTopic/NewTopic.vue";
+import NewAlbum from "../../components/ImageSystem/PortfolioDialog/AlbumSystem/NewAlbum/NewAlbum.vue";
 import NewDisplay from "../../components/ImageSystem/PortfolioDialog/DisplaySystem/NewDisplay.vue";
+import NewGallery from "../../components/ImageSystem/PortfolioDialog/GallerySystem/NewGallery.vue";
 import { useRoute, useRouter } from "vue-router";
 import { useUserStore } from "../../stores/userPinia.ts";
-import { useTopicStore } from "../../stores/albumPinia.ts";
+import { useGalleryStore } from "../../stores/galleryPinia.ts";
+import { useAlbumStore } from "../../stores/albumPinia.ts";
+import { useFrontStore } from "../../stores/frontPinia.ts";
 import { useWindowSize } from "../../utils/useWindowSize.js";
 import Handing from "../../components/Handing.vue";
-import TopicImage from "./TopicImage.vue";
+import AlbumImage from "./AlbumImage.vue";
+import GalleryImage from "./GalleryImage.vue";
 import DisplayImage from "./DisplayImage.vue";
-import ChangeFrontPage from "../../components/ImageSystem/PortfolioDialog/TopicSystem/ChangeFrontPage.vue";
+import ChangeFrontPage from "../../components/ImageSystem/PortfolioDialog/ChangeFrontPage.vue";
 import "./Portfolio.scss";
 
 const { device } = useWindowSize();
-const topicStore = useTopicStore();
+const albumStore = useAlbumStore();
+const galleryStore = useGalleryStore();
 const userStore = useUserStore();
+const frontStore = useFrontStore();
 const route = useRoute();
 const router = useRouter();
 const curCategory = ref("");
 const curTopic = ref("");
 const curNotes = ref("");
-const mode = ref("Topic");
+const mode = ref("Gallery");
 const curTopicID = ref("");
 const deleteMode = ref(false);
 const isLoading = ref(true);
@@ -34,20 +40,25 @@ const ContentStyle = ref(
 );
 
 const categorys = ref([
-  "All",
   "Architecture",
   "Landscape",
   "Portrait",
-  "Album",
   "Motorcycle",
   "Others",
+  "Album",
 ]);
 
 const selectCategory = ref("");
 
 const onCategoryChange = async (category) => {
   await router.push(`/portfolio/${category}`);
-  mode.value = "Topic";
+  if (category === "Album") {
+    mode.value = "Album";
+    await albumStore.fetchImages();
+  } else {
+    mode.value = "Gallery";
+    await galleryStore.fetchImages(category);
+  }
   curTopicID.value = "";
 };
 
@@ -55,26 +66,26 @@ const loadImage = async () => {
   const category = route.params.category;
   curCategory.value = route.params.category;
 
-  if (category && category !== "All") {
-    await topicStore.fetchImages(category);
-    preloadImages(topicStore.frontImages.map((image) => image.imageURL));
+  if (category && category !== "Album") {
+    await galleryStore.fetchImages(category);
+    preloadImages(galleryStore.frontImages.map((image) => image.imageURL));
   } else {
-    await topicStore.fetchImages();
-    preloadImages(topicStore.frontImages.map((image) => image.imageURL));
+    await albumStore.fetchImages();
+    preloadImages(albumStore.frontImages.map((image) => image.imageURL));
   }
 };
 
 const backgroundStyle = computed(() => {
   if (device.value !== "mobile") {
     if (curTopicID.value) {
-      const image = topicStore.topicImages.find(
+      const image = albumStore.albumImages.find(
         (image) => image._id === curTopicID.value //進入display image顯示的封面
       );
       return {
         backgroundImage: `url(${image?.imageURL})`,
       };
     } else {
-      const image = topicStore.frontImages.find(
+      const image = frontStore.frontImages.find(
         (image) => image.category === route.params.category
       );
       return {
@@ -87,12 +98,12 @@ const backgroundStyle = computed(() => {
 const frontImageStyle = computed(() => {
   if (device.value == "mobile") {
     if (curTopicID.value) {
-      const image = topicStore.topicImages.find(
+      const image = albumStore.albumImages.find(
         (image) => image._id === curTopicID.value //進入display image顯示的封面
       );
       return image?.imageURL;
     } else {
-      const image = topicStore.frontImages.find(
+      const image = frontStore.frontImages.find(
         (image) => image.category === route.params.category
       );
       return image?.imageURL;
@@ -115,13 +126,20 @@ onMounted(async () => {
 });
 
 watch(
+  () => mode.value,
+  () => {
+    console.log(mode.value);
+  }
+);
+
+watch(
   () => route.params.category, //()=>在變化時監聽，若直接用值則只監聽初始值
   async () => {
     curCategory.value = route.params.category;
-    if (curCategory.value === "All") {
-      await topicStore.fetchImages();
+    if (curCategory.value === "Album") {
+      await albumStore.fetchImages();
     } else {
-      await topicStore.fetchImages(curCategory.value);
+      await galleryStore.fetchImages(curCategory.value);
     }
   }
 );
@@ -137,24 +155,52 @@ watch(
         class="w-full h-auto object-cover md:hidden"
       />
       <Handing
-        v-if="mode === 'Topic'"
+        v-if="mode === 'Gallery' || mode === 'Album'"
         v-model:category="curCategory"
         :HeadingStyle="HeadingStyle"
       />
       <Handing
-        v-else
+        v-else-if="mode === 'Display'"
         v-model:topic="curTopic"
         v-model:notes="curNotes"
         :HeadingStyle="HeadingStyle"
         :ContentStyle="ContentStyle"
       />
       <div
-        v-if="mode === 'Topic'"
+        v-if="mode === 'Album'"
         class="flex gap-2 absolute z-10 top-1/18 left-8/10 md:top-1/8 md:left-7/9"
         :class="userStore.showEdit() ? 'block' : 'hidden'"
       >
-        <NewTopic />
-        <ChangeFrontPage />
+        <NewAlbum />
+        <ChangeFrontPage :Images="albumStore.albumImages" />
+      </div>
+      <div
+        v-else-if="mode === 'Gallery'"
+        class="absolute top-1/8 right-1 flex justify-end gap-2 pr-8"
+        :class="userStore.showEdit() ? 'block' : 'hidden'"
+      >
+        <NewGallery />
+        <ChangeFrontPage :Images="galleryStore.galleryImages" />
+        <v-btn
+          v-if="!deleteMode"
+          color="surface-variant"
+          text="刪除"
+          variant="flat"
+          :disabled="!userStore.showEdit()"
+          class="bg-red-500"
+          @click="deleteMode = true"
+          :class="userStore.showEdit() ? 'block' : 'hidden'"
+        ></v-btn>
+        <v-btn
+          v-else
+          color="surface-variant"
+          text="取消刪除模式"
+          variant="flat"
+          :disabled="!userStore.showEdit()"
+          class="bg-blue-500"
+          @click="deleteMode = false"
+          :class="deleteMode ? 'block' : 'hidden'"
+        ></v-btn>
       </div>
       <div
         v-else
@@ -214,12 +260,16 @@ watch(
       </div>
     </div>
     <div class="portfolio__gallery transition">
-      <TopicImage
-        v-if="mode === 'Topic'"
+      <AlbumImage
+        v-if="mode === 'Album'"
         v-model:mode="mode"
         v-model:curTopicID="curTopicID"
         v-model:curTopic="curTopic"
         v-model:curNotes="curNotes"
+      />
+      <GalleryImage
+        v-else-if="mode === 'Gallery'"
+        v-model:mode="mode"
         :curCategory="curCategory"
       />
       <DisplayImage

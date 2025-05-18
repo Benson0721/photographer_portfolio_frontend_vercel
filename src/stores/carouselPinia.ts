@@ -18,31 +18,28 @@ export const useCarouselStore = defineStore("carouselStore", {
   },
   actions: {
     async fetchImages() {
-      const carouselPath = "home/carousel";
-      this.carouselImages = await getCarouselImages(carouselPath);
+      this.carouselImages = await getCarouselImages();
     },
     async addImages(files: File[]) {
-      const carouselPath = "home/carousel";
+
 
       const formData = new FormData();
       files.forEach((file) => {
         formData.append(`images`, file);
       });
-      const res = await addCarouselImage(carouselPath, formData);
+      const res = await addCarouselImage(formData);
       return res;
     },
     async adjustOrder(newOrderArray: CarouselImage[]) {
-      const carouselPath = "home/carousel";
       this.carouselImages = newOrderArray;
-      const res = await adjustCarouselOrder(carouselPath, newOrderArray);
+      const res = await adjustCarouselOrder(newOrderArray);
       return res;
     },
     async deleteImage(public_Id: string, id: string) {
       this.carouselImages = this.carouselImages.filter(
         (image) => image.public_id !== public_Id
       );
-      const carouselPath = "home/carousel";
-      const res = await deleteCarouselImage(carouselPath, public_Id, id);
+      const res = await deleteCarouselImage(public_Id, id);
       return res;
     },
   },

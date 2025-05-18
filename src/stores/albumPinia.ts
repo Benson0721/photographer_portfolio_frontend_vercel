@@ -15,8 +15,7 @@ export const useAlbumStore = defineStore("albumStore", {
 
   actions: {
     async fetchImages(category: string | undefined) {
-      const folderPath = `portfolio`;
-      this.albumImages = await getAlbumImages(folderPath, category);
+      this.albumImages = await getAlbumImages(category);
       this.frontImages = await getFrontImages(category || "All");
     },
     async addImage(
@@ -25,10 +24,9 @@ export const useAlbumStore = defineStore("albumStore", {
       topic: string,
       notes: string
     ) {
-      const path = "portfolio";
       const formData = new FormData();
       files.forEach((file) => formData.append("image", file));
-      const message = await addAlbumImage(path, formData, {
+      const message = await addAlbumImage(formData, {
         category,
         topic,
         notes,
@@ -44,8 +42,6 @@ export const useAlbumStore = defineStore("albumStore", {
       publicID: string;
       id: string;
     }) {
-      const path = "portfolio";
-
       const { image } = newData;
       const formData = new FormData();
       if (image.length > 0) {
@@ -54,7 +50,7 @@ export const useAlbumStore = defineStore("albumStore", {
         });
       }
       formData.append("newData", JSON.stringify(newData));
-      const res = await updateAlbumImage(path, formData);
+      const res = await updateAlbumImage(formData);
       console.log(res);
       return res;
     },
@@ -67,8 +63,7 @@ export const useAlbumStore = defineStore("albumStore", {
       this.albumImages = this.albumImages.filter(
         (image) => image.public_id !== public_Id
       );
-      const sectionPath = "portfolio";
-      const res = await deleteAlbumImage(sectionPath, public_Id, id);
+      const res = await deleteAlbumImage(public_Id, id);
       return res;
     },
   },

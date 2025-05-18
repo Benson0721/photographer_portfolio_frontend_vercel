@@ -13,25 +13,22 @@ export const useDisplayStore = defineStore("displayStore", {
 
   actions: {
     async fetchImages(topicID: string) {
-      const path = "portfolio/display";
-      this.displayImages = await getDisplayImages(path, topicID);
+      this.displayImages = await getDisplayImages(topicID);
     },
     async addImages(files: File[], topicID: string) {
-      const path = "portfolio/display";
       const formData = new FormData();
       files.forEach((file) => {
         formData.append(`images`, file);
       });
       formData.append(`topicID`, JSON.stringify(topicID));
-      const message = await addDisplayImage(path, formData);
+      const message = await addDisplayImage(formData);
       return message;
     },
     async deleteImage(public_Id: string, id: string) {
       this.displayImages = this.displayImages.filter(
         (image) => image.public_id !== public_Id
       );
-      const path = "portfolio/display";
-      const message = await deleteDisplayImage(path, public_Id, id);
+      const message = await deleteDisplayImage(public_Id, id);
       return message;
     },
   },

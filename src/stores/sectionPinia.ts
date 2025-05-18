@@ -13,9 +13,7 @@ export const useSectionStore = defineStore("sectionStore", {
 
   actions: {
     async fetchImages() {
-      const sectionPath = "home/sections";
-
-      this.sectionImages = await getSectionImages(sectionPath);
+      this.sectionImages = await getSectionImages();
     },
     async updateImage(
       files: File[],
@@ -23,24 +21,15 @@ export const useSectionStore = defineStore("sectionStore", {
       id: string,
       publicID: string
     ) {
-      const sectionPath = "home/sections";
-
       const formData = new FormData();
       files.forEach((file) => {
         formData.append(`image`, file);
       });
-      const message = await updateSectionImage(
-        sectionPath,
-        formData,
-        title,
-        id,
-        publicID
-      );
+      const message = await updateSectionImage(formData, title, id, publicID);
       return message;
     },
     async adjustOffsetY(id: string, offsetY: object) {
-      const sectionPath = "home/sections";
-      const message = await adjustOffsetY(sectionPath, id, offsetY);
+      const message = await adjustOffsetY(id, offsetY);
       return message;
     },
     async updateSectionName(id: string, title: string) {
