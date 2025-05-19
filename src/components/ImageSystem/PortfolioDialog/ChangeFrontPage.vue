@@ -1,11 +1,13 @@
 <script setup>
 import { useUserStore } from "../../../stores/userPinia.ts";
+import { useFrontStore } from "../../../stores/frontPinia.ts";
 import { useWindowSize } from "../../../utils/useWindowSize.js";
 import { useRoute } from "vue-router";
 import { ref, defineProps } from "vue";
 import DialogLoading from "../../../components/DialogLoading.vue";
 
 const userStore = useUserStore();
+const frontStore = useFrontStore();
 const errormessage = ref("");
 const successmessage = ref("");
 const loadingmessage = ref("");
@@ -29,12 +31,11 @@ const handleChangeImage = async () => {
     const category = route.params.category;
     isLoading.value = true;
     loadingmessage.value = "切換圖片中...";
-    await topicStore.updateFrontImage(category, selectedImage.value);
+    await frontStore.updateFrontImage(category, selectedImage.value);
     selectedImage.value = "";
     isLoading.value = false;
     successmessage.value = "切換圖片成功";
   } catch (error) {
-    console.log(error);
     selectedImage.value = "";
     errormessage.value = "切換圖片失敗";
     isLoading.value = false;

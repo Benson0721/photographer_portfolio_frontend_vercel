@@ -78,10 +78,6 @@ watch(
   { deep: true, immediate: true } // 立即執行以初始化
 );
 
-onMounted(async () => {
-  await albumStore.fetchImages();
-});
-
 onBeforeUnmount(() => {
   if (observer) {
     observer.disconnect();

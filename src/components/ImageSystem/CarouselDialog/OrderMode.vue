@@ -15,7 +15,6 @@ const handleEnd = () => {
     :animation="250"
     direction="horizontal"
     @end="handleEnd"
-    @start="() => console.log('start')"
     class="flex gap-2 flex-wrap"
   >
     <div

@@ -8,7 +8,7 @@ import UploadMode from "./UploadMode.vue";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { useUploadHandler } from "../../../utils/useUploadHandler.ts";
 import { useWindowSize } from "../../../utils/useWindowSize.js";
-import Loading from "../../Loading.vue";
+import DialogLoading from "../../DialogLoading.vue";
 const {
   selectedFiles,
   previewUrls,
@@ -24,7 +24,7 @@ const editMode = ref("");
 const errormessage = ref("");
 const successmessage = ref("");
 const loadingmessage = ref("");
-const isLoading = ref(false);
+const isDialogLoading = ref(false);
 
 const { orderMode, uploadMode, deleteMode } = defineProps({
   orderMode: Boolean,
@@ -40,20 +40,19 @@ const resetMode = () => {
   errormessage.value = "";
   successmessage.value = "";
   loadingmessage.value = "";
-  isLoading.value = false;
+  isDialogLoading.value = false;
 };
 
 const handleUpload = async () => {
   if (selectedFiles.value.length === 0) return;
   try {
-    console.log("upload image");
     loadingmessage.value = "上傳圖片中...";
-    isLoading.value = true;
+    isDialogLoading.value = true;
     const res = await carouselStore.addImages(selectedFiles.value);
     resetUpload();
     successmessage.value = res.data.message;
     carouselStore.fetchImages();
-    isLoading.value = false;
+    isDialogLoading.value = false;
   } catch (error) {
     errormessage.value = error.response.data.message;
     resetUpload();
@@ -69,11 +68,11 @@ const handleOrder = async () => {
   }));
   try {
     loadingmessage.value = "調整順序中...";
-    isLoading.value = true;
+    isDialogLoading.value = true;
     const res = await carouselStore.adjustOrder(newOrderArray);
     successmessage.value = res.data.message;
     carouselStore.fetchImages();
-    isLoading.value = false;
+    isDialogLoading.value = false;
   } catch (error) {
     errormessage.value = error.response.data.message;
     carouselStore.fetchImages();
@@ -83,11 +82,11 @@ const handleOrder = async () => {
 const handleDelete = async (public_Id, id) => {
   try {
     loadingmessage.value = "刪除圖片中...";
-    isLoading.value = true;
+    isDialogLoading.value = true;
     const res = await carouselStore.deleteImage(public_Id, id);
     successmessage.value = res?.data?.message;
     carouselStore.fetchImages();
-    isLoading.value = false;
+    isDialogLoading.value = false;
   } catch (error) {
     errormessage.value = error.response.data.message;
     carouselStore.fetchImages();
@@ -99,7 +98,7 @@ watch(editMode, () => {
   errormessage.value = ""; // 切換模式時清空錯誤訊息
   successmessage.value = "";
   loadingmessage.value = "";
-  isLoading.value = false;
+  isDialogLoading.value = false;
 });
 </script>
 
@@ -124,7 +123,12 @@ watch(editMode, () => {
 
     <template #default="{ isActive }">
       <v-card title="編輯輪播圖片" class="p-4 relative">
-        <Loading :isLoading="isLoading" :loadingmessage="loadingmessage" />
+        <DialogLoading
+          :isLoading="isLoading"
+          :loadingmessage="loadingmessage"
+          :errormessage="errormessage"
+          :successmessage="successmessage"
+        />
         <v-card-text
           class="text-red-500 absolute top-1/10 right-1/8"
           v-if="errormessage"

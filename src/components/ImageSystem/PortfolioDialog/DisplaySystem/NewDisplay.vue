@@ -22,7 +22,7 @@ const dialog = ref(false);
 const { device } = useWindowSize();
 const successmessage = ref("");
 const errormessage = ref("");
-const isLoading = ref(false);
+const isDialogLoading = ref(false);
 const loadingmessage = ref("");
 const handleOpen = () => {
   userStore.isEditing = true;
@@ -32,7 +32,7 @@ const handleUpload = async () => {
   if (selectedFiles.value.length === 0) return;
   try {
     loadingmessage.value = "上傳圖片中...";
-    isLoading.value = true;
+    isDialogLoading.value = true;
     const message = await displayStore.addImages(
       selectedFiles.value,
       props.curTopicID
@@ -40,10 +40,10 @@ const handleUpload = async () => {
     resetUpload();
     successmessage.value = message;
     displayStore.fetchImages(props.curTopicID);
-    isLoading.value = false;
+    isDialogLoading.value = false;
   } catch (error) {
     console.error(error);
-    isLoading.value = false;
+    isDialogLoading.value = false;
     errormessage.value = error?.response?.data?.message;
     resetUpload();
     displayStore.fetchImages(props.curTopicID);
@@ -72,7 +72,7 @@ const handleUpload = async () => {
     >
       <v-card title="新增展示圖片" class="p-1 md:p-4 relative">
         <DialogLoading
-          :isLoading="isLoading"
+          :isLoading="isDialogLoading"
           :loadingmessage="loadingmessage"
           :errormessage="errormessage"
           :successmessage="successmessage"

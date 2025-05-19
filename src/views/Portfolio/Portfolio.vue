@@ -17,6 +17,7 @@ import GalleryImage from "./GalleryImage.vue";
 import DisplayImage from "./DisplayImage.vue";
 import ChangeFrontPage from "../../components/ImageSystem/PortfolioDialog/ChangeFrontPage.vue";
 import "./Portfolio.scss";
+import PageLoading from "../../components/PageLoading.vue";
 
 const { device } = useWindowSize();
 const albumStore = useAlbumStore();
@@ -52,64 +53,8 @@ const selectCategory = ref("");
 
 const onCategoryChange = async (category) => {
   await router.push(`/portfolio/${category}`);
-  if (category === "Album") {
-    mode.value = "Album";
-    await albumStore.fetchImages();
-  } else {
-    mode.value = "Gallery";
-    await galleryStore.fetchImages(category);
-  }
   curTopicID.value = "";
 };
-
-const loadImage = async () => {
-  const category = route.params.category;
-  curCategory.value = route.params.category;
-
-  if (category && category !== "Album") {
-    await galleryStore.fetchImages(category);
-    preloadImages(galleryStore.frontImages.map((image) => image.imageURL));
-  } else {
-    await albumStore.fetchImages();
-    preloadImages(albumStore.frontImages.map((image) => image.imageURL));
-  }
-};
-
-const backgroundStyle = computed(() => {
-  if (device.value !== "mobile") {
-    if (curTopicID.value) {
-      const image = albumStore.albumImages.find(
-        (image) => image._id === curTopicID.value //進入display image顯示的封面
-      );
-      return {
-        backgroundImage: `url(${image?.imageURL})`,
-      };
-    } else {
-      const image = frontStore.frontImages.find(
-        (image) => image.category === route.params.category
-      );
-      return {
-        backgroundImage: `url(${image?.imageURL})`,
-      };
-    }
-  }
-});
-
-const frontImageStyle = computed(() => {
-  if (device.value == "mobile") {
-    if (curTopicID.value) {
-      const image = albumStore.albumImages.find(
-        (image) => image._id === curTopicID.value //進入display image顯示的封面
-      );
-      return image?.imageURL;
-    } else {
-      const image = frontStore.frontImages.find(
-        (image) => image.category === route.params.category
-      );
-      return image?.imageURL;
-    }
-  }
-});
 
 const preloadImages = (imageURLs) => {
   //預載圖片
@@ -119,10 +64,62 @@ const preloadImages = (imageURLs) => {
   });
 };
 
+const loadImage = async () => {
+  const category = route.params.category;
+  console.log(category);
+  curCategory.value = route.params.category;
+
+  if (category && category !== "Album") {
+    await galleryStore.fetchImages(category);
+    await frontStore.fetchImages(category);
+    preloadImages(galleryStore.galleryImages.map((image) => image.imageURL));
+    preloadImages(frontStore.frontImages.map((image) => image.imageURL));
+  } else {
+    await albumStore.fetchImages();
+    await frontStore.fetchImages(category);
+    preloadImages(albumStore.albumImages.map((image) => image.imageURL));
+    preloadImages(frontStore.frontImages.map((image) => image.imageURL));
+  }
+};
+
+//手機端or桌面端的圖片切換
+const backgroundStyle = computed(() => {
+  if (curTopicID.value) {
+    const image = albumStore.albumImages.find(
+      (image) => image._id === curTopicID.value //進入display image顯示的封面
+    );
+
+    return {
+      backgroundImage: `url(${image?.imageURL})`,
+    };
+  } else {
+    const image = frontStore.frontImages.find(
+      (image) => image.category === route.params.category
+    );
+    return {
+      backgroundImage: `url(${image?.imageURL})`,
+    };
+  }
+});
+
+const imageStyle = computed(() => {
+  if (curTopicID.value) {
+    const image = albumStore.albumImages.find(
+      (image) => image._id === curTopicID.value
+    );
+    return image?.imageURL;
+  } else {
+    const image = frontStore.frontImages.find(
+      (image) => image.category === route.params.category
+    );
+    return image?.imageURL;
+  }
+});
+
 onMounted(async () => {
   await loadImage();
-  await nextTick();
   isLoading.value = false;
+  await nextTick();
 });
 
 watch(
@@ -133,24 +130,34 @@ watch(
 );
 
 watch(
+  () => curTopicID.value,
+  () => {
+    if (curTopicID.value) {
+      mode.value = "Display";
+    }
+  }
+);
+
+watch(
   () => route.params.category, //()=>在變化時監聽，若直接用值則只監聽初始值
   async () => {
-    curCategory.value = route.params.category;
-    if (curCategory.value === "Album") {
-      await albumStore.fetchImages();
+    await loadImage();
+    if (route.params.category === "Album") {
+      mode.value = "Album";
     } else {
-      await galleryStore.fetchImages(curCategory.value);
+      mode.value = "Gallery";
     }
   }
 );
 </script>
 <template>
-  <main class="portfolio__bg transition" :style="backgroundStyle">
+  <PageLoading v-if="isLoading" />
+  <main v-else class="portfolio__bg transition" :style="backgroundStyle">
     <Navbar />
     <div class="portfolio__banner relative md:static">
       <img
         v-if="device === 'mobile'"
-        :src="frontImageStyle"
+        :src="imageStyle"
         alt="portfolio"
         class="w-full h-auto object-cover md:hidden"
       />

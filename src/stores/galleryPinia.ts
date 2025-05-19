@@ -3,7 +3,7 @@ import {
   getGalleryImages,
   updateGalleryImage,
   deleteGalleryImage,
-  addGalleryImage,
+  addGalleryImages,
 } from "../apis/Gallery_api";
 import { GalleryImage } from "../types/apiType";
 export const useGalleryStore = defineStore("galleryStore", {
@@ -18,10 +18,7 @@ export const useGalleryStore = defineStore("galleryStore", {
     async addImage(files: File[], category: string) {
       const formData = new FormData();
       files.forEach((file) => formData.append("image", file));
-      const message = await addGalleryImage(formData, {
-        category,
-      });
-      console.log(message);
+      const message = await addGalleryImages(formData, category);
       return message;
     },
     async updateImage(newData: {
@@ -41,8 +38,7 @@ export const useGalleryStore = defineStore("galleryStore", {
         });
       }
       formData.append("newData", JSON.stringify(newData));
-      const res = await updateGalleryImage(path, formData);
-      console.log(res);
+      const res = await updateGalleryImage(formData);
       return res;
     },
     async deleteImage(public_Id: string, id: string) {

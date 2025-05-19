@@ -24,7 +24,7 @@ const { device } = useWindowSize();
 const newTitle = ref("");
 const uploadMode = ref(true);
 const changeTitleMode = ref(true);
-const isLoading = ref(false);
+const isDialogLoading = ref(false);
 const loadingmessage = ref("");
 
 const props = withDefaults(
@@ -67,7 +67,7 @@ const handleOpen = async () => {
 const handleUpload = async () => {
   if (selectedFiles.value.length === 0) return;
   try {
-    isLoading.value = true;
+    isDialogLoading.value = true;
     loadingmessage.value = "編輯圖片中...";
     const message = await sectionStore.updateImage(
       selectedFiles.value,
@@ -76,13 +76,13 @@ const handleUpload = async () => {
       props.publicID
     );
     resetUpload();
-    isLoading.value = false;
+    isDialogLoading.value = false;
     successmessage.value = message;
     await sectionStore.fetchImages();
   } catch (error) {
     errormessage.value = error?.response?.data?.message;
     resetUpload();
-    isLoading.value = false;
+    isDialogLoading.value = false;
     await sectionStore.fetchImages();
     console.error(error);
     console.error("上傳失敗：", error?.response?.data?.message);
@@ -96,14 +96,14 @@ const handleTitleUpload = async () => {
       newTitle.value
     );
     successmessage.value = message;
-    isLoading.value = true;
+    isDialogLoading.value = true;
     loadingmessage.value = "編輯圖片中...";
     await sectionStore.fetchImages();
-    isLoading.value = false;
+    isDialogLoading.value = false;
   } catch (error) {
     errormessage.value = error?.response?.data?.message;
     await sectionStore.fetchImages();
-    isLoading.value = false;
+    isDialogLoading.value = false;
     console.error(error);
     console.error("上傳失敗：", error?.response?.data?.message);
   }
@@ -163,7 +163,7 @@ watch(dragMessage, async () => {
     <template #default="{ isActive }">
       <v-card title="編輯分區圖片" class="p-4 z-20">
         <DialogLoading
-          :isLoading="isLoading"
+          :isLoading="isDialogLoading"
           :loadingmessage="loadingmessage"
           :errormessage="errormessage"
           :successmessage="successmessage"

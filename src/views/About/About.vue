@@ -20,6 +20,8 @@ import { useAboutStore } from "../../stores/aboutPinia";
 import { useWindowSize } from "../../utils/useWindowSize";
 import { useImageSizeList } from "../../utils/useImageSizeList";
 import { sendEmail } from "../../utils/sendEmail";
+import PageLoading from "../../components/PageLoading.vue";
+
 const { imageRefs, imageSizes, updateSizes } = useImageSizeList();
 
 const { device } = useWindowSize();
@@ -177,12 +179,12 @@ const clearMessage = () => {
 };
 onMounted(async () => {
   await aboutStore.fetchImages();
+  isLoading.value = false;
   await nextTick(() => {
     observerFunc();
     socialFunc();
     updateSizes();
   });
-  isLoading.value = false;
   if (route.hash) {
     console.log("coming from hash");
     scrollFunc(route.hash);
@@ -190,15 +192,7 @@ onMounted(async () => {
 });
 </script>
 <template #default="{ state: { valid } }">
-  <div
-    v-if="isLoading"
-    class="absolute inset-0 flex flex-col justify-center items-center bg-white z-10"
-  >
-    <div
-      class="spinner border-4 border-gray-200 border-t-blue-500 rounded-full w-12 h-12 animate-spin"
-    ></div>
-    <p class="mt-2 text-gray-500 text-sm">網站加載中...</p>
-  </div>
+  <PageLoading v-if="isLoading" />
   <main v-else class="about__bg transition" :style="backgroundStyle">
     <Navbar :isScrolledPast="isScrolledPast" />
     <div class="about__banner">

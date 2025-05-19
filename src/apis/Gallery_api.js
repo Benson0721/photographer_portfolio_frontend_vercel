@@ -12,11 +12,12 @@ export const getGalleryImages = async (category = "") => {
   return { error: "Failed to fetch images" };
 };
 
-export const addGalleryImage = async (formData, info) => {
+export const addGalleryImages = async (formData, category) => {
+  console.log(category);
+  console.log("前端");
   const response = await axiosInstance.post(`/api/gallery/`, formData, {
     params: {
-      category: info.category,
-      notes: info.notes,
+      category,
     },
   });
 

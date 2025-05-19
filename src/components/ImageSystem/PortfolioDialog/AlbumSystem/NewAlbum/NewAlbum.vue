@@ -12,7 +12,7 @@ const albumStore = useAlbumStore();
 const errormessage = ref("");
 const successmessage = ref("");
 const loadingmessage = ref("");
-const isLoading = ref(false);
+const isDialogLoading = ref(false);
 
 const { device } = useWindowSize();
 const { selectedFiles, handleSingleFileChange, resetUpload, previewUrls } =
@@ -25,9 +25,8 @@ const handleOpen = async () => {
 
 const handleAddImage = async (data) => {
   if (selectedFiles.value.length === 0) return;
-  console.log(data);
+
   try {
-    console.log("upload image");
     const { category, notes, topic } = data;
     isLoading.value = true;
     loadingmessage.value = "新增主題中...";
@@ -39,13 +38,13 @@ const handleAddImage = async (data) => {
     );
     resetUpload();
     successmessage.value = message;
-    isLoading.value = false;
+    isDialogLoading.value = false;
     await albumStore.fetchImages();
   } catch (error) {
     errormessage.value = error?.response?.data?.message;
     resetUpload();
     await albumStore.fetchImages();
-    isLoading.value = false;
+    isDialogLoading.value = false;
     console.error("上傳失敗：", error?.response?.data?.message);
   }
 };
@@ -61,7 +60,7 @@ const previewUrl = computed(() => {
       <v-btn
         v-bind="activatorProps"
         color="surface-variant"
-        text="新增"
+        text="新增合輯"
         variant="flat"
         :disabled="!userStore.isEditing"
         class="bg-green-500"
@@ -73,7 +72,7 @@ const previewUrl = computed(() => {
     <template #default="{ isActive }">
       <v-card title="新增主題" class="p-4 z-20">
         <DialogLoading
-          :isLoading="isLoading"
+          :isLoading="isDialogLoading"
           :loadingmessage="loadingmessage"
           :errormessage="errormessage"
           :successmessage="successmessage"

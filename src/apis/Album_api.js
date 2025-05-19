@@ -1,29 +1,21 @@
 import { axiosInstance } from "./axios_config";
 
-export const getAlbumImages = async (folderPath = "", category = "") => {
-  const response = await axiosInstance.get(`/api/album/${folderPath}`, {
-    params: {
-      category,
-    },
-  });
+export const getAlbumImages = async () => {
+  const response = await axiosInstance.get(`/api/album/`);
   if (response.status === 200) {
     return response.data.albumImages;
   }
   return { error: "Failed to fetch images" };
 };
 
-export const addAlbumImage = async (folderPath, formData, info) => {
-  const response = await axiosInstance.post(
-    `/api/album/${folderPath}`,
-    formData,
-    {
-      params: {
-        category: info.category,
-        topic: info.topic,
-        notes: info.notes,
-      },
-    }
-  );
+export const addAlbumImage = async (formData, info) => {
+  const response = await axiosInstance.post(`/api/album/`, formData, {
+    params: {
+      category: info.category,
+      topic: info.topic,
+      notes: info.notes,
+    },
+  });
   if (response.status === 200) {
     return response.data.message;
   }

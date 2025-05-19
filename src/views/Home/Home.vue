@@ -7,11 +7,12 @@ import SocialMediaButtons from "../../components/SocialMediaButtons.vue";
 import { ref, onMounted, onBeforeUnmount, nextTick, watch } from "vue";
 import { useCarouselStore } from "../../stores/carouselPinia.ts";
 import { useSectionStore } from "../../stores/sectionPinia.ts";
+import PageLoading from "../../components/PageLoading.vue";
 
 const carouselStore = useCarouselStore();
 const sectionStore = useSectionStore();
 
-const isLoading = ref(true);
+const isPageLoading = ref(true);
 
 const currentMbImage = ref(0);
 const isSectionPastScroll = ref(false);
@@ -43,7 +44,8 @@ const switchBgImage = async () => {
   }, 1000);
 };
 const switchMbImage = () => {
-  currentMbImage.value = (currentMbImage.value + 1) % carouselStore.sortedImages.length;
+  currentMbImage.value =
+    (currentMbImage.value + 1) % carouselStore.sortedImages.length;
 };
 
 const observerFunc = () => {
@@ -69,7 +71,7 @@ onMounted(async () => {
     { imageURL: carouselStore?.sortedImages[1]?.imageURL, opacity: 0 },
   ];
   await sectionStore.fetchImages();
-  isLoading.value = false;
+  isPageLoading.value = false;
   await nextTick(() => {
     observerFunc();
     intervalId1 = setInterval(switchBgImage, 8000);
@@ -90,15 +92,7 @@ watch(currentMbImage, (newIndex) => {
 });
 </script>
 <template>
-  <div
-    v-if="isLoading"
-    class="absolute inset-0 flex flex-col justify-center items-center bg-white z-10"
-  >
-    <div
-      class="spinner border-4 border-gray-200 border-t-blue-500 rounded-full w-12 h-12 animate-spin"
-    ></div>
-    <p class="mt-2 text-gray-500 text-sm">網站加載中...</p>
-  </div>
+  <PageLoading v-if="isPageLoading" />
   <main v-else :class="`home transition`">
     <div class="background-container">
       <div

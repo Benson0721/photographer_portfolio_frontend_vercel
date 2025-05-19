@@ -18,7 +18,7 @@ const {
 } = useUploadHandler();
 const userStore = useUserStore();
 
-const isLoading = ref(false);
+const isDialogLoading = ref(false);
 const loadingmessage = ref("");
 const errormessage = ref("");
 const successmessage = ref("");
@@ -94,7 +94,7 @@ watch(handleOpen, () => {
     <template #default="{ isActive }">
       <v-card title="編輯圖片" class="p-4">
         <DialogLoading
-          :isLoading="isLoading"
+          :isLoading="isDialogLoading"
           :loadingmessage="loadingmessage"
           :errormessage="errormessage"
           :successmessage="successmessage"

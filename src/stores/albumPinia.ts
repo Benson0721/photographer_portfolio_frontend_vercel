@@ -14,9 +14,8 @@ export const useAlbumStore = defineStore("albumStore", {
   }),
 
   actions: {
-    async fetchImages(category: string | undefined) {
-      this.albumImages = await getAlbumImages(category);
-      this.frontImages = await getFrontImages(category || "All");
+    async fetchImages() {
+      this.albumImages = await getAlbumImages();
     },
     async addImage(
       files: File[],
@@ -31,7 +30,6 @@ export const useAlbumStore = defineStore("albumStore", {
         topic,
         notes,
       });
-      console.log(message);
       return message;
     },
     async updateImage(newData: {
@@ -51,7 +49,6 @@ export const useAlbumStore = defineStore("albumStore", {
       }
       formData.append("newData", JSON.stringify(newData));
       const res = await updateAlbumImage(formData);
-      console.log(res);
       return res;
     },
     async updateFrontImage(category: string, imageURL: string) {

@@ -22,7 +22,7 @@ const albumStore = useAlbumStore();
 const errormessage = ref("");
 const successmessage = ref("");
 const loadingmessage = ref("");
-const isLoading = ref(false);
+const isDialogLoading = ref(false);
 
 const { device } = useWindowSize();
 const { selectedFiles, handleSingleFileChange, resetUpload, previewUrls } =
@@ -43,8 +43,10 @@ const handleEdit = async (data) => {
       publicID: props.publicId,
       id: props.id,
     };
+    isDialogLoading.value = true;
     const res = await albumStore.updateImage(newData);
     resetUpload();
+    isDialogLoading.value = false;
     successmessage.value = res.data.message;
     if (props.curCategory === "All") {
       await albumStore.fetchImages();
@@ -54,6 +56,7 @@ const handleEdit = async (data) => {
   } catch (error) {
     errormessage.value = error?.response?.data?.message;
     resetUpload();
+    isDialogLoading.value = false;
     if (props.curCategory === "All") {
       await albumStore.fetchImages();
     } else {
@@ -87,7 +90,7 @@ const previewUrl = computed(() => {
     <template v-slot:default="{ isActive }">
       <v-card title="編輯圖片" class="p-4 z-20">
         <DialogLoading
-          :isLoading="isLoading"
+          :isLoading="isDialogLoading"
           :loadingmessage="loadingmessage"
           :errormessage="errormessage"
           :successmessage="successmessage"
