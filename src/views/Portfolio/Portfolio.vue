@@ -12,12 +12,13 @@ import { useAlbumStore } from "../../stores/albumPinia.ts";
 import { useFrontStore } from "../../stores/frontPinia.ts";
 import { useWindowSize } from "../../utils/useWindowSize.js";
 import Handing from "../../components/Handing.vue";
-import AlbumImage from "./AlbumImage.vue";
-import GalleryImage from "./GalleryImage.vue";
-import DisplayImage from "./DisplayImage.vue";
 import ChangeFrontPage from "../../components/ImageSystem/PortfolioDialog/ChangeFrontPage.vue";
 import "./Portfolio.scss";
 import PageLoading from "../../components/PageLoading.vue";
+import Images from "./Images.vue";
+import { useDisplayStore } from "../../stores/displayPinia.ts";
+
+const displayStore = useDisplayStore();
 
 const { device } = useWindowSize();
 const albumStore = useAlbumStore();
@@ -52,10 +53,12 @@ const categorys = ref([
 const selectCategory = ref("");
 
 const onCategoryChange = async (category) => {
-  if (mode.value === "Display") {
+  console.log(category);
+  if (mode.value === "Display" && category === "Album") {
     return;
   } else {
     await router.push(`/portfolio/${category}`);
+    console.log("now we are in mode:", mode.value);
     curTopicID.value = "";
   }
 };
@@ -80,53 +83,69 @@ const preloadImages = async (imageURLs) => {
 const loadImage = async () => {
   const category = route.params.category;
   curCategory.value = route.params.category;
+  await frontStore.fetchImages(category);
+  await preloadImages(frontStore.frontImages.map((image) => image.imageURL));
 
-  if (category && category !== "Album") {
+  if (mode.value === "Gallery") {
     await galleryStore.fetchImages(category);
-    await frontStore.fetchImages(category);
     await preloadImages(
       galleryStore.galleryImages.map((image) => image.imageURL)
     );
-    await preloadImages(frontStore.frontImages.map((image) => image.imageURL));
-  } else {
+  } else if (mode.value === "Album") {
     await albumStore.fetchImages();
-    await frontStore.fetchImages(category);
     await preloadImages(albumStore.albumImages.map((image) => image.imageURL));
-    await preloadImages(frontStore.frontImages.map((image) => image.imageURL));
+  } else if (mode.value === "Display") {
+    await displayStore.fetchImages(curTopicID.value);
+    await preloadImages(
+      displayStore.displayImages.map((image) => image.imageURL)
+    );
   }
 };
 
+const currentImage = computed(() => {
+  if (mode.value === "Gallery") {
+    return galleryStore.galleryImages;
+  } else if (mode.value === "Album") {
+    return albumStore.albumImages;
+  } else if (mode.value === "Display") {
+    return displayStore.displayImages;
+  }
+});
+
 //手機端or桌面端的圖片切換
 const backgroundStyle = computed(() => {
-  if (curTopicID.value) {
-    const image = albumStore.albumImages.find(
-      (image) => image._id === curTopicID.value //進入display image顯示的封面
-    );
-
-    return {
-      backgroundImage: `url(${image?.imageURL})`,
-    };
-  } else {
-    const image = frontStore.frontImages.find(
-      (image) => image.category === route.params.category
-    );
-    return {
-      backgroundImage: `url(${image?.imageURL})`,
-    };
+  if (device.value !== "mobile") {
+    if (curTopicID.value) {
+      const image = albumStore.albumImages.find(
+        (image) => image._id === curTopicID.value //進入display image顯示的封面
+      );
+      return {
+        backgroundImage: `url(${image?.imageURL})`,
+      };
+    } else {
+      const image = frontStore.frontImages.find(
+        (image) => image.category === route.params.category
+      );
+      return {
+        backgroundImage: `url(${image?.imageURL})`,
+      };
+    }
   }
 });
 
 const imageStyle = computed(() => {
-  if (curTopicID.value) {
-    const image = albumStore.albumImages.find(
-      (image) => image._id === curTopicID.value
-    );
-    return image?.imageURL;
-  } else {
-    const image = frontStore.frontImages.find(
-      (image) => image.category === route.params.category
-    );
-    return image?.imageURL;
+  if (device.value == "mobile") {
+    if (curTopicID.value) {
+      const image = albumStore.albumImages.find(
+        (image) => image._id === curTopicID.value
+      );
+      return image?.imageURL;
+    } else {
+      const image = frontStore.frontImages.find(
+        (image) => image.category === route.params.category
+      );
+      return image?.imageURL;
+    }
   }
 });
 
@@ -143,22 +162,20 @@ onMounted(async () => {
 
 watch(
   () => curTopicID.value,
-  () => {
-    if (curTopicID.value) {
-      mode.value = "Display";
-    }
+  async () => {
+    await loadImage();
   }
 );
 
 watch(
   () => route.params.category, //()=>在變化時監聽，若直接用值則只監聽初始值
   async (newVal) => {
-    await loadImage();
-    if (newVal === "Album") {
-      mode.value = "Album";
-    } else {
+    if (newVal !== "Album") {
       mode.value = "Gallery";
+    } else {
+      mode.value = "Album";
     }
+    await loadImage();
   },
   { immediate: true } //使其在掛載時就執行一次
 );
@@ -188,7 +205,7 @@ watch(
       />
       <div
         v-if="mode === 'Album'"
-        class="flex gap-2 absolute z-10 top-1/18 left-8/10 md:top-1/8 md:left-7/9"
+        class="flex gap-2 absolute z-10 top-1/18 left-4/10 md:top-1/8 md:left-7/9"
         :class="userStore.showEdit() ? 'block' : 'hidden'"
       >
         <NewAlbum />
@@ -289,22 +306,14 @@ watch(
       </div>
     </div>
     <div class="portfolio__gallery transition">
-      <AlbumImage
-        v-if="mode === 'Album'"
+      <Images
         v-model:mode="mode"
         v-model:curTopicID="curTopicID"
         v-model:curTopic="curTopic"
         v-model:curNotes="curNotes"
-      />
-      <GalleryImage
-        v-else-if="mode === 'Gallery'"
         :deleteMode="deleteMode"
+        :images="currentImage"
         :curCategory="curCategory"
-      />
-      <DisplayImage
-        v-else
-        :deleteMode="deleteMode"
-        v-model:curTopicID="curTopicID"
       />
     </div>
     <Footer />
