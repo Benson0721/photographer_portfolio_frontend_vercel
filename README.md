@@ -68,16 +68,16 @@ photographer-portfolio/
 
 ## 專案畫面截圖
 
-首頁  
-(可編輯:輪播/主題):
+### 首頁  
+(可編輯:輪播/主題)
 ![首頁展示](./screenshots/home.gif)
 
-作品集頁面  
-(可編輯:各章節/合輯圖片):
+### 作品集頁面  
+(可編輯:各章節/合輯圖片)
 ![作品集展示](./screenshots/portfolio.gif)
 
-聯絡頁面  
-(可編輯:圖片):
+### 聯絡頁面  
+(可編輯:圖片)
 ![聯絡展示](./screenshots/about.gif)
 
 ## 作者資訊
