@@ -129,16 +129,6 @@ watch(editMode, () => {
           :errormessage="errormessage"
           :successmessage="successmessage"
         />
-        <v-card-text
-          class="text-red-500 absolute top-1/10 right-1/8"
-          v-if="errormessage"
-          >{{ errormessage }}</v-card-text
-        >
-        <v-card-text
-          class="text-green-500 absolute top-1/10 right-1/8"
-          v-if="successmessage"
-          >{{ successmessage }}</v-card-text
-        >
         <v-card-text> 以下是現有的輪播圖片... </v-card-text>
         <div v-if="editMode !== 'order'" class="flex gap-2 flex-wrap">
           <div

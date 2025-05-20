@@ -100,14 +100,13 @@ watch(handleOpen, () => {
           :successmessage="successmessage"
         />
         <v-card-text> 以下是現有的圖片...(請勿上傳超過10MB的圖片) </v-card-text>
-        <div
-          class="flex gap-2 flex-wrap my-2"
-          :style="{
-            width: `${props.width}px`,
-            height: `${props.height}px`,
-          }"
-        >
-          <img :src="previewImage" alt="previewImage" draggable="false" />
+        <div class="flex gap-2 justify-center flex-wrap my-2 w-full h-[550px]">
+          <img
+            :src="previewImage"
+            class="w-[350px] h-full object-cover"
+            alt="previewImage"
+            draggable="false"
+          />
         </div>
 
         <v-card-actions>

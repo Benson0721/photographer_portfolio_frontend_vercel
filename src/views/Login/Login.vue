@@ -12,8 +12,12 @@ const formData = reactive({
 });
 
 const handleSubmit = async (data) => {
-  userStore.login(data);
-  router.push("/");
+  try {
+    await userStore.login(data);
+    router.push("/");
+  } catch (error) {
+    console.log(error);
+  }
 };
 </script>
 <template>
