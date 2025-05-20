@@ -38,7 +38,7 @@ const handleOpen = async () => {
 const handleUpload = async () => {
   if (selectedFiles.value.length === 0) return;
   try {
-    isLoading.value = true;
+    isDialogLoading.value = true;
     loadingmessage.value = "更新圖片中...";
     const message = await aboutStore.updateImage(
       selectedFiles.value,
@@ -46,13 +46,13 @@ const handleUpload = async () => {
       props.id
     );
     resetUpload();
-    isLoading.value = false;
+    isDialogLoading.value = false;
     successmessage.value = message;
     await aboutStore.fetchImages();
   } catch (error) {
     errormessage.value = error?.response?.data?.message;
     resetUpload();
-    isLoading.value = false;
+    isDialogLoading.value = false;
     await aboutStore.fetchImages();
     console.error(error);
     console.error("上傳失敗：", error?.response?.data?.message);

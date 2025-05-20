@@ -237,23 +237,34 @@ onMounted(async () => {
           :class="{ 'fade-controller': isAboutPastScroll }"
         >
           <div
-            class="px-4 h-full text-[1rem] md:text-[1.03rem] lg:text-[1.75rem] text-black font-noto"
+            class="px-4 h-full text-[0.75rem] md:text-[0.8rem] lg:text-[1.25rem] text-black font-noto"
           >
             <h2
-              class="text-[48px] md:text-[72px] font-playfair text-black text-center"
+              class="text-[36px] md:text-[48px] lg:text-[72px] font-playfair text-black text-center"
             >
               Me
             </h2>
-            <div class="my-4 md:my-8 lg:my-8">
-              我是白承智，一位專注於人像、街拍、風景與建築攝影的創作者。
+            <div class="my-4 md:my-6 lg:my-8">
+              我是白承智，一位專注於人像、風景與建築攝影的創作者。
             </div>
-            <div>喜歡以機車旅行的方式探索城市與自然，</div>
-            <div>將每段路途中的片刻，以影像記錄下來。</div>
-            <div class="my-4 md:my-8 lg:my-18">
-              我的攝影風格注重光影與情緒，致力於捕捉被攝者最自然的狀態，同時也關注城市脈動與空間構造所呈現的美學。
+
+            <div class="my-4 md:my-6 lg:my-8">
+              我喜歡以機車旅行的方式探索城市與自然，穿梭在熟悉與未知之間，透過鏡頭記錄旅途中每一個觸動心弦的瞬間。
             </div>
-            <div class="my-4 md:my-8 lg:my-18">
-              若你對我的影像有共鳴，或希望合作拍攝，歡迎與我聯繫。
+            <div class="my-4 md:my-6 lg:my-8">
+              無論是山林間的光影變化，還是建築結構與環境交織出的視覺節奏，我都試圖以攝影凝結時間，保留那些稍縱即逝的感動。
+            </div>
+
+            <div class="my-4 md:hidden lg:block lg:my-8">
+              我的攝影風格強調光影與情緒的流動，特別著重於捕捉被攝者最真實、放鬆的狀態，並透過構圖與色調營造空間氛圍。
+            </div>
+
+            <div class="my-4 md:hidden lg:block lg:my-8">
+              人像攝影中，我重視與被攝者的連結，期望影像能反映個體的溫度與故事；風景與建築中，我則試著挖掘結構與自然之間的對話，呈現靜謐與張力共存的畫面。
+            </div>
+
+            <div class="my-4 md:my-6 lg:my-18">
+              若你對我的影像有共鳴，或希望合作拍攝，歡迎與我聯繫。期待透過影像與你分享我眼中的世界。
             </div>
           </div>
         </div>
@@ -283,7 +294,7 @@ onMounted(async () => {
           :class="{ 'fade-controller': isContactPastScroll }"
         >
           <h2
-            class="mb-16 text-[48px] md:text-[72px] font-playfair text-black text-center"
+            class="mb-16 text-[36px] md:text-[48px] lg:text-[72px] font-playfair text-black text-center"
           >
             Contact
           </h2>
