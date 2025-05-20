@@ -15,7 +15,6 @@ const galleryStore = useGalleryStore();
 const curCategory = defineModel("curCategory", { type: String });
 import VueEasyLightbox from "vue-easy-lightbox";
 const props = defineProps({
-  mode: String,
   deleteMode: Boolean,
   curCategory: String,
 });
@@ -108,8 +107,9 @@ onMounted(async () => {
   <p v-if="deleteMessage" class="text-red-500">{{ deleteMessage }}</p>
   <masonry-wall
     :items="galleryStore.galleryImages || []"
-    :ssr-columns="2"
-    :column-width="500"
+    :min-columns="1"
+    :max-columns="3"
+    :column-width="300"
     :gap="4"
   >
     <template #default="{ item, index }">
@@ -123,14 +123,15 @@ onMounted(async () => {
           v-if="deleteMode"
           @click="handleDelete(item?.public_id, item?._id)"
           :icon="faXmark"
-          class="absolute right-3 top-1 text-black md:text-3xl cursor-pointer"
+          class="absolute right-3 top-1 text-white md:text-3xl cursor-pointer"
         />
         <img
           :src="item?.imageURL"
           :key="index"
           alt="portfolio"
-          class="w-full h-auto object-cover cursor-pointer rounded shadow"
+          class="w-full h-auto object-cover cursor-pointer rounded"
           loading="lazy"
+          decoding="async"
           @click="showLightbox(index)"
         />
       </div>

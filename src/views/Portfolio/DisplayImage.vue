@@ -15,7 +15,6 @@ const displayStore = useDisplayStore();
 const curTopicID = defineModel("curTopicID", { type: String });
 import VueEasyLightbox from "vue-easy-lightbox";
 const props = defineProps({
-  mode: String,
   deleteMode: Boolean,
   displayImages: Array,
 });
@@ -108,8 +107,9 @@ onMounted(async () => {
   <p v-if="deleteMessage" class="text-red-500">{{ deleteMessage }}</p>
   <masonry-wall
     :items="displayStore.displayImages || []"
-    :ssr-columns="2"
-    :column-width="500"
+    :min-columns="1"
+    :max-columns="3"
+    :column-width="300"
     :gap="4"
   >
     <template #default="{ item, index }">
@@ -129,7 +129,8 @@ onMounted(async () => {
           :src="item?.imageURL"
           :key="index"
           alt="portfolio"
-          class="w-full h-auto object-cover cursor-pointer rounded shadow"
+          class="w-full h-auto object-cover aspect-[4/5] cursor-pointer rounded"
+          decoding="async"
           loading="lazy"
           @click="showLightbox(index)"
         />

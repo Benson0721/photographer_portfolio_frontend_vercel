@@ -87,8 +87,9 @@ onBeforeUnmount(() => {
 <template>
   <masonry-wall
     :items="albumStore.albumImages"
-    :ssr-columns="2"
-    :column-width="500"
+    :min-columns="1"
+    :max-columns="3"
+    :column-width="300"
     :gap="4"
   >
     <template #default="{ item, index }">
@@ -100,7 +101,7 @@ onBeforeUnmount(() => {
         :data-id="item._id"
       >
         <div
-          class="flex gap-0.5 md:gap-2 absolute z-10 top-1/18 left-11/18 md:top-1/10 md:left-6/8"
+          class="flex gap-0.5 md:gap-2 absolute z-10 top-1/18 left-11/18 md:top-1/10 md:left-5/8"
           :class="userStore.showEdit() ? 'block' : 'hidden'"
         >
           <EditAlbum
@@ -120,7 +121,8 @@ onBeforeUnmount(() => {
         <img
           :src="item.imageURL"
           alt="portfolio"
-          class="w-full h-auto object-cover"
+          class="w-full h-auto object-cover cursor-pointer rounded"
+          decoding="async"
           loading="lazy"
         />
         <div

@@ -34,7 +34,7 @@ const curTopicID = ref("");
 const deleteMode = ref(false);
 const isLoading = ref(true);
 const HeadingStyle = ref(
-  "mt-4 text-[36px] md:text-[72px] lg:text-[96px] font-playfair text-white"
+  "mt-4 text-[36px] md:text-[72px] lg:text-[84px] font-playfair text-white"
 );
 const ContentStyle = ref(
   "text-[18px] md:text-[36px] lg:text-[48px] font-playfair text-white"
@@ -52,33 +52,47 @@ const categorys = ref([
 const selectCategory = ref("");
 
 const onCategoryChange = async (category) => {
-  await router.push(`/portfolio/${category}`);
-  curTopicID.value = "";
+  if (mode.value === "Display") {
+    return;
+  } else {
+    await router.push(`/portfolio/${category}`);
+    curTopicID.value = "";
+  }
 };
 
-const preloadImages = (imageURLs) => {
+const preloadImages = async (imageURLs) => {
   //預載圖片
-  imageURLs.forEach((url) => {
-    const img = new Image();
-    img.src = url;
+  let total = imageURLs.length;
+  return new Promise((resolve) => {
+    imageURLs.forEach((url) => {
+      const img = new Image();
+      img.src = url;
+      img.onload = img.onerror = () => {
+        total--;
+        if (total === 0) {
+          resolve();
+        }
+      };
+    });
   });
 };
 
 const loadImage = async () => {
   const category = route.params.category;
-  console.log(category);
   curCategory.value = route.params.category;
 
   if (category && category !== "Album") {
     await galleryStore.fetchImages(category);
     await frontStore.fetchImages(category);
-    preloadImages(galleryStore.galleryImages.map((image) => image.imageURL));
-    preloadImages(frontStore.frontImages.map((image) => image.imageURL));
+    await preloadImages(
+      galleryStore.galleryImages.map((image) => image.imageURL)
+    );
+    await preloadImages(frontStore.frontImages.map((image) => image.imageURL));
   } else {
     await albumStore.fetchImages();
     await frontStore.fetchImages(category);
-    preloadImages(albumStore.albumImages.map((image) => image.imageURL));
-    preloadImages(frontStore.frontImages.map((image) => image.imageURL));
+    await preloadImages(albumStore.albumImages.map((image) => image.imageURL));
+    await preloadImages(frontStore.frontImages.map((image) => image.imageURL));
   }
 };
 
@@ -116,18 +130,16 @@ const imageStyle = computed(() => {
   }
 });
 
+const handleBack = () => {
+  curTopicID.value = "";
+  mode.value = "Album";
+};
+
 onMounted(async () => {
   await loadImage();
   isLoading.value = false;
   await nextTick();
 });
-
-watch(
-  () => mode.value,
-  () => {
-    console.log(mode.value);
-  }
-);
 
 watch(
   () => curTopicID.value,
@@ -140,14 +152,15 @@ watch(
 
 watch(
   () => route.params.category, //()=>在變化時監聽，若直接用值則只監聽初始值
-  async () => {
+  async (newVal) => {
     await loadImage();
-    if (route.params.category === "Album") {
+    if (newVal === "Album") {
       mode.value = "Album";
     } else {
       mode.value = "Gallery";
     }
-  }
+  },
+  { immediate: true } //使其在掛載時就執行一次
 );
 </script>
 <template>
@@ -235,6 +248,15 @@ watch(
           @click="deleteMode = false"
           :class="deleteMode ? 'block' : 'hidden'"
         ></v-btn>
+        <v-btn
+          color="surface-variant"
+          text="返回"
+          variant="flat"
+          :disabled="!userStore.showEdit()"
+          class="bg-black"
+          @click="handleBack"
+          :class="userStore.showEdit() ? 'block' : 'hidden'"
+        ></v-btn>
       </div>
     </div>
     <div class="portfolio__category">
@@ -276,13 +298,12 @@ watch(
       />
       <GalleryImage
         v-else-if="mode === 'Gallery'"
-        v-model:mode="mode"
+        :deleteMode="deleteMode"
         :curCategory="curCategory"
       />
       <DisplayImage
         v-else
         :deleteMode="deleteMode"
-        v-model:mode="mode"
         v-model:curTopicID="curTopicID"
       />
     </div>

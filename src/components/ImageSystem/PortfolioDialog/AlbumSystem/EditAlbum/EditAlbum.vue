@@ -45,23 +45,15 @@ const handleEdit = async (data) => {
     };
     isDialogLoading.value = true;
     const res = await albumStore.updateImage(newData);
+    await albumStore.fetchImages(props.curCategory);
     resetUpload();
     isDialogLoading.value = false;
     successmessage.value = res.data.message;
-    if (props.curCategory === "All") {
-      await albumStore.fetchImages();
-    } else {
-      await albumStore.fetchImages(props.curCategory);
-    }
   } catch (error) {
     errormessage.value = error?.response?.data?.message;
     resetUpload();
     isDialogLoading.value = false;
-    if (props.curCategory === "All") {
-      await albumStore.fetchImages();
-    } else {
-      await albumStore.fetchImages(props.curCategory);
-    }
+    await albumStore.fetchImages(props.curCategory);
     console.error(error);
     console.error("上傳失敗：", error?.response?.data?.message);
   }

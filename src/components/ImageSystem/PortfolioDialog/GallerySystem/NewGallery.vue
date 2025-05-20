@@ -34,6 +34,8 @@ const isDialogLoading = ref(false);
 const loadingmessage = ref("");
 const handleOpen = () => {
   dialog.value = true;
+  successmessage.value = "";
+  errormessage.value = "";
   resetUpload();
 };
 const handleUpload = async () => {
@@ -49,10 +51,10 @@ const handleUpload = async () => {
     resetUpload();
     successmessage.value = message;
     galleryStore.fetchImages(selectCategory.value);
-    isLoading.value = false;
+    isDialogLoading.value = false;
   } catch (error) {
     console.error(error);
-    isLoading.value = false;
+    isDialogLoading.value = false;
     errormessage.value = error?.response?.data?.message;
     resetUpload();
     galleryStore.fetchImages(selectCategory.value);
