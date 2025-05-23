@@ -75,7 +75,7 @@
     &__image {
       width: auto;
       height: auto;
-      filter: grayscale(100%) blur(2px);
+      filter: none;
       transition: filter 0.5s ease-in;
       &:hover {
         filter: none;

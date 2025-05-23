@@ -28,14 +28,17 @@ Email: Email.js
 ## 功能特色
 
 使用者功能
+
 - 登入 / 登出
 
-攝影作品管理:  
-- 上傳/編輯/刪除任何可見圖片（支援標題、描述、分類等）  
-- 根據分類篩選不同圖片  
+攝影作品管理:
+
+- 上傳/編輯/刪除任何可見圖片（支援標題、描述、分類等）
+- 根據分類篩選不同圖片
 - 圖片壓縮與優化（使用 Cloudinary）
 
 溝通聯絡功能
+
 - 聯絡表單：可發送郵件至攝影師信箱
 
 ## 專案結構
@@ -68,17 +71,26 @@ photographer-portfolio/
 
 ## 專案畫面截圖
 
-### 首頁  
+### 首頁
+
 (可編輯:輪播/主題)  
 ![首頁展示](./screenshots/home.gif)
 
-### 作品集頁面  
+### 作品集頁面
+
 (可編輯:各章節/合輯圖片)  
 ![作品集展示](./screenshots/portfolio.gif)
 
-### 聯絡頁面  
+### 聯絡頁面
+
 (可編輯:圖片)  
 ![聯絡展示](./screenshots/about.gif)
 
+## LiveSite
+
+- GitHub - [Photographer_portfolio](https://github.com/Mpass)
+- Live Site - [Photographer_portfolio](https://photographer-portfolio-frontend-vercel.vercel.app/)
+
 ## 作者資訊
+
 - 作品集 - [Mpass](https://www.notion.so/Front-End-layout-Portfolio-1c4acba779c38053a9dcf4b1caa7af0c)

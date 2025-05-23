@@ -53,12 +53,10 @@ const categorys = ref([
 const selectCategory = ref("");
 
 const onCategoryChange = async (category) => {
-  console.log(category);
   if (mode.value === "Display" && category === "Album") {
     return;
   } else {
     await router.push(`/portfolio/${category}`);
-    console.log("now we are in mode:", mode.value);
     curTopicID.value = "";
   }
 };
