@@ -4,7 +4,7 @@
   "rewrites": [
     {
       "source": "/portfolio/:category",
-      "destination": "/"
+      "destination": "/index.html"
     }
   ]
 }
