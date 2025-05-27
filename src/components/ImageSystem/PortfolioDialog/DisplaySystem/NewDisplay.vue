@@ -2,7 +2,7 @@
 import { useUserStore } from "../../../../stores/userPinia.ts";
 import { useUploadHandler } from "../../../../utils/useUploadHandler.ts";
 import { useDisplayStore } from "../../../../stores/displayPinia.ts";
-import { defineProps, ref } from "vue";
+import { ref } from "vue";
 import { useWindowSize } from "../../../../utils/useWindowSize.js";
 import DialogLoading from "../../../../components/DialogLoading.vue";
 const userStore = useUserStore();

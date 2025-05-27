@@ -17,6 +17,7 @@ import "./Portfolio.scss";
 import PageLoading from "../../components/PageLoading.vue";
 import Images from "./Images.vue";
 import { useDisplayStore } from "../../stores/displayPinia.ts";
+import { preloadImages } from "../../utils/preloadImages.js";
 
 const displayStore = useDisplayStore();
 
@@ -59,23 +60,6 @@ const onCategoryChange = async (category) => {
     await router.push(`/portfolio/${category}`);
     curTopicID.value = "";
   }
-};
-
-const preloadImages = async (imageURLs) => {
-  //預載圖片
-  let total = imageURLs.length;
-  return new Promise((resolve) => {
-    imageURLs.forEach((url) => {
-      const img = new Image();
-      img.src = url;
-      img.onload = img.onerror = () => {
-        total--;
-        if (total === 0) {
-          resolve();
-        }
-      };
-    });
-  });
 };
 
 const loadImage = async () => {

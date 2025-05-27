@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import "./CategorySection.scss";
-import { defineProps, watch, ref, onMounted, nextTick } from "vue";
+import { ref, onMounted, nextTick } from "vue";
 import { useSectionStore } from "../../stores/sectionPinia";
 import SectionDialog from "../ImageSystem/SectionDialog/SectionDialog.vue";
 import { useImageSizeList } from "../../utils/useImageSizeList";

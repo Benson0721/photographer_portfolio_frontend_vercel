@@ -1,15 +1,17 @@
 <script setup lang="ts">
 import Handing from "../Handing.vue";
-import { defineProps, ref } from "vue";
+import { ref } from "vue";
 import "./Carousel.scss";
 import CarouselDialog from "../ImageSystem/CarouselDialog/CarouselDialog.vue";
 import { useCarouselStore } from "../../stores/carouselPinia.ts";
 import { useWindowSize } from "../../utils/useWindowSize.js";
+import { CarouselImage } from "../../types/apiType.ts";
 
 const { device } = useWindowSize();
 
 const { currentImage } = defineProps<{
   currentImage: number;
+  carouselImages: CarouselImage[];
 }>();
 
 const carouselStore = useCarouselStore();
@@ -44,7 +46,7 @@ const ContentStyle = ref(
     <div
       v-if="device === 'mobile'"
       class="carousel__image"
-      v-for="(image, index) in carouselStore.sortedImages"
+      v-for="(image, index) in carouselImages"
       :key="image._id"
       :class="currentImage === index ? 'carousel__image--active' : ''"
     >

@@ -1,7 +1,7 @@
 <script setup>
 import { useUserStore } from "../../../stores/userPinia.ts";
 import { useCarouselStore } from "../../../stores/carouselPinia.ts";
-import { ref, watch, defineProps } from "vue";
+import { ref, watch } from "vue";
 import ButtonArea from "./ButtonArea.vue";
 import OrderMode from "./OrderMode.vue";
 import UploadMode from "./UploadMode.vue";

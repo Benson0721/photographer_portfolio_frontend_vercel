@@ -6,6 +6,8 @@
     <div
       class="spinner border-4 border-gray-200 border-t-blue-500 rounded-full w-12 h-12 animate-spin"
     ></div>
-    <p class="mt-2 text-gray-500 text-sm">網站加載中...</p>
+    <p class="mt-2 text-gray-500 text-sm">
+      網站加載中...(首次加載需要較長時間~)
+    </p>
   </div>
 </template>

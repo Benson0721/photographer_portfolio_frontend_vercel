@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { defineProps } from "vue";
 const { isLoading, loadingmessage, errormessage, successmessage } =
   defineProps<{
     isLoading: boolean;

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import "./Navbar.scss";
-import { ref, computed, defineProps, withDefaults } from "vue";
+import { ref, computed } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import logo_B from "../../assets/images/icons/logo__small__black.png";
 import logo_W from "../../assets/images/icons/logo__small__white.png";

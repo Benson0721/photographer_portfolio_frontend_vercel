@@ -2,7 +2,7 @@
 import { Typed } from "@duskmoon/vue3-typed-js";
 import type { TypedOptions } from "@duskmoon/vue3-typed-js";
 
-import { defineProps, defineModel, ref, watch, computed } from "vue";
+import { ref, watch, computed } from "vue";
 import { useRoute } from "vue-router";
 
 const route = useRoute();

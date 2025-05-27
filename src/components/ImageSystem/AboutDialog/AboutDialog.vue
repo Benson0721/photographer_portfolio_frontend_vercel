@@ -1,6 +1,6 @@
 <script setup>
 import { useUserStore } from "../../../stores/userPinia.ts";
-import { ref, watch, defineProps, computed } from "vue";
+import { ref, watch, computed } from "vue";
 import { useUploadHandler } from "../../../utils/useUploadHandler.ts";
 import { useAboutStore } from "../../../stores/aboutPinia.ts";
 import { useWindowSize } from "../../../utils/useWindowSize.js";

@@ -8,6 +8,7 @@ import { ref, onMounted, onBeforeUnmount, nextTick, watch } from "vue";
 import { useCarouselStore } from "../../stores/carouselPinia.ts";
 import { useSectionStore } from "../../stores/sectionPinia.ts";
 import PageLoading from "../../components/PageLoading.vue";
+import { preloadImages } from "../../utils/preloadImages.js";
 
 const carouselStore = useCarouselStore();
 const sectionStore = useSectionStore();
@@ -64,13 +65,23 @@ const observerFunc = () => {
   observer.observe(categorySection);
 };
 
-onMounted(async () => {
+const loadImage = async () => {
   await carouselStore.fetchImages();
+  await sectionStore.fetchImages();
+  await preloadImages(
+    carouselStore.sortedImages.map((image) => image.imageURL)
+  );
+  await preloadImages(
+    sectionStore.sectionImages.map((image) => image.imageURL)
+  );
+};
+
+onMounted(async () => {
+  await loadImage();
   layerImages.value = [
     { imageURL: carouselStore?.sortedImages[0]?.imageURL, opacity: 1 },
     { imageURL: carouselStore?.sortedImages[1]?.imageURL, opacity: 0 },
   ];
-  await sectionStore.fetchImages();
   isPageLoading.value = false;
   await nextTick(() => {
     observerFunc();
@@ -85,11 +96,11 @@ onBeforeUnmount(() => {
   clearInterval(intervalId2);
 });
 
-watch(currentMbImage, (newIndex) => {
+/*watch(currentMbImage, (newIndex) => {
   //預載
   const img = new Image();
   img.src = carouselStore.sortedImages[newIndex].imageURL;
-});
+});*/
 </script>
 <template>
   <PageLoading v-if="isPageLoading" />
@@ -107,7 +118,10 @@ watch(currentMbImage, (newIndex) => {
       ></div>
     </div>
     <Navbar />
-    <Carousel :currentImage="currentMbImage" />
+    <Carousel
+      :currentImage="currentMbImage"
+      :carouselImages="carouselStore.sortedImages"
+    />
     <CategorySection :isSectionPastScroll="isSectionPastScroll" />
     <Footer />
     <SocialMediaButtons />

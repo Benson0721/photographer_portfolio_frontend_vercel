@@ -21,6 +21,7 @@ import { useWindowSize } from "../../utils/useWindowSize";
 import { useImageSizeList } from "../../utils/useImageSizeList";
 import { sendEmail } from "../../utils/sendEmail";
 import PageLoading from "../../components/PageLoading.vue";
+import { preloadImages } from "../../utils/preloadImages";
 
 const { imageRefs, imageSizes, updateSizes } = useImageSizeList();
 
@@ -177,8 +178,14 @@ const clearMessage = () => {
   successMessage.value = "";
   errorMessage.value = "";
 };
-onMounted(async () => {
+
+const loadImage = async () => {
   await aboutStore.fetchImages();
+  await preloadImages(aboutStore.aboutImages.map((image) => image.imageURL));
+};
+
+onMounted(async () => {
+  await loadImage();
   isLoading.value = false;
   await nextTick(() => {
     observerFunc();

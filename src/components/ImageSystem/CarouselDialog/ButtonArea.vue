@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { defineModel, defineProps, withDefaults } from "vue";
 const editMode = defineModel("editMode", { type: String });
 const props = withDefaults(
   defineProps<{

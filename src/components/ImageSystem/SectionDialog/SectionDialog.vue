@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useUserStore } from "../../../stores/userPinia.ts";
 import { useSectionStore } from "../../../stores/sectionPinia.ts";
-import { ref, watch, defineProps, computed, withDefaults } from "vue";
+import { ref, watch, computed } from "vue";
 import { useWindowSize } from "../../../utils/useWindowSize.js";
 import { useDragHandler } from "../../../utils/useDragHandler.ts";
 import { useUploadHandler } from "../../../utils/useUploadHandler.ts";

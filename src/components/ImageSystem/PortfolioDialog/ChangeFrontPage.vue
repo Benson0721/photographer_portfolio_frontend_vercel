@@ -3,7 +3,7 @@ import { useUserStore } from "../../../stores/userPinia.ts";
 import { useFrontStore } from "../../../stores/frontPinia.ts";
 import { useWindowSize } from "../../../utils/useWindowSize.js";
 import { useRoute } from "vue-router";
-import { ref, defineProps } from "vue";
+import { ref } from "vue";
 import DialogLoading from "../../../components/DialogLoading.vue";
 
 const userStore = useUserStore();

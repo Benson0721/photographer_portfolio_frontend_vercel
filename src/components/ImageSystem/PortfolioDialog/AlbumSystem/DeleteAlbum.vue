@@ -2,7 +2,7 @@
 import { useUserStore } from "../../../../stores/userPinia.ts";
 import { useAlbumStore } from "../../../../stores/albumPinia.ts";
 
-import { ref, defineProps } from "vue";
+import { ref } from "vue";
 
 const { id, publicId, topic, curCategory } = defineProps({
   id: String,
