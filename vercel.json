@@ -4,12 +4,6 @@
   "rewrites": [
     {
       "source": "/(.*)",
-      "has": [
-        {
-          "type": "host",
-          "value": "photographer-portfolio-frontend-vercel.vercel.app"
-        }
-      ],
       "destination": "/index.html"
     }
   ]

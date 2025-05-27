@@ -3,7 +3,6 @@ import Home from "../views/Home/Home.vue";
 import Portfolio from "../views/Portfolio/Portfolio.vue";
 import About from "../views/About/About.vue";
 import Login from "../views/Login/Login.vue";
-import register from "../views/Register/Register.vue";
 const routes = [
   {
     path: "/",
@@ -26,12 +25,6 @@ const routes = [
     path: "/login",
     name: "Login",
     component: Login,
-    props: true,
-  },
-  {
-    path: "/register",
-    name: "Register",
-    component: register,
     props: true,
   },
 ];
