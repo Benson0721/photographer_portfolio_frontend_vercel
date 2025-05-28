@@ -1,9 +1,15 @@
 import { defineStore } from "pinia";
-import { getAboutImages, updateAboutImage } from "../apis/About_api";
+import {
+  getAboutImages,
+  updateAboutImage,
+  getAboutMe,
+  updateAboutMe,
+} from "../apis/About_api";
 import { AboutImage } from "../types/apiType";
 export const useAboutStore = defineStore("aboutStore", {
   state: () => ({
     aboutImages: [] as AboutImage[],
+    aboutMe: "",
   }),
 
   actions: {
@@ -17,6 +23,15 @@ export const useAboutStore = defineStore("aboutStore", {
         formData.append(`image`, file);
       });
       const message = await updateAboutImage(formData, publicID, id);
+      return message;
+    },
+    async fetchAboutMe() {
+      const content = await getAboutMe();
+      console.log(content);
+      this.aboutMe = content;
+    },
+    async updateAboutMe(content: string, id: string) {
+      const message = await updateAboutMe(content, id);
       return message;
     },
   },

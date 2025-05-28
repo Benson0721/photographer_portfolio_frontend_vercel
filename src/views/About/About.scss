@@ -26,7 +26,7 @@
       flex: 4;
     }
     &__content {
-      flex: 5;
+      flex: 6;
       height: 24rem;
     }
     &__whitespace {
@@ -38,6 +38,18 @@
       background-repeat: no-repeat;
       background-attachment: fixed;
       height: 100vh;
+    }
+  }
+}
+
+@media only screen and (min-width: 1440px) {
+  .about {
+    &__pai {
+      flex: 3;
+    }
+    &__content {
+      flex: 6;
+      height: 24rem;
     }
   }
 }

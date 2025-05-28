@@ -22,12 +22,15 @@ import { useImageSizeList } from "../../utils/useImageSizeList";
 import { sendEmail } from "../../utils/sendEmail";
 import PageLoading from "../../components/PageLoading.vue";
 import { preloadImages } from "../../utils/preloadImages";
+import AboutTextarea from "./AboutTextarea.vue";
+import { useUserStore } from "../../stores/userPinia";
 
 const { imageRefs, imageSizes, updateSizes } = useImageSizeList();
 
 const { device } = useWindowSize();
 const route = useRoute();
 const aboutStore = useAboutStore();
+const userStore = useUserStore();
 const formData = reactive({
   name: "",
   email: "",
@@ -50,6 +53,7 @@ const isScrolledPast = ref(false);
 const isSocialScrolledPast = ref(false);
 const isAboutPastScroll = ref(false);
 const isContactPastScroll = ref(false);
+const isAboutEditing = ref(false);
 
 const imageMap = computed(() => {
   const result: Record<string, AboutImage> = {};
@@ -243,49 +247,21 @@ onMounted(async () => {
           class="about__content"
           :class="{ 'fade-controller': isAboutPastScroll }"
         >
-          <div
-            class="px-4 h-full text-[0.75rem] md:text-[0.8rem] lg:text-[1.25rem] text-black font-noto"
-          >
-            <h2
-              class="text-[36px] md:text-[48px] lg:text-[72px] font-playfair text-black text-center"
-            >
-              Me
-            </h2>
-            <div class="my-4 md:my-6 lg:my-8">
-              我是白承智，一位專注於人像、風景與建築攝影的創作者。
-            </div>
-
-            <div class="my-4 md:my-6 lg:my-8">
-              我喜歡以機車旅行的方式探索城市與自然，穿梭在熟悉與未知之間，透過鏡頭記錄旅途中每一個觸動心弦的瞬間。
-            </div>
-            <div class="my-4 md:my-6 lg:my-8">
-              無論是山林間的光影變化，還是建築結構與環境交織出的視覺節奏，我都試圖以攝影凝結時間，保留那些稍縱即逝的感動。
-            </div>
-
-            <div class="my-4 md:hidden lg:block lg:my-8">
-              我的攝影風格強調光影與情緒的流動，特別著重於捕捉被攝者最真實、放鬆的狀態，並透過構圖與色調營造空間氛圍。
-            </div>
-
-            <div class="my-4 md:hidden lg:block lg:my-8">
-              人像攝影中，我重視與被攝者的連結，期望影像能反映個體的溫度與故事；風景與建築中，我則試著挖掘結構與自然之間的對話，呈現靜謐與張力共存的畫面。
-            </div>
-
-            <div class="my-4 md:my-6 lg:my-18">
-              若你對我的影像有共鳴，或希望合作拍攝，歡迎與我聯繫。期待透過影像與你分享我眼中的世界。
-            </div>
+          <div class="px-4 h-full text-black font-noto">
+            <AboutTextarea v-model:isAboutEditing="isAboutEditing" />
           </div>
         </div>
-        <div class="about__whitespace"></div>
+        <div class="about__whitespace md:hidden"></div>
       </div>
-      <div class="flex flex-col md:flex-row mt-4" id="contact">
+      <div class="flex flex-col md:flex-row mt-8" id="contact">
         <div
-          class="relative h-[250px] md:h-full md:order-2 md:flex-2/5"
+          class="relative h-[250px] md:h-full md:order-2 md:flex-2/8"
           :class="{ 'fade-controller': isContactPastScroll }"
         >
           <img
             :src="imageMap['moto']?.imageURL"
             alt="moto"
-            class="w-full h-full object-cover object-[0%_40%]"
+            class="w-full h-full object-cover object-[0%_25%]"
             :ref="(el) => (imageRefs['moto'] = el)"
           />
           <AboutDialog
@@ -301,7 +277,7 @@ onMounted(async () => {
           :class="{ 'fade-controller': isContactPastScroll }"
         >
           <h2
-            class="mb-16 text-[36px] md:text-[48px] lg:text-[72px] font-playfair text-black text-center"
+            class="mb-10 lg:mb-16 text-[36px] md:text-[48px] lg:text-[72px] font-playfair text-black text-center"
           >
             Contact
           </h2>
@@ -390,14 +366,14 @@ onMounted(async () => {
                 name="message"
                 label="訊息"
                 outerClass="mb-4"
-                innerClass="mt-4 border-b-2 border-black"
+                innerClass="mt-4 border-black"
                 labelClass="text-black font-noto"
-                rows="5"
                 cols="30"
                 messages-class="text-red-500 text-sm"
                 :classes="{
                   outer: '',
-                  inner: 'mt-4 border-b-2',
+                  inner:
+                    'mt-4 border-b-2 max-h-[150px] md:max-h-[100px] lg:max-h-[300px]',
                   input: 'w-full border-none bg-transparent focus:outline-none',
                   inputInvalid: 'border-red-500', // 加紅線
                 }"
