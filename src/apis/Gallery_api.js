@@ -13,8 +13,6 @@ export const getGalleryImages = async (category = "") => {
 };
 
 export const addGalleryImages = async (formData, category) => {
-  console.log(category);
-  console.log("前端");
   const response = await axiosInstance.post(`/api/gallery/`, formData, {
     params: {
       category,

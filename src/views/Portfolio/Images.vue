@@ -53,7 +53,6 @@ const hideLightbox = () => {
 const handleDelete = async (public_id, _id) => {
   const message = await galleryStore.deleteImage(public_id, _id);
   deleteMessage.value = message;
-  await galleryStore.fetchImages(curCategory.value);
 };
 
 let observer = null;
@@ -112,12 +111,6 @@ watch(deleteMessage, (newValue) => {
   }
 });
 
-watch(
-  () => mode.value,
-  () => {
-    console.log("mode is:", mode.value);
-  }
-);
 onBeforeUnmount(() => {
   observer.disconnect();
 });

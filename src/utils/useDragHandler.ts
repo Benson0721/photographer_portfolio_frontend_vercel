@@ -4,6 +4,7 @@ export function useDragHandler(
   maxScrollY: number,
   path: string,
   id: string,
+  isDialogLoading: Ref<boolean>,
   initialOffsetY: {
     mobile: number;
     tablet: number;
@@ -41,6 +42,7 @@ export function useDragHandler(
 
   async function endDrag() {
     dragging.value = false;
+    isDialogLoading.value = true;
   }
 
   watch(
@@ -50,7 +52,8 @@ export function useDragHandler(
       updateTimer = setTimeout(async () => {
         const message = await useOffsetYHandler(path, id, newVal);
         dragMessage.value = message;
-      }, 3000); // <-- 自由調整等待時間
+        isDialogLoading.value = false;
+      }, 3000);
     },
     { deep: true }
   );

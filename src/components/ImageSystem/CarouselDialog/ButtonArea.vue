@@ -9,8 +9,6 @@ const props = withDefaults(
     handleOrder: Function;
     selectedFiles: File[];
     resetMode: Function;
-    changeTitleMode: Boolean;
-    handleTitleUpload: Function;
     handleFileChange: Function;
   }>(),
   {
@@ -22,8 +20,6 @@ const props = withDefaults(
     handleOrder: () => {},
     selectedFiles: () => [],
     resetMode: () => {},
-    changeTitleMode: () => false,
-    handleTitleUpload: () => {},
   }
 );
 </script>
@@ -43,11 +39,6 @@ const props = withDefaults(
       v-if="props.deleteMode"
       text="刪除"
       @click="editMode = 'delete'"
-    ></v-btn>
-    <v-btn
-      v-if="props.changeTitleMode"
-      text="更改標題"
-      @click="editMode = 'changeTitle'"
     ></v-btn>
   </div>
   <div class="" v-if="editMode === 'order'">
@@ -73,10 +64,6 @@ const props = withDefaults(
     <v-btn text="重置模式" @click="props.resetMode"></v-btn>
   </div>
   <div class="" v-if="editMode === 'delete'">
-    <v-btn text="重置模式" @click="props.resetMode"></v-btn>
-  </div>
-  <div class="flex" v-if="editMode === 'changeTitle'">
-    <v-btn text="送出" @click="props.handleTitleUpload"></v-btn>
     <v-btn text="重置模式" @click="props.resetMode"></v-btn>
   </div>
 </template>

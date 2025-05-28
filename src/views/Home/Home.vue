@@ -9,6 +9,9 @@ import { useCarouselStore } from "../../stores/carouselPinia.ts";
 import { useSectionStore } from "../../stores/sectionPinia.ts";
 import PageLoading from "../../components/PageLoading.vue";
 import { preloadImages } from "../../utils/preloadImages.js";
+import { useWindowSize } from "../../utils/useWindowSize.js";
+
+const { device } = useWindowSize();
 
 const carouselStore = useCarouselStore();
 const sectionStore = useSectionStore();
@@ -107,6 +110,7 @@ onBeforeUnmount(() => {
   <main v-else :class="`home transition`">
     <div class="background-container">
       <div
+        v-if="device !== 'mobile'"
         v-for="(layer, i) in layerImages"
         :key="i"
         class="bg-layer"

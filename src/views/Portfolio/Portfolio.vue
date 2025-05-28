@@ -152,7 +152,6 @@ watch(
 watch(
   () => route.params.category, //()=>在變化時監聽，若直接用值則只監聽初始值
   async (newVal) => {
-    console.log(newVal);
     if (newVal !== "Album") {
       mode.value = "Gallery";
     } else {

@@ -30,7 +30,6 @@ async function handleSave() {
 
 const handleAboutMe = async () => {
   await aboutStore.fetchAboutMe();
-  console.log(aboutStore.aboutMe);
   text.value = aboutStore.aboutMe;
   const escaped = handleEscape(text.value);
   html.value = escaped;

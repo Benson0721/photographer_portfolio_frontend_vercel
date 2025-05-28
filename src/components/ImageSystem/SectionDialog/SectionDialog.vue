@@ -25,7 +25,7 @@ const newTitle = ref("");
 const uploadMode = ref(true);
 const changeTitleMode = ref(true);
 const isDialogLoading = ref(false);
-const loadingmessage = ref("");
+const loadingmessage = ref("調整中");
 
 const props = withDefaults(
   defineProps<{
@@ -55,7 +55,14 @@ const props = withDefaults(
 );
 
 const { offsetY, startDrag, onDrag, endDrag, isDragging, dragMessage } =
-  useDragHandler(720, "section", props.id, props.curOffsetY, device);
+  useDragHandler(
+    720,
+    "section",
+    props.id,
+    isDialogLoading,
+    props.curOffsetY,
+    device
+  );
 
 const handleOpen = async () => {
   await sectionStore.fetchImages();
@@ -134,6 +141,7 @@ watch(isDragging, async () => {
 });
 
 watch(dragMessage, async () => {
+  console.log(dragMessage.value);
   successmessage.value = dragMessage.value;
   setTimeout(() => {
     successmessage.value = "";
@@ -168,8 +176,15 @@ watch(dragMessage, async () => {
           :errormessage="errormessage"
           :successmessage="successmessage"
         />
+        <v-card-text
+          v-if="isDragging"
+          class="text-green-500 absolute top-1/14 right-1/15"
+        >
+          調整中...
+        </v-card-text>
         <v-card-text>
-          以下是現有的分區圖片...(可拖移圖片調整位置!)
+          以下是現有的分區圖片...<br />
+          (可拖移圖片調整位置!)
         </v-card-text>
         <div class="flex justify-center gap-2 flex-wrap">
           <div

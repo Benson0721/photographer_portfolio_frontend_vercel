@@ -8,11 +8,11 @@ const useOffsetYHandler = async (
   const sectionStore = useSectionStore();
   if (path === "section") {
     const message = await sectionStore.adjustOffsetY(id, newOffset);
+    await sectionStore.fetchImages();
     return message;
   } else {
     console.warn(`Unknown path: ${path}`);
   }
-  await sectionStore.fetchImages();
 };
 
 export { useOffsetYHandler };

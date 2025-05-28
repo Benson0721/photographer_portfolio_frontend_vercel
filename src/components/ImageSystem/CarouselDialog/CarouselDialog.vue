@@ -124,7 +124,7 @@ watch(editMode, () => {
     <template #default="{ isActive }">
       <v-card title="編輯輪播圖片" class="p-4 relative">
         <DialogLoading
-          :isLoading="isLoading"
+          :isLoading="isDialogLoading"
           :loadingmessage="loadingmessage"
           :errormessage="errormessage"
           :successmessage="successmessage"

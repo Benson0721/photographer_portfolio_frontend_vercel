@@ -27,7 +27,6 @@ export const useAboutStore = defineStore("aboutStore", {
     },
     async fetchAboutMe() {
       const content = await getAboutMe();
-      console.log(content);
       this.aboutMe = content;
     },
     async updateAboutMe(content: string, id: string) {
