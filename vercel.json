@@ -12,5 +12,11 @@
       ],
       "destination": "/index.html"
     }
-  ]
+  ],
+  "redirects": [],
+  "headers": [],
+  "fallback": {
+    "source": "/(.*)",
+    "destination": "/index.html"
+  }
 }
