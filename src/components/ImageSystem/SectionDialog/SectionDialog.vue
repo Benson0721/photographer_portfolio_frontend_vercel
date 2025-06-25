@@ -119,6 +119,7 @@ const handleTitleUpload = async () => {
 const resetMode = async () => {
   editMode.value = "";
   errormessage.value = ""; // 切換模式時清空錯誤訊息
+  newTitle.value = props.title;
   successmessage.value = "";
   resetUpload();
   await sectionStore.fetchImages();
@@ -191,7 +192,6 @@ watch(dragMessage, async () => {
             @mousedown="startDrag"
             @mousemove="onDrag"
             @mouseup="endDrag"
-            @mouseleave="endDrag"
             @touchstart.prevent="startDrag"
             @touchmove="onDrag"
             @touchend="endDrag"

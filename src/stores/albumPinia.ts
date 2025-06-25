@@ -5,28 +5,22 @@ import {
   deleteAlbumImage,
   addAlbumImage,
 } from "../apis/Album_api";
-import { updateFrontImage, getFrontImages } from "../apis/Front_api";
-import { AlbumImage, FrontImage } from "../types/apiType";
+
+import { AlbumImage } from "../types/apiType";
 export const useAlbumStore = defineStore("albumStore", {
   state: () => ({
     albumImages: [] as AlbumImage[],
-    frontImages: [] as FrontImage[],
   }),
 
   actions: {
     async fetchImages() {
       this.albumImages = await getAlbumImages();
     },
-    async addImage(
-      files: File[],
-      category: string,
-      topic: string,
-      notes: string
-    ) {
+    async addImage(files: File[], topic: string, notes: string) {
       const formData = new FormData();
       files.forEach((file) => formData.append("image", file));
+      console.log(topic, notes);
       const message = await addAlbumImage(formData, {
-        category,
         topic,
         notes,
       });
@@ -34,7 +28,6 @@ export const useAlbumStore = defineStore("albumStore", {
     },
     async updateImage(newData: {
       image: File[];
-      category: string;
       topic: string;
       notes: string;
       publicID: string;
@@ -49,11 +42,6 @@ export const useAlbumStore = defineStore("albumStore", {
       }
       formData.append("newData", JSON.stringify(newData));
       const res = await updateAlbumImage(formData);
-      return res;
-    },
-    async updateFrontImage(category: string, imageURL: string) {
-      const res = await updateFrontImage(category, imageURL);
-      this.frontImages = await getFrontImages(category);
       return res;
     },
     async deleteImage(public_Id: string, id: string) {

@@ -4,7 +4,7 @@ import { useAlbumStore } from "../../../../../stores/albumPinia.ts";
 import { useUploadHandler } from "../../../../../utils/useUploadHandler.ts";
 import { useWindowSize } from "../../../../../utils/useWindowSize.js";
 import { ref, computed } from "vue";
-import UploadArea from "./UploadArea.vue";
+import UploadArea from "../UploadArea.vue";
 import DialogLoading from "../../../../../components/DialogLoading.vue";
 
 const userStore = useUserStore();
@@ -25,14 +25,13 @@ const handleOpen = async () => {
 
 const handleAddImage = async (data) => {
   if (selectedFiles.value.length === 0) return;
-
+  isDialogLoading.value = true;
   try {
-    const { category, notes, topic } = data;
-    isLoading.value = true;
-    loadingmessage.value = "新增主題中...";
+    console.log(data);
+    const { notes, topic } = data;
+    loadingmessage.value = "新增合輯中...";
     const message = await albumStore.addImage(
       selectedFiles.value,
-      category,
       topic,
       notes
     );
@@ -41,7 +40,7 @@ const handleAddImage = async (data) => {
     isDialogLoading.value = false;
     await albumStore.fetchImages();
   } catch (error) {
-    errormessage.value = error?.response?.data?.message;
+    //errormessage.value = error?.response?.data?.message;
     resetUpload();
     await albumStore.fetchImages();
     isDialogLoading.value = false;
@@ -70,7 +69,7 @@ const previewUrl = computed(() => {
     </template>
 
     <template #default="{ isActive }">
-      <v-card title="新增主題" class="p-4 z-20">
+      <v-card title="新增合輯" class="p-4 z-20">
         <DialogLoading
           :isLoading="isDialogLoading"
           :loadingmessage="loadingmessage"
@@ -91,9 +90,7 @@ const previewUrl = computed(() => {
             <div class="md:flex-1 pl-10 md:pl-16 mt-8">
               <UploadArea
                 :handleSingleFileChange="handleSingleFileChange"
-                :handleAddImage="handleAddImage"
                 :selectedFiles="selectedFiles"
-                :previewUrl="previewUrl"
               />
             </div>
             <div v-if="previewUrl" class="mb-10 md:flex-2">

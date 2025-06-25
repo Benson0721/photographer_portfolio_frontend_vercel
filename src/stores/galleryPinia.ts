@@ -28,7 +28,6 @@ export const useGalleryStore = defineStore("galleryStore", {
       publicID: string;
       id: string;
     }) {
-      const path = "portfolio";
 
       const { image } = newData;
       const formData = new FormData();

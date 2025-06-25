@@ -1,7 +1,7 @@
 <script setup>
 import { useUserStore } from "../../../stores/userPinia.ts";
 import { useCarouselStore } from "../../../stores/carouselPinia.ts";
-import { ref, watch } from "vue";
+import { ref, watch, computed } from "vue";
 import ButtonArea from "./ButtonArea.vue";
 import OrderMode from "./OrderMode.vue";
 import UploadMode from "./UploadMode.vue";
@@ -94,6 +94,16 @@ const handleDelete = async (public_Id, id) => {
   }
 };
 
+const imageUrls = computed(() => {
+  return carouselStore.sortedImages.map(
+    (image) =>
+      (image.imageURL = image.imageURL.replace(
+        "upload/f_auto,q_80/",
+        "upload/f_auto,q_auto,w_1440/"
+      ))
+  );
+});
+
 watch(editMode, () => {
   errormessage.value = ""; // 切換模式時清空錯誤訊息
   successmessage.value = "";
@@ -142,8 +152,9 @@ watch(editMode, () => {
               :icon="faXmark"
               class="absolute left-1 text-white"
             />
+
             <img
-              :src="image.imageURL"
+              :src="imageUrls[index]"
               alt="carousel__image"
               class="w-full h-full object-cover"
               loading="lazy"

@@ -22,7 +22,6 @@ const handleEscape = (text) => {
 
 async function handleSave() {
   // 先轉義防止 XSS，然後換行轉 <br>，空格轉 &nbsp;
-  console.log(text.value);
   await aboutStore.updateAboutMe(text.value, userStore.user._id);
   isAboutEditing.value = false;
   await handleAboutMe();
@@ -38,13 +37,6 @@ const handleAboutMe = async () => {
 onMounted(() => {
   handleAboutMe();
 });
-
-watch(
-  () => isAboutEditing.value,
-  () => {
-    console.log(isAboutEditing.value);
-  }
-);
 </script>
 
 <template>
@@ -68,8 +60,7 @@ watch(
       </div>
       <div class="flex gap-2 w-full justify-between" v-if="isAboutEditing">
         <v-btn
-          class="w-[80px] h-[35px] text-[12px] md:w-[100px] md:h-[30px] md:text-[14px]"
-          color="surface-variant"
+          class="w-[80px] h-[35px] text-[12px] md:w-[100px] md:h-[30px] md:text-[14px] bg-green-400 text-white"
           text="儲存"
           variant="flat"
           @click="handleSave"

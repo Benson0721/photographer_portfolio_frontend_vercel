@@ -4,7 +4,7 @@ import { useAlbumStore } from "../../../../../stores/albumPinia.ts";
 import { useUploadHandler } from "../../../../../utils/useUploadHandler.ts";
 import { useWindowSize } from "../../../../../utils/useWindowSize.js";
 import { ref, computed } from "vue";
-import UploadArea from "./UploadArea.vue";
+import UploadArea from "../UploadArea.vue";
 import DialogLoading from "../../../../../components/DialogLoading.vue";
 
 const props = defineProps({
@@ -94,7 +94,6 @@ const previewUrl = computed(() => {
           :value="{
             topic: props.topic,
             notes: props.notes,
-            category: props.category,
           }"
           outerClass="w-full"
           validation="required"

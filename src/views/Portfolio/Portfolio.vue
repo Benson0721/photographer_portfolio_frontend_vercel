@@ -28,6 +28,7 @@ const userStore = useUserStore();
 const frontStore = useFrontStore();
 const route = useRoute();
 const router = useRouter();
+
 const curCategory = ref("");
 const curTopic = ref("");
 const curNotes = ref("");
@@ -57,7 +58,9 @@ const onCategoryChange = async (category) => {
   if (mode.value === "Display" && category === "Album") {
     return;
   } else {
+    isLoading.value = true;
     await router.push(`/portfolio/${category}`);
+    isLoading.value = false;
     curTopicID.value = "";
   }
 };

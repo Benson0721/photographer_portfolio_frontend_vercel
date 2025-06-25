@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {reactive } from "vue";
+import { defineProps, withDefaults, reactive } from "vue";
 const props = withDefaults(
   defineProps<{
     handleSingleFileChange: Function;
@@ -11,38 +11,12 @@ const props = withDefaults(
   }
 );
 const formData = reactive({
-  category: "",
   topic: "",
   notes: "",
 });
 </script>
 <template>
   <div class="flex flex-col">
-    <FormKit
-      v-model="formData.category"
-      placeholder="請選擇分類"
-      type="select"
-      name="category"
-      label="分類"
-      :options="[
-        'Architecture',
-        'Motorcycle',
-        'Portrait',
-        'Landscape',
-        'Street',
-        'Others',
-      ]"
-      outerClass="mb-4 w-3/5 md:w-1/2"
-      innerClass="mt-4 border-b-2 border-black"
-      labelClass=" font-noto "
-      messages-class="text-red-500 text-sm"
-      :classes="{
-        outer: '',
-        inner: 'mt-4 border-b-2',
-        input: 'w-full border-none bg-transparent focus:outline-none',
-        inputInvalid: 'border-red-500', // 加紅線
-      }"
-    />
     <FormKit
       v-model="formData.topic"
       type="text"
@@ -65,7 +39,7 @@ const formData = reactive({
     />
     <FormKit
       v-model="formData.notes"
-      type="textarea"
+      type="text"
       name="notes"
       label="敘述"
       outerClass="mb-4 w-3/5 md:w-1/2"
@@ -90,7 +64,7 @@ const formData = reactive({
       prepend-icon=""
       @change="props.handleSingleFileChange"
       variant="outlined"
-      label="圖片上傳"
+      label="上傳"
       multiple
       accept=".jpg,.jpeg,.png,.gif,.webp"
       show-size

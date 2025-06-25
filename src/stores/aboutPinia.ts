@@ -22,8 +22,15 @@ export const useAboutStore = defineStore("aboutStore", {
       files.forEach((file) => {
         formData.append(`image`, file);
       });
-      const message = await updateAboutImage(formData, publicID, id);
-      return message;
+      const image = await updateAboutImage(formData, publicID, id);
+      const newImages = this.aboutImages.map((img) => {
+        if (img._id === id) {
+          return { ...img, image: image.imageURL };
+        }
+        return img;
+      });
+      this.aboutImages = newImages;
+      return image;
     },
     async fetchAboutMe() {
       const content = await getAboutMe();

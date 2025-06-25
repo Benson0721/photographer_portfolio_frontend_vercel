@@ -3,8 +3,8 @@ const { isLoading, loadingmessage, errormessage, successmessage } =
   defineProps<{
     isLoading: boolean;
     loadingmessage: string;
-    errormessage: string;
-    successmessage: string;
+    errormessage?: string;
+    successmessage?: string;
   }>();
 </script>
 

@@ -17,6 +17,7 @@ export function useDragHandler(
   let startY = 0;
   let dragging = ref(false);
   let updateTimer;
+  
   function startDrag(event) {
     event.preventDefault();
     event.stopPropagation();

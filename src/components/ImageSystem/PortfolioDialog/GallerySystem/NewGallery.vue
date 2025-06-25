@@ -21,8 +21,7 @@ const categorys = ref([
   "Landscape",
   "Portrait",
   "Motorcycle",
-  "Others",
-  "Album",
+  "Others"
 ]);
 
 const dialog = ref(false);

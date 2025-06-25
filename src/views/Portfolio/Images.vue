@@ -38,6 +38,7 @@ const handleTopicClick = (item) => {
 const deleteMessage = ref("");
 
 const visible = ref(false);
+const isImageLoading = ref(false);
 const index = ref(0);
 
 // 當點擊小圖時
@@ -53,6 +54,10 @@ const hideLightbox = () => {
 const handleDelete = async (public_id, _id) => {
   const message = await galleryStore.deleteImage(public_id, _id);
   deleteMessage.value = message;
+};
+
+const handleImageLoad = () => {
+  isImageLoading.value = false;
 };
 
 let observer = null;
@@ -121,7 +126,7 @@ onBeforeUnmount(() => {
     :items="props.images || []"
     :min-columns="1"
     :max-columns="3"
-    :column-width="300"
+    :column-width="200"
     :gap="4"
   >
     <template #default="{ item, index }">
@@ -156,11 +161,13 @@ onBeforeUnmount(() => {
           :icon="faXmark"
           class="absolute right-3 top-1 text-white md:text-3xl cursor-pointer"
         />
+        <v-skeleton-loader v-if="isImageLoading" type="image"></v-skeleton-loader>
         <img
+          v-else
           :src="item?.imageURL"
           :key="index"
           alt="portfolio"
-          class="w-full h-auto object-cover cursor-pointer rounded"
+          class="w-full max-h-[600px] object-cover cursor-pointer rounded"
           loading="lazy"
           decoding="async"
           @click="
@@ -170,6 +177,7 @@ onBeforeUnmount(() => {
                 }
               : showLightbox(index)
           "
+          @load="handleImageLoad"
         />
         <div
           v-if="mode === 'Album'"

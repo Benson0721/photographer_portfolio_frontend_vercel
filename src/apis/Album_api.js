@@ -9,13 +9,14 @@ export const getAlbumImages = async () => {
 };
 
 export const addAlbumImage = async (formData, info) => {
+  console.log(formData, info);
   const response = await axiosInstance.post(`/api/album/`, formData, {
     params: {
-      category: info.category,
       topic: info.topic,
       notes: info.notes,
     },
   });
+  console.log(response);
   if (response.status === 200) {
     return response.data.message;
   }

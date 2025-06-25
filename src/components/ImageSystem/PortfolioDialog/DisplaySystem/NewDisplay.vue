@@ -24,10 +24,7 @@ const successmessage = ref("");
 const errormessage = ref("");
 const isDialogLoading = ref(false);
 const loadingmessage = ref("");
-const handleOpen = () => {
-  userStore.isEditing = true;
-  resetUpload();
-};
+
 const handleUpload = async () => {
   if (selectedFiles.value.length === 0) return;
   try {

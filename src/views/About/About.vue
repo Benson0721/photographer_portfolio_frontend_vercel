@@ -23,14 +23,12 @@ import { sendEmail } from "../../utils/sendEmail";
 import PageLoading from "../../components/PageLoading.vue";
 import { preloadImages } from "../../utils/preloadImages";
 import AboutTextarea from "./AboutTextarea.vue";
-import { useUserStore } from "../../stores/userPinia";
 
 const { imageRefs, imageSizes, updateSizes } = useImageSizeList();
 
 const { device } = useWindowSize();
 const route = useRoute();
 const aboutStore = useAboutStore();
-const userStore = useUserStore();
 const formData = reactive({
   name: "",
   email: "",
@@ -55,6 +53,10 @@ const isAboutPastScroll = ref(false);
 const isContactPastScroll = ref(false);
 const isAboutEditing = ref(false);
 
+let AboutObserver: IntersectionObserver;
+let ContactObserver: IntersectionObserver;
+let combinedHandler: () => void;
+
 const imageMap = computed(() => {
   const result: Record<string, AboutImage> = {};
   const targets = ["about", "pai", "moto"];
@@ -68,7 +70,6 @@ const imageMap = computed(() => {
   });
   return result;
 });
-
 const backgroundStyle = computed(() => {
   if (device.value !== "mobile") {
     return {
@@ -77,7 +78,6 @@ const backgroundStyle = computed(() => {
   }
   return {};
 });
-
 const handleSubmit = async (data: any) => {
   try {
     isEmailSending.value = true;
@@ -106,7 +106,7 @@ const observerFunc = () => {
   const aboutSection = document.querySelector("#about");
   if (!contactSection || !aboutSection) return;
 
-  const AboutObserver = new IntersectionObserver(
+  AboutObserver = new IntersectionObserver(
     ([entry]) => {
       isAboutPastScroll.value = entry.isIntersecting;
     },
@@ -114,7 +114,7 @@ const observerFunc = () => {
       threshold: 0.05,
     }
   );
-  const ContactObserver = new IntersectionObserver(
+  ContactObserver = new IntersectionObserver(
     ([entry]) => {
       isContactPastScroll.value = entry.isIntersecting;
     },
@@ -125,11 +125,6 @@ const observerFunc = () => {
 
   AboutObserver.observe(aboutSection);
   ContactObserver.observe(contactSection);
-
-  onBeforeUnmount(() => {
-    AboutObserver.disconnect();
-    ContactObserver.disconnect();
-  });
 };
 const socialFunc = () => {
   const navbar = document.querySelector(".navbar");
@@ -153,16 +148,12 @@ const socialFunc = () => {
 
     isScrolledPast.value = navbarRect.bottom >= aboutRect.top;
   };
-  const combinedHandler = () => {
+  combinedHandler = () => {
     handleScroll();
     handleSocialMediaScroll();
   };
   window.addEventListener("scroll", combinedHandler);
   handleScroll(); // 初始化時檢查
-
-  onBeforeUnmount(() => {
-    window.removeEventListener("scroll", combinedHandler);
-  });
 };
 const scrollFunc = (hash: string) => {
   setTimeout(() => {
@@ -200,6 +191,12 @@ onMounted(async () => {
     console.log("coming from hash");
     scrollFunc(route.hash);
   }
+});
+
+onBeforeUnmount(() => {
+  window.removeEventListener("scroll", combinedHandler);
+  AboutObserver.disconnect();
+  ContactObserver.disconnect();
 });
 </script>
 <template #default="{ state: { valid } }">
