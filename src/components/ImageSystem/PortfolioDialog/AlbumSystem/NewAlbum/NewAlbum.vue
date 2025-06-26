@@ -6,6 +6,7 @@ import { useWindowSize } from "../../../../../utils/useWindowSize.js";
 import { ref, computed } from "vue";
 import UploadArea from "../UploadArea.vue";
 import DialogLoading from "../../../../../components/DialogLoading.vue";
+import { imageCompression } from "../../../../../utils/imageCompression.js";
 
 const userStore = useUserStore();
 const albumStore = useAlbumStore();
@@ -27,11 +28,11 @@ const handleAddImage = async (data) => {
   if (selectedFiles.value.length === 0) return;
   isDialogLoading.value = true;
   try {
-    console.log(data);
     const { notes, topic } = data;
     loadingmessage.value = "新增合輯中...";
+    const compressedFiles = await imageCompression(selectedFiles);
     const message = await albumStore.addImage(
-      selectedFiles.value,
+      compressedFiles,
       topic,
       notes
     );
@@ -40,7 +41,7 @@ const handleAddImage = async (data) => {
     isDialogLoading.value = false;
     await albumStore.fetchImages();
   } catch (error) {
-    //errormessage.value = error?.response?.data?.message;
+    errormessage.value = "新增失敗...";
     resetUpload();
     await albumStore.fetchImages();
     isDialogLoading.value = false;
@@ -93,10 +94,8 @@ const previewUrl = computed(() => {
                 :selectedFiles="selectedFiles"
               />
             </div>
-            <div v-if="previewUrl" class="mb-10 md:flex-2">
-              <v-card-text
-                >以下為即將更新的圖片(單張圖片大小請勿超過10MB)</v-card-text
-              >
+            <div v-if="previewUrl" class="mb-10 md:flex-1">
+              <v-card-text>以下為即將更新的圖片</v-card-text>
               <img
                 :src="previewUrl"
                 alt="previewImage"
@@ -107,13 +106,13 @@ const previewUrl = computed(() => {
           </div>
           <v-card-actions>
             <div
-              class="flex gap-2 justify-center absolute left-1/2 md:left-8/10 -translate-x-1/2 -translate-y-1/2"
+              class="flex gap-2 justify-center absolute left-1/2 md:left-9/10 -translate-x-1/2 -translate-y-1/10"
             >
               <FormKit
                 type="submit"
                 label="送出"
                 :classes="{
-                  outer: 'mt-2 text-center transform',
+                  outer: 'mt-2 text-center transform w-[40px]',
                   input: 'text-black rounded bg-white transition duration-300',
                 }"
               />

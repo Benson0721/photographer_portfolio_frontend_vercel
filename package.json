@@ -21,6 +21,7 @@
     "@tailwindcss/vite": "^4.1.6",
     "@yeger/vue-masonry-wall": "^5.0.18",
     "axios": "^1.8.4",
+    "browser-image-compression": "^2.0.2",
     "lodash": "^4.17.21",
     "lodash.debounce": "^4.0.8",
     "pinia": "^3.0.2",

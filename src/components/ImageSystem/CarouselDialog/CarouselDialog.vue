@@ -9,6 +9,7 @@ import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { useUploadHandler } from "../../../utils/useUploadHandler.ts";
 import { useWindowSize } from "../../../utils/useWindowSize.js";
 import DialogLoading from "../../DialogLoading.vue";
+import { imageCompression } from "../../../utils/imageCompression.js";
 const {
   selectedFiles,
   previewUrls,
@@ -48,13 +49,16 @@ const handleUpload = async () => {
   try {
     loadingmessage.value = "上傳圖片中...";
     isDialogLoading.value = true;
-    const res = await carouselStore.addImages(selectedFiles.value);
+    const compressedFiles = await imageCompression(selectedFiles);
+
+    const res = await carouselStore.addImages(compressedFiles);
     resetUpload();
     successmessage.value = res.data.message;
-    carouselStore.fetchImages();
+
     isDialogLoading.value = false;
   } catch (error) {
-    errormessage.value = error.response.data.message;
+    errormessage.value = "上傳失敗...";
+
     resetUpload();
     carouselStore.fetchImages();
     console.error("上傳失敗：", error.response.data.message);
@@ -74,7 +78,7 @@ const handleOrder = async () => {
     carouselStore.fetchImages();
     isDialogLoading.value = false;
   } catch (error) {
-    errormessage.value = error.response.data.message;
+    errormessage.value = "調整順序失敗...";
     carouselStore.fetchImages();
     console.error("調整順序失敗：", error.response.data.message);
   }
@@ -88,19 +92,18 @@ const handleDelete = async (public_Id, id) => {
     carouselStore.fetchImages();
     isDialogLoading.value = false;
   } catch (error) {
-    errormessage.value = error.response.data.message;
+    errormessage.value = "刪除失敗...";
     carouselStore.fetchImages();
     console.error("刪除失敗：", error.response.data.message);
   }
 };
 
 const imageUrls = computed(() => {
-  return carouselStore.sortedImages.map(
-    (image) =>
-      (image.imageURL = image.imageURL.replace(
-        "upload/f_auto,q_80/",
-        "upload/f_auto,q_auto,w_1440/"
-      ))
+  return carouselStore.sortedImages.map((image) =>
+    image.imageURL.replace(
+      "upload/f_auto,q_100/",
+      "upload/f_auto,q_auto,w_1440/"
+    )
   );
 });
 
@@ -109,6 +112,13 @@ watch(editMode, () => {
   successmessage.value = "";
   loadingmessage.value = "";
   isDialogLoading.value = false;
+});
+
+watch(errormessage && successmessage, () => {
+  setTimeout(() => {
+    errormessage.value = "";
+    successmessage.value = "";
+  }, 3000);
 });
 </script>
 

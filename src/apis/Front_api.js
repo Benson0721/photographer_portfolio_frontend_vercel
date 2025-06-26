@@ -12,10 +12,11 @@ export const getFrontImages = async (category = "") => {
   return { error: "Failed to fetch images" };
 };
 
-export const updateFrontImage = async (category, imageURL) => {
+export const updateFrontImage = async (category, imageURL, public_id) => {
   const response = await axiosInstance.put(`/api/front/`, {
     category,
     imageURL,
+    public_id,
   });
   if (response.status === 200) {
     return response.data.message;

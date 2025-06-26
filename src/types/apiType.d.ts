@@ -7,6 +7,7 @@ export type Image = {
 export type FrontImage = {
   _id: string;
   category: string;
+  public_id: string;
   imageURL: string;
 };
 

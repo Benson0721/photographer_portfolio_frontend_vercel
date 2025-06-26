@@ -19,7 +19,6 @@ export const useAlbumStore = defineStore("albumStore", {
     async addImage(files: File[], topic: string, notes: string) {
       const formData = new FormData();
       files.forEach((file) => formData.append("image", file));
-      console.log(topic, notes);
       const message = await addAlbumImage(formData, {
         topic,
         notes,

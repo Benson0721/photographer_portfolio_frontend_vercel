@@ -27,7 +27,6 @@ export const addGalleryImages = async (formData, category) => {
 
 export const updateGalleryImage = async (formData) => {
   const response = await axiosInstance.put(`/api/gallery/`, formData);
-  console.log(response);
   if (response.status === 200) {
     return response;
   }

@@ -7,6 +7,8 @@ import { useDragHandler } from "../../../utils/useDragHandler.ts";
 import { useUploadHandler } from "../../../utils/useUploadHandler.ts";
 import ButtonArea from "./ButtonArea.vue";
 import DialogLoading from "../../DialogLoading.vue";
+import { imageCompression } from "../../../utils/imageCompression.js";
+
 const {
   selectedFiles,
   previewUrls,
@@ -76,8 +78,9 @@ const handleUpload = async () => {
   try {
     isDialogLoading.value = true;
     loadingmessage.value = "編輯圖片中...";
+    const compressedFiles = await imageCompression(selectedFiles);
     const message = await sectionStore.updateImage(
-      selectedFiles.value,
+      compressedFiles,
       newTitle.value,
       props.id,
       props.publicID
@@ -87,7 +90,7 @@ const handleUpload = async () => {
     successmessage.value = message;
     await sectionStore.fetchImages();
   } catch (error) {
-    errormessage.value = error?.response?.data?.message;
+    errormessage.value = "上傳失敗...";
     resetUpload();
     isDialogLoading.value = false;
     await sectionStore.fetchImages();
@@ -108,7 +111,7 @@ const handleTitleUpload = async () => {
     await sectionStore.fetchImages();
     isDialogLoading.value = false;
   } catch (error) {
-    errormessage.value = error?.response?.data?.message;
+    errormessage.value = "上傳失敗...";
     await sectionStore.fetchImages();
     isDialogLoading.value = false;
     console.error(error);
@@ -142,7 +145,6 @@ watch(isDragging, async () => {
 });
 
 watch(dragMessage, async () => {
-  console.log(dragMessage.value);
   successmessage.value = dragMessage.value;
   setTimeout(() => {
     successmessage.value = "";

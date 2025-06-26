@@ -5,6 +5,7 @@ import { useUploadHandler } from "../../../utils/useUploadHandler.ts";
 import { useAboutStore } from "../../../stores/aboutPinia.ts";
 import { useWindowSize } from "../../../utils/useWindowSize.js";
 import DialogLoading from "../../DialogLoading.vue";
+import { imageCompression } from "../../../utils/imageCompression.js";
 
 const { device } = useWindowSize();
 const aboutStore = useAboutStore();
@@ -40,8 +41,9 @@ const handleUpload = async () => {
   try {
     isDialogLoading.value = true;
     loadingmessage.value = "更新圖片中...";
+    const compressedFiles = await imageCompression(selectedFiles);
     const message = await aboutStore.updateImage(
-      selectedFiles.value,
+      compressedFiles,
       props.publicID,
       props.id
     );
@@ -50,7 +52,7 @@ const handleUpload = async () => {
     successmessage.value = message;
     await aboutStore.fetchImages();
   } catch (error) {
-    errormessage.value = error?.response?.data?.message;
+    errormessage.value = "更新失敗...";
     resetUpload();
     isDialogLoading.value = false;
     await aboutStore.fetchImages();
@@ -99,11 +101,11 @@ watch(handleOpen, () => {
           :errormessage="errormessage"
           :successmessage="successmessage"
         />
-        <v-card-text> 以下是現有的圖片...(請勿上傳超過10MB的圖片) </v-card-text>
+        <v-card-text> 以下是現有的圖片... </v-card-text>
         <div class="flex gap-2 justify-center flex-wrap my-2 w-full h-[550px]">
           <img
             :src="previewImage"
-            class="w-[350px] h-full object-cover"
+            class="h-full object-cover"
             alt="previewImage"
             draggable="false"
           />

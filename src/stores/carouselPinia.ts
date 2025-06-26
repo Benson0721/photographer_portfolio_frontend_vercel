@@ -14,11 +14,13 @@ export const useCarouselStore = defineStore("carouselStore", {
   getters: {
     sortedImages: (state) => {
       return [...state.carouselImages].sort((a, b) => a.order - b.order);
+      
     },
   },
   actions: {
     async fetchImages() {
       this.carouselImages = await getCarouselImages();
+      console.log(this.carouselImages);
     },
     async addImages(files: File[]) {
 

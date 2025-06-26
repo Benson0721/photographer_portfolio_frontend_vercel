@@ -17,12 +17,12 @@ const props = defineProps({
 });
 
 const { device } = useWindowSize();
-const selectedImage = ref("");
+const selectedImage = ref({ imageURL: "", public_id: "" });
 const route = useRoute();
 const handleOpen = async () => {
   errormessage.value = "";
   successmessage.value = "";
-  selectedImage.value = "";
+  selectedImage.value = { imageURL: "", public_id: "" };
 };
 
 const handleChangeImage = async () => {
@@ -31,12 +31,16 @@ const handleChangeImage = async () => {
     const category = route.params.category;
     isLoading.value = true;
     loadingmessage.value = "切換圖片中...";
-    await frontStore.updateFrontImage(category, selectedImage.value);
-    selectedImage.value = "";
+    await frontStore.updateFrontImage(
+      category,
+      selectedImage.value.imageURL,
+      selectedImage.value.public_id
+    );
+    selectedImage.value = { imageURL: "", public_id: "" };
     isLoading.value = false;
     successmessage.value = "切換圖片成功";
   } catch (error) {
-    selectedImage.value = "";
+    selectedImage.value = { imageURL: "", public_id: "" };
     errormessage.value = "切換圖片失敗";
     isLoading.value = false;
   }
@@ -77,11 +81,16 @@ const handleChangeImage = async () => {
             :key="index"
             class="relative cursor-pointer w-[144px] h-[81px] md:w-[216px] md:h-[121px] lg:w-[288px] lg:h-[162px]"
             :class="
-              selectedImage === image.imageURL
+              selectedImage.imageURL === image.imageURL
                 ? 'border-2 border-green-500'
                 : ''
             "
-            @click="selectedImage = image.imageURL"
+            @click="
+              selectedImage = {
+                imageURL: image.imageURL,
+                public_id: image.public_id,
+              }
+            "
           >
             <img
               :src="image.imageURL"

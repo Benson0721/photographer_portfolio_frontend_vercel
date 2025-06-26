@@ -188,7 +188,6 @@ onMounted(async () => {
     updateSizes();
   });
   if (route.hash) {
-    console.log("coming from hash");
     scrollFunc(route.hash);
   }
 });

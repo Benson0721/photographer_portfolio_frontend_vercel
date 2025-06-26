@@ -3,7 +3,6 @@ import Handing from "../Handing.vue";
 import { ref } from "vue";
 import "./Carousel.scss";
 import CarouselDialog from "../ImageSystem/CarouselDialog/CarouselDialog.vue";
-import { useCarouselStore } from "../../stores/carouselPinia.ts";
 import { useWindowSize } from "../../utils/useWindowSize.js";
 import { CarouselImage } from "../../types/apiType.ts";
 
@@ -14,7 +13,6 @@ const { currentImage } = defineProps<{
   carouselImages: CarouselImage[];
 }>();
 
-const carouselStore = useCarouselStore();
 const title = ref("PaiCheng");
 const content = ref("Photographer");
 const orderMode = ref(true);

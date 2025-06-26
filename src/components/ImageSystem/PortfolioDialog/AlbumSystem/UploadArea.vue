@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { defineProps, withDefaults, reactive } from "vue";
+import { reactive } from "vue";
 const props = withDefaults(
   defineProps<{
     handleSingleFileChange: Function;

@@ -1,21 +1,15 @@
 <script setup>
-import {
-  defineProps,
-  defineModel,
-  ref,
-  watch,
-  nextTick,
-  onBeforeUnmount,
-} from "vue";
+import { ref, watch, nextTick, onBeforeUnmount } from "vue";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { useGalleryStore } from "../../stores/galleryPinia.ts";
+import { useDisplayStore } from "../../stores/displayPinia.ts";
 import { useUserStore } from "../../stores/userPinia.ts";
 import EditAlbum from "../../components/ImageSystem/PortfolioDialog/AlbumSystem/EditAlbum/EditAlbum.vue";
 import DeleteAlbum from "../../components/ImageSystem/PortfolioDialog/AlbumSystem/DeleteAlbum.vue";
 
 const userStore = useUserStore();
-
 const galleryStore = useGalleryStore();
+const displayStore = useDisplayStore();
 
 import VueEasyLightbox from "vue-easy-lightbox";
 const props = defineProps({
@@ -51,9 +45,16 @@ const hideLightbox = () => {
   visible.value = false;
 };
 
-const handleDelete = async (public_id, _id) => {
-  const message = await galleryStore.deleteImage(public_id, _id);
-  deleteMessage.value = message;
+const handleDeleteImage = async (public_id, _id) => {
+  if (mode.value === "Display") {
+    const message = await displayStore.deleteImage(public_id, _id);
+    deleteMessage.value = message;
+    return;
+  } else {
+    const message = await galleryStore.deleteImage(public_id, _id);
+    deleteMessage.value = message;
+    return;
+  }
 };
 
 const handleImageLoad = () => {
@@ -119,6 +120,13 @@ watch(deleteMessage, (newValue) => {
 onBeforeUnmount(() => {
   observer.disconnect();
 });
+
+watch(
+  () => isImageLoading,
+  (newValue) => {
+    isImageLoading.value = false;
+  }
+);
 </script>
 <template>
   <p v-if="deleteMessage" class="text-red-500">{{ deleteMessage }}</p>
@@ -156,12 +164,15 @@ onBeforeUnmount(() => {
           />
         </div>
         <FontAwesomeIcon
-          v-if="deleteMode"
-          @click="handleDelete(item?.public_id, item?._id)"
+          v-if="deleteMode && mode !== 'Album'"
+          @click="handleDeleteImage(item?.public_id, item?._id)"
           :icon="faXmark"
           class="absolute right-3 top-1 text-white md:text-3xl cursor-pointer"
         />
-        <v-skeleton-loader v-if="isImageLoading" type="image"></v-skeleton-loader>
+        <v-skeleton-loader
+          v-if="isImageLoading"
+          type="image"
+        ></v-skeleton-loader>
         <img
           v-else
           :src="item?.imageURL"

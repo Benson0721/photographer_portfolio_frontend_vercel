@@ -28,10 +28,6 @@ const { device } = useWindowSize();
 const { selectedFiles, handleSingleFileChange, resetUpload, previewUrls } =
   useUploadHandler();
 
-const handleOpen = async () => {
-  console.log("handleOpen");
-};
-
 const handleEdit = async (data) => {
   try {
     const { category, notes, topic } = data;
@@ -43,17 +39,18 @@ const handleEdit = async (data) => {
       publicID: props.publicId,
       id: props.id,
     };
+    loadingmessage.value = "更新中...";
     isDialogLoading.value = true;
     const res = await albumStore.updateImage(newData);
-    await albumStore.fetchImages(props.curCategory);
+    await albumStore.fetchImages();
     resetUpload();
     isDialogLoading.value = false;
     successmessage.value = res.data.message;
   } catch (error) {
-    errormessage.value = error?.response?.data?.message;
+    errormessage.value = "更新失敗...";
     resetUpload();
     isDialogLoading.value = false;
-    await albumStore.fetchImages(props.curCategory);
+    await albumStore.fetchImages();
     console.error(error);
     console.error("上傳失敗：", error?.response?.data?.message);
   }
@@ -74,7 +71,6 @@ const previewUrl = computed(() => {
         variant="flat"
         :disabled="!userStore.isEditing"
         class="bg-indigo-500"
-        @click="handleOpen"
         :class="!userStore.isEditing ? 'hidden' : 'block'"
       ></v-btn>
     </template>

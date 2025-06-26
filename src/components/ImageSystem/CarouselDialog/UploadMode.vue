@@ -6,7 +6,7 @@ const props = defineProps({
 </script>
 <template>
   <v-card-text v-if="selectedFiles.length > 0">
-    以下是你即將新增的圖片(單張圖片大小請勿超過10MB)
+    以下是你即將新增的圖片
   </v-card-text>
   <div class="flex gap-2 flex-wrap my-2">
     <div

@@ -2,9 +2,11 @@
 import { useUserStore } from "../../../../stores/userPinia.ts";
 import { useUploadHandler } from "../../../../utils/useUploadHandler.ts";
 import { useDisplayStore } from "../../../../stores/displayPinia.ts";
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import { useWindowSize } from "../../../../utils/useWindowSize.js";
 import DialogLoading from "../../../../components/DialogLoading.vue";
+import { imageCompression } from "../../../../utils/imageCompression.js";
+
 const userStore = useUserStore();
 const displayStore = useDisplayStore();
 const {
@@ -30,8 +32,9 @@ const handleUpload = async () => {
   try {
     loadingmessage.value = "上傳圖片中...";
     isDialogLoading.value = true;
+    const compressedFiles = await imageCompression(selectedFiles);
     const message = await displayStore.addImages(
-      selectedFiles.value,
+      compressedFiles,
       props.curTopicID
     );
     resetUpload();
@@ -41,12 +44,20 @@ const handleUpload = async () => {
   } catch (error) {
     console.error(error);
     isDialogLoading.value = false;
-    errormessage.value = error?.response?.data?.message;
+    errormessage.value = "上傳失敗...";
     resetUpload();
     displayStore.fetchImages(props.curTopicID);
     console.error("上傳失敗：", error?.response?.data?.message);
   }
 };
+
+
+watch(errormessage && successmessage, () => {
+  setTimeout(() => {
+    errormessage.value = "";
+    successmessage.value = "";
+  }, 3000);
+});
 </script>
 
 <template>
@@ -75,7 +86,7 @@ const handleUpload = async () => {
           :successmessage="successmessage"
         />
         <v-card-text v-if="selectedFiles.length > 0">
-          以下是你即將新增的圖片(單張圖片大小請勿超過10MB)
+          以下是你即將新增的圖片
         </v-card-text>
         <v-card-text v-else> 請點擊新增按鈕來新增圖片 </v-card-text>
         <div class="flex gap-1 md:gap-2 flex-wrap my-2">

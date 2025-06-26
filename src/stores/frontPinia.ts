@@ -10,8 +10,8 @@ export const useFrontStore = defineStore("frontStore", {
     async fetchImages(category: string | undefined) {
       this.frontImages = await getFrontImages(category || "All");
     },
-    async updateFrontImage(category: string, imageURL: string) {
-      const res = await updateFrontImage(category, imageURL);
+    async updateFrontImage(category: string, imageURL: string, public_id: string) {
+      const res = await updateFrontImage(category, imageURL, public_id);
       this.frontImages = await getFrontImages(category);
       return res;
     },

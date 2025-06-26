@@ -1,18 +1,19 @@
 <script setup>
 import { useUserStore } from "../../../../stores/userPinia.ts";
 import { useAlbumStore } from "../../../../stores/albumPinia.ts";
+import { useFrontStore } from "../../../../stores/frontPinia.ts";
 
 import { ref } from "vue";
 
-const { id, publicId, topic, curCategory } = defineProps({
+const { id, publicId, topic } = defineProps({
   id: String,
   publicId: String,
   topic: String,
-  curCategory: String,
 });
 
 const userStore = useUserStore();
 const albumStore = useAlbumStore();
+const frontStore = useFrontStore();
 const errormessage = ref("");
 const successmessage = ref("");
 
@@ -24,10 +25,11 @@ const handleDelete = async () => {
   try {
     const res = await albumStore.deleteImage(publicId, id);
     successmessage.value = res.data.message;
-    await albumStore.fetchImages(curCategory);
+    await albumStore.fetchImages();
+    await frontStore.fetchImages();
   } catch (error) {
-    errormessage.value = error?.response?.data?.message;
-    await albumStore.fetchImages(curCategory);
+    errormessage.value = "刪除失敗...";
+    await albumStore.fetchImages();
     console.error("上傳失敗：", error?.response?.data?.message);
   }
 };
