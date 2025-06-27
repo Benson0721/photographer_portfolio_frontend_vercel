@@ -27,18 +27,19 @@ Email: Email.js
 
 ## 功能特色
 
-使用者功能
+### 使用者功能
 
 - 登入 / 登出
 
-攝影作品管理
+### 攝影作品管理
 
 - 上傳/編輯/刪除任何可見圖片（支援標題、描述、分類等）
 - 根據分類篩選不同圖片
-- 圖片壓縮與優化（使用 Cloudinary）
+- 圖片壓縮與優化（使用 Cloudinary/Browser-image-compression）
 
-溝通聯絡功能
+### 溝通聯絡功能
 
+- 關於我 : 內容可編輯
 - 聯絡表單：可發送郵件至攝影師信箱
 
 ## 專案結構
@@ -73,24 +74,64 @@ photographer-portfolio/
 
 ### 首頁
 
-(可編輯:輪播/主題)  
+#### 輪播圖片
+
+- 圖片順序切換
+- 圖片上傳
+- 圖片刪除
+
+#### 主題
+
+- 圖片位置調整
+- 主題圖片上傳
+- 主題圖片刪除
+- 主題更名
+
 ![首頁展示](./screenshots/home.gif)
 
 ### 作品集頁面
 
-(可編輯:各章節/合輯圖片)  
+#### 作品集圖片
+
+- 圖片單張/批量上傳
+- 圖片刪除
+- 圖片放大檢視
+- 封面圖片更換
+
+#### 合輯
+
+- 合輯上傳
+- 合輯編輯圖片/標題/敘述
+- 合輯刪除
+- 合輯子圖片上傳/刪除
+
 ![作品集展示](./screenshots/portfolio.gif)
 
 ### 聯絡頁面
 
-(可編輯:圖片)  
+#### 聯絡表單
+
+- 表單驗證
+- Gmail 聯絡
+
+#### 圖片
+
+- 圖片皆可調整變動
+
+#### 關於我
+
+- 關於我內容可編輯
+
 ![聯絡展示](./screenshots/about.gif)
 
 ## LiveSite
 
-- GitHub - [Photographer_portfolio](https://github.com/Mpass)
+- GitHub - [Repository](https://github.com/Benson0721)
 - Live Site - [Photographer_portfolio](https://photographer-portfolio-frontend-vercel.vercel.app/)
 
 ## 作者資訊
 
-- 作品集 - [Mpass](https://www.notion.so/Front-End-layout-Portfolio-1c4acba779c38053a9dcf4b1caa7af0c)
+- 作者：Benson
+- 前端學習者-以成為一名前端工程師為目標!
+- 作品集： [Notion](https://www.notion.so/Front-End-layout-Portfolio-1c4acba779c38053a9dcf4b1caa7af0c)/[Cake](https://www.cake.me/a092468579/portfolios)
+- Email：a092468579@gmail.com
