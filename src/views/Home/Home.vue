@@ -10,12 +10,13 @@ import { useSectionStore } from "../../stores/sectionPinia.ts";
 import PageLoading from "../../components/PageLoading.vue";
 import { preloadImages } from "../../utils/preloadImages.js";
 import { useWindowSize } from "../../utils/useWindowSize.js";
+import { useUserStore } from "../../stores/userPinia.ts";
 
 const { device } = useWindowSize();
 
 const carouselStore = useCarouselStore();
 const sectionStore = useSectionStore();
-
+const userStore = useUserStore();
 const isPageLoading = ref(true);
 
 const currentMbImage = ref(0);
@@ -107,7 +108,7 @@ onBeforeUnmount(() => {
 </script>
 <template>
   <PageLoading v-if="isPageLoading" />
-  <main v-else :class="`home transition`">
+  <main v-else :class="`home transition relative`">
     <div class="background-container">
       <div
         v-if="device !== 'mobile'"
@@ -129,6 +130,14 @@ onBeforeUnmount(() => {
     <CategorySection :isSectionPastScroll="isSectionPastScroll" />
     <Footer />
     <SocialMediaButtons />
+    <div
+      v-if="!userStore.user"
+      class="absolute font-bellefair top-[10%] right-[1%] md:top-[5%] md:right-[5%] border-2 border-gray-100 text-gray-100 p-1 md:p-4"
+    >
+      <p>可以登入測試喔~</p>
+      <p>帳號: photographer</p>
+      <p>密碼: pai0902</p>
+    </div>
   </main>
 </template>
 <style scoped>

@@ -4,7 +4,7 @@ import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { useGalleryStore } from "../../stores/galleryPinia.ts";
 import { useDisplayStore } from "../../stores/displayPinia.ts";
 import { useUserStore } from "../../stores/userPinia.ts";
-import EditAlbum from "../../components/ImageSystem/PortfolioDialog/AlbumSystem/EditAlbum/EditAlbum.vue";
+import EditAlbum from "../../components/ImageSystem/PortfolioDialog/AlbumSystem/EditAlbum.vue";
 import DeleteAlbum from "../../components/ImageSystem/PortfolioDialog/AlbumSystem/DeleteAlbum.vue";
 
 const userStore = useUserStore();

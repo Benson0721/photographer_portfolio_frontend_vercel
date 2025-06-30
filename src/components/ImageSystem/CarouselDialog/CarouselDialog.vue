@@ -1,43 +1,28 @@
 <script setup>
-import { useUserStore } from "../../../stores/userPinia.ts";
+import BaseDialog from "../../BaseDialog.vue";
 import { useCarouselStore } from "../../../stores/carouselPinia.ts";
 import { ref, watch, computed } from "vue";
-import ButtonArea from "./ButtonArea.vue";
 import OrderMode from "./OrderMode.vue";
 import UploadMode from "./UploadMode.vue";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { useUploadHandler } from "../../../utils/useUploadHandler.ts";
-import { useWindowSize } from "../../../utils/useWindowSize.js";
-import DialogLoading from "../../DialogLoading.vue";
 import { imageCompression } from "../../../utils/imageCompression.js";
-const {
-  selectedFiles,
-  previewUrls,
-  handleFileChange,
-  resetUpload,
-  handleDragOver,
-  handleDrop,
-} = useUploadHandler();
-const userStore = useUserStore();
+import Buttons from "./../../Buttons.vue";
+
+const { selectedFiles, previewUrls, handleFileChange, resetUpload } =
+  useUploadHandler();
 const carouselStore = useCarouselStore();
-const { device } = useWindowSize();
 const editMode = ref("");
 const errormessage = ref("");
 const successmessage = ref("");
 const loadingmessage = ref("");
 const isDialogLoading = ref(false);
-
-const { orderMode, uploadMode, deleteMode } = defineProps({
-  orderMode: Boolean,
-  uploadMode: Boolean,
-  deleteMode: Boolean,
-});
+const dialog = ref(false);
 
 const resetMode = () => {
   editMode.value = "";
   previewUrls.value = [];
   selectedFiles.value = [];
-  carouselStore.fetchImages();
   errormessage.value = "";
   successmessage.value = "";
   loadingmessage.value = "";
@@ -52,6 +37,7 @@ const handleUpload = async () => {
     const compressedFiles = await imageCompression(selectedFiles);
 
     const res = await carouselStore.addImages(compressedFiles);
+    carouselStore.fetchImages();
     resetUpload();
     successmessage.value = res.data.message;
 
@@ -98,6 +84,11 @@ const handleDelete = async (public_Id, id) => {
   }
 };
 
+const handleClose = () => {
+  dialog.value = false;
+  resetMode();
+};
+
 const imageUrls = computed(() => {
   return carouselStore.sortedImages.map((image) =>
     image.imageURL.replace(
@@ -108,7 +99,7 @@ const imageUrls = computed(() => {
 });
 
 watch(editMode, () => {
-  errormessage.value = ""; // 切換模式時清空錯誤訊息
+  errormessage.value = "";
   successmessage.value = "";
   loadingmessage.value = "";
   isDialogLoading.value = false;
@@ -121,34 +112,18 @@ watch(errormessage && successmessage, () => {
   }, 3000);
 });
 </script>
-
 <template>
-  <v-dialog
-    :max-width="device !== 'mobile' ? '60vw' : '100vw'"
-    @dragover="handleDragOver"
-    @drop="handleDrop"
-  >
-    <template v-slot:activator="{ props: activatorProps }">
-      <v-btn
-        v-bind="activatorProps"
-        color="surface-variant"
-        text="編輯"
-        variant="flat"
-        :disabled="!userStore.showEdit()"
-        class="absolute z-10 top-0 left-5/6 md:left-11/12"
-        @click="carouselStore.fetchImages"
-        :class="userStore.showEdit() ? 'block' : 'hidden'"
-      ></v-btn>
-    </template>
-
-    <template #default="{ isActive }">
-      <v-card title="編輯輪播圖片" class="p-4 relative">
-        <DialogLoading
-          :isLoading="isDialogLoading"
-          :loadingmessage="loadingmessage"
-          :errormessage="errormessage"
-          :successmessage="successmessage"
-        />
+  <div class="">
+    <BaseDialog
+      v-model:dialog="dialog"
+      title="編輯輪播圖片"
+      buttonText="編輯"
+      :isDialogLoading="isDialogLoading"
+      :loadingmessage="loadingmessage"
+      :errormessage="errormessage"
+      :successmessage="successmessage"
+    >
+      <template #default>
         <v-card-text> 以下是現有的輪播圖片... </v-card-text>
         <div v-if="editMode !== 'order'" class="flex gap-2 flex-wrap">
           <div
@@ -178,25 +153,25 @@ watch(errormessage && successmessage, () => {
           :previewUrls="previewUrls"
           :selectedFiles="selectedFiles"
         />
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <div class="flex items-center">
-            <ButtonArea
-              v-model:editMode="editMode"
-              :orderMode="orderMode"
-              :uploadMode="uploadMode"
-              :deleteMode="deleteMode"
-              :handleFileChange="handleFileChange"
-              :handleUpload="handleUpload"
-              :handleOrder="handleOrder"
-              :selectedFiles="selectedFiles"
-              :resetMode="resetMode"
-            />
+      </template>
 
-            <v-btn text="關閉" @click="isActive.value = false"></v-btn>
-          </div>
-        </v-card-actions>
-      </v-card>
-    </template>
-  </v-dialog>
+      <template #actions>
+        <div class="flex justify-center items-center">
+          <Buttons
+            v-model:editMode="editMode"
+            v-model:dialog="dialog"
+            :orderMode="true"
+            :uploadMode="true"
+            :deleteMode="true"
+            :handleFileChange="handleFileChange"
+            :handleUpload="handleUpload"
+            :handleOrder="handleOrder"
+            :selectedFiles="selectedFiles"
+            :resetMode="resetMode"
+            :close="handleClose"
+          />
+        </div>
+      </template>
+    </BaseDialog>
+  </div>
 </template>

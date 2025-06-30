@@ -75,14 +75,13 @@
     &__image {
       width: auto;
       height: auto;
-      filter: none;
+
       transition: filter 0.5s ease-in;
       &:hover {
         filter: none;
       }
       &-wrapper {
         padding: 28.26%;
-        filter: none;
       }
     }
   }

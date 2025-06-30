@@ -15,9 +15,6 @@ const { currentImage } = defineProps<{
 
 const title = ref("PaiCheng");
 const content = ref("Photographer");
-const orderMode = ref(true);
-const uploadMode = ref(true);
-const deleteMode = ref(true);
 
 const HeadingStyle = ref(
   "text-[36px] md:text-[72px] lg:text-[96px] text-white font-bold font-playfair"
@@ -29,11 +26,7 @@ const ContentStyle = ref(
 
 <template>
   <div class="carousel">
-    <CarouselDialog
-      :orderMode="orderMode"
-      :uploadMode="uploadMode"
-      :deleteMode="deleteMode"
-    />
+    <CarouselDialog/>
     <Handing
       v-if="device !== 'mobile'"
       v-model:title="title"

@@ -2,7 +2,7 @@
 import { onMounted, computed, ref, nextTick, watch } from "vue";
 import Navbar from "../../components/Navbar/Navbar.vue";
 import Footer from "../../components/Footer.vue";
-import NewAlbum from "../../components/ImageSystem/PortfolioDialog/AlbumSystem/NewAlbum/NewAlbum.vue";
+import NewAlbum from "../../components/ImageSystem/PortfolioDialog/AlbumSystem/NewAlbum.vue";
 import NewDisplay from "../../components/ImageSystem/PortfolioDialog/DisplaySystem/NewDisplay.vue";
 import NewGallery from "../../components/ImageSystem/PortfolioDialog/GallerySystem/NewGallery.vue";
 import { useRoute, useRouter } from "vue-router";
@@ -217,7 +217,7 @@ watch(imageStyle, () => {
         <v-btn
           v-if="!deleteMode"
           color="surface-variant"
-          text="刪除"
+          text="刪除模式"
           variant="flat"
           :disabled="!userStore.showEdit()"
           class="bg-red-500"
@@ -244,7 +244,7 @@ watch(imageStyle, () => {
         <v-btn
           v-if="!deleteMode"
           color="surface-variant"
-          text="刪除"
+          text="刪除模式"
           variant="flat"
           :disabled="!userStore.showEdit()"
           class="bg-red-500"

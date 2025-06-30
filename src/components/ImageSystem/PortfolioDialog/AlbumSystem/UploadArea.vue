@@ -1,5 +1,7 @@
 <script setup lang="ts">
-import { reactive } from "vue";
+const topic = defineModel("topic", { type: String });
+const notes = defineModel("notes", { type: String });
+
 const props = withDefaults(
   defineProps<{
     handleSingleFileChange: Function;
@@ -10,56 +12,23 @@ const props = withDefaults(
     selectedFiles: () => [],
   }
 );
-const formData = reactive({
-  topic: "",
-  notes: "",
-});
+
+const topicRules = [(v) => !!v || "請輸入主題"];
 </script>
 <template>
-  <div class="flex flex-col">
-    <FormKit
-      v-model="formData.topic"
-      type="text"
-      name="topic"
+  <div class="flex flex-col w-full">
+    <v-text-field
+      v-model="topic"
       label="主題"
-      outerClass="mb-4 w-3/5 md:w-1/2"
-      innerClass="mt-4 border-b-2 border-black"
-      labelClass="text-black font-noto "
-      validation="required"
-      messages-class="text-red-500 text-sm"
-      :validation-messages="{
-        required: '請輸入主題',
-      }"
-      :classes="{
-        outer: '',
-        inner: 'mt-4 border-b-2',
-        input: 'w-full border-none bg-transparent focus:outline-none',
-        inputInvalid: 'border-red-500', // 加紅線
-      }"
+      :rules="topicRules"
+      required
+      outlined
+      class="w-full mt-4"
     />
-    <FormKit
-      v-model="formData.notes"
-      type="text"
-      name="notes"
-      label="敘述"
-      outerClass="mb-4 w-3/5 md:w-1/2"
-      innerClass="mt-4 border-b-2 border-black"
-      labelClass="text-black font-noto "
-      validation="required"
-      messages-class="text-red-500 text-sm"
-      :validation-messages="{
-        required: '請輸入敘述',
-      }"
-      :classes="{
-        outer: '',
-        inner: 'mt-4 border-b-2',
-        input: 'w-full border-none bg-transparent focus:outline-none',
-        inputInvalid: 'border-red-500', // 加紅線
-      }"
-    />
+    <v-textarea v-model="notes" label="描述" outlined rows="3" class="w-full mt-2" />
 
     <v-file-input
-      class="w-2/3 h-[50px] my-8 mr-16 md:mb-0"
+      class="w-full h-[50px] my-8 mr-16 md:mb-0"
       name="images"
       prepend-icon=""
       @change="props.handleSingleFileChange"

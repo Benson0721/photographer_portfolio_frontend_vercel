@@ -1,11 +1,11 @@
 <script setup>
-import { useUserStore } from "../../../../../stores/userPinia.ts";
-import { useAlbumStore } from "../../../../../stores/albumPinia.ts";
-import { useUploadHandler } from "../../../../../utils/useUploadHandler.ts";
-import { useWindowSize } from "../../../../../utils/useWindowSize.js";
+import { useUserStore } from "../../../../stores/userPinia.ts";
+import { useAlbumStore } from "../../../../stores/albumPinia.ts";
+import { useUploadHandler } from "../../../../utils/useUploadHandler.ts";
+import { useWindowSize } from "../../../../utils/useWindowSize.js";
 import { ref, computed } from "vue";
-import UploadArea from "../UploadArea.vue";
-import DialogLoading from "../../../../../components/DialogLoading.vue";
+import UploadArea from "./UploadArea.vue";
+import DialogLoading from "../../../../components/DialogLoading.vue";
 
 const props = defineProps({
   id: String,

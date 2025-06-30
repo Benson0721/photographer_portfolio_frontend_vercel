@@ -26,7 +26,7 @@ const handleSubmit = async (data) => {
     <div>
       <h1 class="text-4xl lg:text-6xl text-center my-16 font-bold">Login</h1>
     </div>
-    <div class="absolute top-1/4 right-1/9 border-2 p-4">
+    <div class="absolute top-[10%] md:top-1/4 md:right-1/9 border-2 p-4">
       <h2 class="text-center">測試用帳號/密碼😎</h2>
       <p>username: photographer</p>
       <p>password: pai0902</p>

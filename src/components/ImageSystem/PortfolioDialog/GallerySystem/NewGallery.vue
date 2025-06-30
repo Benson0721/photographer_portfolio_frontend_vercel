@@ -5,9 +5,7 @@ import { useGalleryStore } from "../../../../stores/galleryPinia.ts";
 import { ref } from "vue";
 import { useWindowSize } from "../../../../utils/useWindowSize.js";
 import DialogLoading from "../../../../components/DialogLoading.vue";
-import {imageCompression} from "../../../../utils/imageCompression.js";
-
-
+import { imageCompression } from "../../../../utils/imageCompression.js";
 
 const userStore = useUserStore();
 const galleryStore = useGalleryStore();
@@ -25,7 +23,7 @@ const categorys = ref([
   "Landscape",
   "Portrait",
   "Motorcycle",
-  "Others"
+  "Others",
 ]);
 
 const dialog = ref(false);
@@ -112,9 +110,7 @@ const handleUpload = async () => {
             />
           </div>
         </div>
-        <v-card-actions class="flex flex-col md:flex-row">
-          <v-spacer></v-spacer>
-
+        <v-card-actions class="flex flex-col md:flex-row mt-8">
           <v-select
             label="選擇主題"
             :items="categorys"
@@ -122,23 +118,18 @@ const handleUpload = async () => {
             v-model="selectCategory"
             class="w-full"
           ></v-select>
-          <div
-            class="flex h-auto flex-col md:flex-row items-center relative"
-            :class="selectedFiles.length > 0 ? 'w-full' : 'w-[300px]'"
+          <v-file-input
+            class="w-full h-auto"
+            name="images"
+            @change="handleFileChange"
+            variant="outlined"
+            label="圖片上傳"
+            multiple
+            show-size
+            clip
+            prepend-icon=""
           >
-            <v-file-input
-              class="w-full h-auto"
-              name="images"
-              @change="handleFileChange"
-              variant="outlined"
-              label="圖片上傳"
-              multiple
-              show-size
-              clip
-              prepend-icon=""
-            >
-            </v-file-input>
-          </div>
+          </v-file-input>
           <div class="flex gap-2 mb-5">
             <v-btn text="送出" @click="handleUpload"></v-btn>
             <v-btn text="關閉" @click="dialog = false"></v-btn>
