@@ -3,7 +3,10 @@ import { useUserStore } from "../../../../stores/userPinia.ts";
 import { useAlbumStore } from "../../../../stores/albumPinia.ts";
 import { useFrontStore } from "../../../../stores/frontPinia.ts";
 
-import { ref } from "vue";
+const deleteMessage = defineModel("deleteMessage", {
+  type: String,
+  default: "",
+});
 
 const { id, publicId, topic } = defineProps({
   id: String,
@@ -14,8 +17,6 @@ const { id, publicId, topic } = defineProps({
 const userStore = useUserStore();
 const albumStore = useAlbumStore();
 const frontStore = useFrontStore();
-const errormessage = ref("");
-const successmessage = ref("");
 
 const handleOpen = () => {
   return true;
@@ -23,14 +24,14 @@ const handleOpen = () => {
 
 const handleDelete = async () => {
   try {
-    const res = await albumStore.deleteImage(publicId, id);
-    successmessage.value = res.data.message;
+    await albumStore.deleteImage(publicId, id);
+
+    deleteMessage.value = "刪除成功";
     await albumStore.fetchImages();
     await frontStore.fetchImages();
   } catch (error) {
-    errormessage.value = "刪除失敗...";
+    deleteMessage.value = "刪除失敗...";
     await albumStore.fetchImages();
-    console.error("上傳失敗：", error?.response?.data?.message);
   }
 };
 </script>

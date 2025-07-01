@@ -25,7 +25,7 @@ export const addAlbumImage = async (formData, info) => {
 export const updateAlbumImage = async (formData) => {
   const response = await axiosInstance.put(`/api/album/`, formData);
   if (response.status === 200) {
-    return response;
+    return response.data;
   }
   return { error: response.data.error };
 };

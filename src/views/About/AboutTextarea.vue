@@ -1,10 +1,12 @@
-<script setup>
-import { ref, onMounted, watch } from "vue";
+<script setup lang="ts">
+import { ref, onMounted } from "vue";
 import { useAboutStore } from "../../stores/aboutPinia";
 import { useUserStore } from "../../stores/userPinia";
+import { useWindowSize } from "../../utils/useWindowSize.ts";
 
 const aboutStore = useAboutStore();
 const userStore = useUserStore();
+const { device } = useWindowSize();
 
 const isAboutEditing = defineModel("isAboutEditing", { type: Boolean });
 
@@ -42,26 +44,31 @@ onMounted(() => {
 <template>
   <div class="relative flex flex-col items-center justify-center">
     <h2
-      class="text-[36px] md:text-[48px] lg:text-[72px] font-playfair text-black text-center"
+      class="text-[36px] md:text-[36px] lg:text-[64px] font-playfair text-black text-center"
     >
       Me
     </h2>
-    <div class="absolute z-10 top-1/35 w-full">
+    <div class="absolute z-10 top-1/35 md:right-[20%] lg:right-[5%] w-full">
       <div class="flex gap-2" v-if="!isAboutEditing">
         <v-btn
           class="w-[80px] h-[35px] text-[12px] md:w-[100px] md:h-[30px] md:text-[14px]"
           color="surface-variant"
           text="編輯介紹"
+          :size="device === 'tablet' ? 'x-small' : 'small'"
           variant="flat"
           :disabled="!userStore.showEdit()"
           @click="isAboutEditing = true"
           :class="userStore.showEdit() ? 'block' : 'hidden'"
         ></v-btn>
       </div>
-      <div class="flex gap-2 w-full justify-between" v-if="isAboutEditing">
+      <div
+        class="flex md:gap-20 lg:gap-0 w-full justify-between"
+        v-if="isAboutEditing"
+      >
         <v-btn
           class="w-[80px] h-[35px] text-[12px] md:w-[100px] md:h-[30px] md:text-[14px] bg-green-400 text-white"
           text="儲存"
+          :size="device === 'tablet' ? 'x-small' : 'small'"
           variant="flat"
           @click="handleSave"
         ></v-btn>
@@ -69,6 +76,7 @@ onMounted(() => {
           class="w-[80px] h-[35px] text-[12px] md:w-[100px] md:h-[30px] md:text-[14px]"
           color="surface-variant"
           text="取消編輯"
+          :size="device === 'tablet' ? 'x-small' : 'small'"
           variant="flat"
           @click="isAboutEditing = false"
         ></v-btn>
@@ -77,7 +85,7 @@ onMounted(() => {
     <textarea
       rows="20"
       cols="80"
-      class="w-full h-full mt-8 text-center text-[0.75rem] md:text-[0.8rem] lg:text-[1.5rem]"
+      class="w-full h-full mt-4 text-center text-[0.75rem] md:text-[0.6rem] lg:text-[1.1rem]"
       v-if="isAboutEditing"
       v-model="text"
     ></textarea>
@@ -86,7 +94,7 @@ onMounted(() => {
       <div
         v-if="!isAboutEditing"
         v-html="html"
-        class="text-[0.75rem] md:text-[0.8rem] lg:text-[1.5rem] lg:w-[90%]"
+        class="text-[0.75rem] md:text-[0.6rem] lg:text-[1.1rem] lg:w-[90%]"
       ></div>
     </div>
   </div>

@@ -23,10 +23,10 @@
       height: calc(100vh - 104px);
     }
     &__pai {
-      flex: 4;
+      flex: 6;
     }
     &__content {
-      flex: 6;
+      flex: 3;
       height: 24rem;
     }
     &__whitespace {
@@ -45,10 +45,10 @@
 @media only screen and (min-width: 1440px) {
   .about {
     &__pai {
-      flex: 3;
+      flex: 5;
     }
     &__content {
-      flex: 6;
+      flex: 4;
       height: 24rem;
     }
   }

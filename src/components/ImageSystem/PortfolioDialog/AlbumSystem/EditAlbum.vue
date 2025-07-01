@@ -1,146 +1,123 @@
-<script setup>
-import { useUserStore } from "../../../../stores/userPinia.ts";
+<script setup lang="ts">
 import { useAlbumStore } from "../../../../stores/albumPinia.ts";
 import { useUploadHandler } from "../../../../utils/useUploadHandler.ts";
 import { useWindowSize } from "../../../../utils/useWindowSize.js";
 import { ref, computed } from "vue";
 import UploadArea from "./UploadArea.vue";
-import DialogLoading from "../../../../components/DialogLoading.vue";
+import BaseDialog from "../../../../components/BaseDialog.vue";
+import { imageCompression } from "../../../../utils/imageCompression.js";
 
-const props = defineProps({
-  id: String,
-  publicId: String,
-  topic: String,
-  notes: String,
-  category: String,
-  imageURL: String,
-  curCategory: String,
-});
+const props = defineProps<{
+  id: string;
+  publicId: string;
+  topic: string;
+  notes: string;
+  imageURL: string;
+}>();
 
-const userStore = useUserStore();
 const albumStore = useAlbumStore();
 const errormessage = ref("");
 const successmessage = ref("");
 const loadingmessage = ref("");
 const isDialogLoading = ref(false);
+const curtopic = ref(props.topic);
+const curnotes = ref(props.notes);
+const dialog = ref(false);
 
 const { device } = useWindowSize();
 const { selectedFiles, handleSingleFileChange, resetUpload, previewUrls } =
   useUploadHandler();
 
-const handleEdit = async (data) => {
+const previewUrl = computed(() => previewUrls.value[0]?.src || "");
+
+const handleEdit = async () => {
   try {
-    const { category, notes, topic } = data;
+    if (curtopic.value === "" || curnotes.value === "")
+      return (errormessage.value = "主題跟描述請勿留空");
     const newData = {
-      image: selectedFiles.value,
-      category,
-      topic,
-      notes,
+      image: [],
+      topic: curtopic.value,
+      notes: curnotes.value,
       publicID: props.publicId,
       id: props.id,
     };
+    if (selectedFiles.value.length > 0) {
+      const compressedFiles = await imageCompression(selectedFiles.value);
+      newData.image = compressedFiles;
+    }
+
     loadingmessage.value = "更新中...";
     isDialogLoading.value = true;
-    const res = await albumStore.updateImage(newData);
-    await albumStore.fetchImages();
+    await albumStore.updateImage(newData);
     resetUpload();
     isDialogLoading.value = false;
-    successmessage.value = res.data.message;
+    successmessage.value = "更新成功";
   } catch (error) {
+    console.error(error);
     errormessage.value = "更新失敗...";
     resetUpload();
     isDialogLoading.value = false;
-    await albumStore.fetchImages();
-    console.error(error);
     console.error("上傳失敗：", error?.response?.data?.message);
   }
 };
 
-const previewUrl = computed(() => {
-  return previewUrls.value[0]?.src;
-});
+const handleOpen = () => {
+  dialog.value = true;
+  errormessage.value = "";
+  successmessage.value = "";
+};
+
+const handleClose = () => {
+  dialog.value = false;
+  resetUpload();
+};
 </script>
 
 <template>
-  <v-dialog :max-width="device !== 'mobile' ? '60vw' : '100vw'">
-    <template v-slot:activator="{ props: activatorProps }">
-      <v-btn
-        v-bind="activatorProps"
-        color="surface-variant"
-        text="編輯"
-        variant="flat"
-        :disabled="!userStore.isEditing"
-        class="bg-indigo-500"
-        :class="!userStore.isEditing ? 'hidden' : 'block'"
-      ></v-btn>
+  <BaseDialog
+    v-model:dialog="dialog"
+    title="編輯合輯"
+    buttonText="編輯"
+    buttonColor="indigo"
+    :isDialogLoading="isDialogLoading"
+    :loadingmessage="loadingmessage"
+    :errormessage="errormessage"
+    :successmessage="successmessage"
+    :width="device !== 'mobile' ? '60vw' : '100vw'"
+    vertical="top-[5%]"
+    horizontal="right-[5%]"
+  >
+    <template #default>
+      <div class="flex flex-col md:flex-row gap-4">
+        <div class="mt-4 flex-1">
+          <UploadArea
+            v-model:topic="curtopic"
+            v-model:notes="curnotes"
+            :handleSingleFileChange="handleSingleFileChange"
+            :selectedFiles="selectedFiles"
+          />
+        </div>
+        <div class="flex flex-col items-center justify-center flex-2 w-[50vw]">
+          <v-card-text v-if="previewUrl" class="text-sm text-gray-600 flex-none"
+            >以下為更新後的圖片</v-card-text
+          >
+          <v-card-text class="text-sm text-gray-600 flex-none" v-else
+            >以下是現有的圖片</v-card-text
+          >
+          <img
+            :src="previewUrl || imageURL"
+            alt="previewImage"
+            class="w-full object-contain"
+            draggable="false"
+          />
+        </div>
+      </div>
     </template>
-
-    <template v-slot:default="{ isActive }">
-      <v-card title="編輯圖片" class="p-4 z-20">
-        <DialogLoading
-          :isLoading="isDialogLoading"
-          :loadingmessage="loadingmessage"
-          :errormessage="errormessage"
-          :successmessage="successmessage"
-        />
-        <FormKit
-          type="form"
-          :actions="false"
-          @submit="handleEdit"
-          :value="{
-            topic: props.topic,
-            notes: props.notes,
-          }"
-          outerClass="w-full"
-          validation="required"
-          :validation-visibility="'submit'"
-          incomplete-message="請填入必要資訊以完成編輯"
-          messages-class="text-red-500 text-lg absolute sm:top-1/5 md:top-1/4"
-        >
-          <div class="flex flex-col md:flex-row w-full h-full gap-2">
-            <div class="md:flex-1 pl-16 mt-8">
-              <UploadArea
-                :handleSingleFileChange="handleSingleFileChange"
-                :selectedFiles="selectedFiles"
-              />
-            </div>
-            <div class="mb-10 md:flex-1">
-              <div class="w-full h-full">
-                <img
-                  v-if="previewUrl"
-                  :src="previewUrl"
-                  alt="previewImage"
-                  class="flex-1 w-full h-full object-contain"
-                  draggable="false"
-                />
-                <img
-                  v-else
-                  :src="props.imageURL"
-                  alt="currentImage"
-                  class="flex-1 w-full h-full object-contain"
-                  draggable="false"
-                />
-              </div>
-            </div>
-          </div>
-          <v-card-actions>
-            <div
-              class="flex gap-2 absolute left-1/2 md:left-8/10 -translate-x-1/2 -translate-y-1/2"
-            >
-              <FormKit
-                type="submit"
-                label="送出"
-                :classes="{
-                  outer: 'mt-2 text-center  transform',
-                  input: 'text-black rounded bg-white transition duration-300',
-                }"
-              />
-              <v-btn text="關閉" @click="isActive.value = false"></v-btn>
-            </div>
-          </v-card-actions>
-        </FormKit>
-      </v-card>
+    <template #actions>
+      <div class="flex justify-center items-center">
+        <v-btn @click="handleEdit">送出</v-btn>
+        <v-btn text="關閉" @click="handleClose" />
+      </div>
     </template>
-  </v-dialog>
+  </BaseDialog>
 </template>
-<style scoped lang="scss"></style>

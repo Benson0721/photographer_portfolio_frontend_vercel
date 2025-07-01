@@ -212,7 +212,7 @@ watch(imageStyle, () => {
         class="absolute top-1/8 right-1 flex justify-end gap-2 pr-8"
         :class="userStore.showEdit() ? 'block' : 'hidden'"
       >
-        <NewGallery />
+        <NewGallery :category="curCategory" />
         <ChangeFrontPage :Images="galleryStore.galleryImages" />
         <v-btn
           v-if="!deleteMode"
@@ -230,7 +230,7 @@ watch(imageStyle, () => {
           text="取消刪除模式"
           variant="flat"
           :disabled="!userStore.showEdit()"
-          class="bg-blue-500"
+          class="bg-gray-500"
           @click="deleteMode = false"
           :class="deleteMode ? 'block' : 'hidden'"
         ></v-btn>
@@ -257,7 +257,7 @@ watch(imageStyle, () => {
           text="取消刪除模式"
           variant="flat"
           :disabled="!userStore.showEdit()"
-          class="bg-blue-500"
+          class="bg-gray-500"
           @click="deleteMode = false"
           :class="deleteMode ? 'block' : 'hidden'"
         ></v-btn>

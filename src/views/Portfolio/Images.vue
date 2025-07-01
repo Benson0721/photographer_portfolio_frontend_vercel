@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { ref, watch, nextTick, onBeforeUnmount } from "vue";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { useGalleryStore } from "../../stores/galleryPinia.ts";
@@ -6,7 +6,10 @@ import { useDisplayStore } from "../../stores/displayPinia.ts";
 import { useUserStore } from "../../stores/userPinia.ts";
 import EditAlbum from "../../components/ImageSystem/PortfolioDialog/AlbumSystem/EditAlbum.vue";
 import DeleteAlbum from "../../components/ImageSystem/PortfolioDialog/AlbumSystem/DeleteAlbum.vue";
+import { AlbumImage, GalleryImage, DisplayImage } from "../../types/apiType";
+import { useToast } from "../../utils/useToast";
 
+const toast = useToast();
 const userStore = useUserStore();
 const galleryStore = useGalleryStore();
 const displayStore = useDisplayStore();
@@ -15,7 +18,7 @@ import VueEasyLightbox from "vue-easy-lightbox";
 const props = defineProps({
   deleteMode: Boolean,
   curCategory: String,
-  images: Array,
+  images: Array<AlbumImage | GalleryImage | DisplayImage>,
 });
 const curTopicID = defineModel("curTopicID", { type: String });
 const curTopic = defineModel("curTopic", { type: String });
@@ -81,7 +84,7 @@ const setupObserver = async () => {
         (entries) => {
           entries.forEach((entry) => {
             if (entry.isIntersecting) {
-              imageStates.value.set(entry.target.dataset.id, true);
+              imageStates.value.set(entry.target.id, true);
               observer.unobserve(entry.target);
             }
           });
@@ -111,6 +114,7 @@ watch(
 );
 watch(deleteMessage, (newValue) => {
   if (newValue) {
+    toast.show(newValue);
     setTimeout(() => {
       deleteMessage.value = "";
     }, 3000);
@@ -129,7 +133,14 @@ watch(
 );
 </script>
 <template>
-  <p v-if="deleteMessage" class="text-red-500">{{ deleteMessage }}</p>
+  <v-snackbar
+    v-if="deleteMessage"
+    v-model="toast.snackbar"
+    :timeout="2000"
+    color="success"
+  >
+    {{ toast.message }}
+  </v-snackbar>
   <masonry-wall
     :items="props.images || []"
     :min-columns="1"
@@ -150,14 +161,14 @@ watch(
           :class="userStore.showEdit() ? 'block' : 'hidden'"
         >
           <EditAlbum
-            :id="item._id"
+            :id="item?._id"
             :topic="item?.topic"
             :notes="item?.notes"
-            :category="item?.category"
             :imageURL="item?.imageURL"
             :publicId="item?.public_id"
           />
           <DeleteAlbum
+            v-model:deleteMessage="deleteMessage"
             :topic="item?.topic"
             :id="item._id"
             :publicId="item?.public_id"

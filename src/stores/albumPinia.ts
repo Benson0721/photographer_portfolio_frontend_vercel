@@ -41,11 +41,18 @@ export const useAlbumStore = defineStore("albumStore", {
       }
       formData.append("newData", JSON.stringify(newData));
       const res = await updateAlbumImage(formData);
-      return res;
+      const newImages = this.albumImages.map((img: AlbumImage) => {
+        if (img._id === res.updatedImage?._id) {
+          return res.updatedImage;
+        }
+        return img;
+      });
+      this.albumImages = newImages;
+      return;
     },
     async deleteImage(public_Id: string, id: string) {
       this.albumImages = this.albumImages.filter(
-        (image) => image.public_id !== public_Id
+        (image: AlbumImage) => image.public_id !== public_Id
       );
       const res = await deleteAlbumImage(public_Id, id);
       return res;

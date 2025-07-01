@@ -13,22 +13,41 @@ const props = withDefaults(
   }
 );
 
-const topicRules = [(v) => !!v || "請輸入主題"];
+const topicRules = [
+  (v: string) => !!v || "請輸入主題",
+  (v: string) => v.length <= 10 || "主題長度不能超過10",
+];
+const notesRules = [
+  (v: string) => !!v || "請輸入描述",
+  (v: string) => v.length <= 20 || "描述長度不能超過20",
+];
 </script>
 <template>
-  <div class="flex flex-col w-full">
+  <div class="flex flex-col gap-8">
     <v-text-field
       v-model="topic"
       label="主題"
       :rules="topicRules"
+      variant="outlined"
+      density="default"
       required
       outlined
-      class="w-full mt-4"
+      class="w-[50vw] md:w-[30vw] h-[50px] mb-4 md:mb-1"
+      prepend-icon=""
     />
-    <v-textarea v-model="notes" label="描述" outlined rows="3" class="w-full mt-2" />
 
+    <v-textarea
+      v-model="notes"
+      label="描述"
+      outlined
+      variant="outlined"
+      density="default"
+      rows="3"
+      class="w-full"
+      :rules="notesRules"
+    />
     <v-file-input
-      class="w-full h-[50px] my-8 mr-16 md:mb-0"
+      class="w-full h-[50px] mr-16 md:mb-0"
       name="images"
       prepend-icon=""
       @change="props.handleSingleFileChange"
@@ -38,7 +57,6 @@ const topicRules = [(v) => !!v || "請輸入主題"];
       accept=".jpg,.jpeg,.png,.gif,.webp"
       show-size
       clip
-    >
-    </v-file-input>
+    />
   </div>
 </template>

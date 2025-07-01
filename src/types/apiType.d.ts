@@ -34,7 +34,6 @@ export type CarouselImage = {
 
 export type AlbumImage = {
   _id: string;
-  category: string;
   topic: string;
   notes: string;
   imageURL: string;

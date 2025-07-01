@@ -167,14 +167,15 @@ watch(dragMessage, async () => {
     v-model:dialog="dialog"
     title="編輯分區圖片"
     buttonText="編輯"
+    buttonColor="secondary"
+    vertical="top-[5%]"
+    horizontal="right-[5%]"
+    position="absolute"
     :loadingmessage="loadingmessage"
     :successmessage="successmessage"
     :errormessage="errormessage"
     :isDialogLoading="isDialogLoading"
     :width="device !== 'mobile' ? '60vw' : '100vw'"
-    @open="handleOpen"
-    @dragover.native="handleDragOver"
-    @drop.native="handleDrop"
   >
     <template #default>
       <v-card-text
@@ -215,16 +216,6 @@ watch(dragMessage, async () => {
 
     <template #actions>
       <div class="flex flex-row md:flex-row">
-        <!-- <ButtonArea
-            v-model:editMode="editMode"
-            v-model:dialog="dialog"
-            :changeTitleMode="changeTitleMode"
-            :uploadMode="uploadMode"
-            :handleFileChange="handleSingleFileChange"
-            :handleUpload="handleUpload"
-            :handleTitleUpload="handleTitleUpload"
-            :resetMode="resetMode"
-          /> -->
         <Buttons
           v-model:editMode="editMode"
           v-model:dialog="dialog"

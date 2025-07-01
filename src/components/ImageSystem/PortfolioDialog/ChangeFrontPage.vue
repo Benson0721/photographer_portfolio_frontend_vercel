@@ -5,6 +5,7 @@ import { useWindowSize } from "../../../utils/useWindowSize.js";
 import { useRoute } from "vue-router";
 import { ref } from "vue";
 import DialogLoading from "../../../components/DialogLoading.vue";
+import BaseDialog from "../../../components/BaseDialog.vue";
 
 const userStore = useUserStore();
 const frontStore = useFrontStore();
@@ -12,6 +13,8 @@ const errormessage = ref("");
 const successmessage = ref("");
 const loadingmessage = ref("");
 const isLoading = ref(false);
+const dialog = ref(false);
+
 const props = defineProps({
   Images: Array,
 });
@@ -19,14 +22,20 @@ const props = defineProps({
 const { device } = useWindowSize();
 const selectedImage = ref({ imageURL: "", public_id: "" });
 const route = useRoute();
+
 const handleOpen = async () => {
   errormessage.value = "";
   successmessage.value = "";
   selectedImage.value = { imageURL: "", public_id: "" };
+  dialog.value = true;
+};
+
+const handleClose = () => {
+  dialog.value = false;
 };
 
 const handleChangeImage = async () => {
-  if (selectedImage.value === "") return;
+  if (selectedImage.value.imageURL === "") return;
   try {
     const category = route.params.category;
     isLoading.value = true;
@@ -48,34 +57,27 @@ const handleChangeImage = async () => {
 </script>
 
 <template>
-  <v-dialog :max-width="device !== 'mobile' ? '60vw' : '100vw'">
-    <template v-slot:activator="{ props: activatorProps }">
-      <v-btn
-        v-bind="activatorProps"
-        color="surface-variant"
-        text="更改封面"
-        variant="flat"
-        :disabled="!userStore.isEditing"
-        class=""
-        @click="handleOpen"
-        :class="!userStore.isEditing ? 'hidden' : 'block'"
-      ></v-btn>
-    </template>
-
-    <template #default="{ isActive }">
-      <v-card title="更改封面" class="p-4 relative">
-        <DialogLoading
-          :isLoading="isLoading"
-          :loadingmessage="loadingmessage"
-          :errormessage="errormessage"
-          :successmessage="successmessage"
-        />
+  <div>
+    <BaseDialog
+      v-model:dialog="dialog"
+      title="更改封面"
+      buttonText="更改封面"
+      buttonColor="info"
+      position="relative"
+      :width="device !== 'mobile' ? '60vw' : '60vw'"
+      :isDialogLoading="isLoading"
+      :loadingmessage="loadingmessage"
+      :errormessage="errormessage"
+      :successmessage="successmessage"
+    >
+      <template #default>
         <v-card-text> 以下是現有的封面圖片...(不推薦長圖) </v-card-text>
-        <div class="grid grid-cols-2 gap-0.5 lg:grid-cols-3 lg:gap-2">
+        <div
+          class="grid gap-0.5 grid-cols-2 lg:grid-cols-3 grid-rows-2 place-items-center "
+        >
           <div v-if="props.Images.length === 0">
             <v-card-text> 沒有圖片 </v-card-text>
           </div>
-          <!--自製checked屬性 -->
           <div
             v-for="(image, index) in props.Images"
             :key="index"
@@ -100,16 +102,12 @@ const handleChangeImage = async () => {
             />
           </div>
         </div>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <div class="flex items-center">
-            <v-btn text="確認" @click="handleChangeImage"></v-btn>
-            <v-btn text="關閉" @click="isActive.value = false"></v-btn>
-          </div>
-        </v-card-actions>
-      </v-card>
-    </template>
-  </v-dialog>
-</template>
+      </template>
 
-<style scoped lang="scss"></style>
+      <template #actions>
+        <v-btn text="確認" @click="handleChangeImage"></v-btn>
+        <v-btn text="關閉" @click="handleClose"></v-btn>
+      </template>
+    </BaseDialog>
+  </div>
+</template>
