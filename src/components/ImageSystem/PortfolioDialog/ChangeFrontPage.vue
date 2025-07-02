@@ -4,8 +4,8 @@ import { useFrontStore } from "../../../stores/frontPinia.ts";
 import { useWindowSize } from "../../../utils/useWindowSize.js";
 import { useRoute } from "vue-router";
 import { ref } from "vue";
-import DialogLoading from "../../../components/DialogLoading.vue";
-import BaseDialog from "../../../components/BaseDialog.vue";
+import DialogLoading from "../DialogLoading.vue";
+import BaseDialog from "../BaseDialog.vue";
 
 const userStore = useUserStore();
 const frontStore = useFrontStore();
@@ -73,7 +73,7 @@ const handleChangeImage = async () => {
       <template #default>
         <v-card-text> 以下是現有的封面圖片...(不推薦長圖) </v-card-text>
         <div
-          class="grid gap-0.5 grid-cols-2 lg:grid-cols-3 grid-rows-2 place-items-center "
+          class="grid gap-0.5 grid-cols-2 lg:grid-cols-3 grid-rows-2 place-items-center"
         >
           <div v-if="props.Images.length === 0">
             <v-card-text> 沒有圖片 </v-card-text>

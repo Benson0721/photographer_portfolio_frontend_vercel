@@ -5,7 +5,7 @@ import { useDisplayStore } from "../../../../stores/displayPinia.ts";
 import { useWindowSize } from "../../../../utils/useWindowSize.js";
 import { imageCompression } from "../../../../utils/imageCompression.js";
 import { ref, watch } from "vue";
-import BaseDialog from "../../../../components/BaseDialog.vue";
+import BaseDialog from "../../BaseDialog.vue";
 
 const userStore = useUserStore();
 const displayStore = useDisplayStore();
@@ -43,7 +43,8 @@ const handleClose = () => {
 };
 
 const handleUpload = async () => {
-  if (selectedFiles.value.length === 0) return (errormessage.value = "請選擇圖片");
+  if (selectedFiles.value.length === 0)
+    return (errormessage.value = "請選擇圖片");
   try {
     loadingmessage.value = "上傳圖片中...";
     isDialogLoading.value = true;
@@ -81,7 +82,6 @@ watch([errormessage, successmessage], () => {
     :successmessage="successmessage"
     :errormessage="errormessage"
     :isDialogLoading="isDialogLoading"
-    :width="device !== 'mobile' ? '60vw' : '100vw'"
   >
     <template #default>
       <v-card-text v-if="selectedFiles.length > 0">

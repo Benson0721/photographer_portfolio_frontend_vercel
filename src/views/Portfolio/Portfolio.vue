@@ -53,7 +53,6 @@ const categorys = ref([
 ]);
 
 const selectCategory = ref("");
-const imageLoading = ref(false);
 
 const onCategoryChange = async (category) => {
   if (mode.value === "Display" && category === "Album") {
@@ -105,6 +104,10 @@ const backgroundStyle = computed(() => {
       const image = albumStore.albumImages.find(
         (image) => image._id === curTopicID.value //進入display image顯示的封面
       );
+      image.imageURL = image.imageURL.replace(
+        "/upload/f_auto,q_auto,w_1440/",
+        "/upload/f_auto,q_80/"
+      );
 
       return {
         backgroundImage: `url(${image?.imageURL})`,
@@ -126,10 +129,7 @@ const imageStyle = computed(() => {
       const image = albumStore.albumImages.find(
         (image) => image._id === curTopicID.value
       );
-      /*image.imageURL = image.imageURL.replace(
-        "/upload/f_auto,q_auto,w_1440/",
-        "/upload/f_auto,q_80/"
-      );*/
+
       return image?.imageURL;
     } else {
       const image = frontStore.frontImages.find(
@@ -170,14 +170,9 @@ watch(
   },
   { immediate: true } //使其在掛載時就執行一次
 );
-
-watch(imageStyle, () => {
-  imageLoading.value = false;
-});
 </script>
 <template>
   <PageLoading v-if="isLoading" />
-
   <main v-else class="portfolio__bg transition" :style="backgroundStyle">
     <Navbar />
     <div class="portfolio__banner relative md:static">

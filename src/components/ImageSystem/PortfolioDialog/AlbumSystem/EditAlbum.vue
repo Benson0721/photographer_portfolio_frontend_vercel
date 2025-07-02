@@ -4,7 +4,7 @@ import { useUploadHandler } from "../../../../utils/useUploadHandler.ts";
 import { useWindowSize } from "../../../../utils/useWindowSize.js";
 import { ref, computed } from "vue";
 import UploadArea from "./UploadArea.vue";
-import BaseDialog from "../../../../components/BaseDialog.vue";
+import BaseDialog from "../../BaseDialog.vue";
 import { imageCompression } from "../../../../utils/imageCompression.js";
 
 const props = defineProps<{
@@ -83,9 +83,6 @@ const handleClose = () => {
     :loadingmessage="loadingmessage"
     :errormessage="errormessage"
     :successmessage="successmessage"
-    :width="device !== 'mobile' ? '60vw' : '100vw'"
-    vertical="top-[5%]"
-    horizontal="right-[5%]"
   >
     <template #default>
       <div class="flex flex-col md:flex-row gap-4">

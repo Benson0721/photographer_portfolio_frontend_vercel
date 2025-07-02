@@ -1,5 +1,5 @@
 <script setup>
-import BaseDialog from "../../BaseDialog.vue";
+import BaseDialog from "../BaseDialog.vue";
 import { useCarouselStore } from "../../../stores/carouselPinia.ts";
 import { ref, watch, computed } from "vue";
 import OrderMode from "./OrderMode.vue";

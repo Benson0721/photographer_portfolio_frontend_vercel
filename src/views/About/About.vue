@@ -23,13 +23,15 @@ import { sendEmail } from "../../utils/sendEmail";
 import PageLoading from "../../components/PageLoading.vue";
 import { preloadImages } from "../../utils/preloadImages";
 import AboutTextarea from "./AboutTextarea.vue";
+import { useToast } from "../../utils/useToast";
 
-const { imageRefs, imageSizes, updateSizes } = useImageSizeList();
+const { imageRefs, updateSizes } = useImageSizeList();
 
 const { device } = useWindowSize();
 const route = useRoute();
 const aboutStore = useAboutStore();
-const formData = reactive({
+
+const formData = ref({
   name: "",
   email: "",
   subject: "",
@@ -52,10 +54,20 @@ const isSocialScrolledPast = ref(false);
 const isAboutPastScroll = ref(false);
 const isContactPastScroll = ref(false);
 const isAboutEditing = ref(false);
+const toast = useToast();
 
 let AboutObserver: IntersectionObserver;
 let ContactObserver: IntersectionObserver;
 let combinedHandler: () => void;
+
+const form = ref(null);
+const formValid = ref(false);
+
+const rules = {
+  required: (v: string) => !!v || "此欄位為必填",
+  email: (v: string) =>
+    !v || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) || "請輸入正確的 Email 格式",
+};
 
 const imageMap = computed(() => {
   const result: Record<string, AboutImage> = {};
@@ -78,27 +90,35 @@ const backgroundStyle = computed(() => {
   }
   return {};
 });
-const handleSubmit = async (data: any) => {
+
+const handleSubmit = async () => {
   try {
+    if (!formValid.value) return;
     isEmailSending.value = true;
     loadingmessage.value = "正在寄出信件...";
-    if (!data.name || !data.email || !data.subject || !data.message) {
+    if (
+      !formData.value.name ||
+      !formData.value.email ||
+      !formData.value.subject ||
+      !formData.value.message
+    ) {
       throw new Error("請填寫完整表單");
     }
-    const res = await sendEmail(data);
+    const res = await sendEmail(formData.value);
     successMessage.value = res.message;
-    clearForm();
     setTimeout(() => {
       clearMessage();
     }, 5000);
-
     isEmailSending.value = false;
+    form.value.reset(); // 清空欄位資料
+    form.value.resetValidation(); // 也清空錯誤狀態
   } catch (error: any) {
     errorMessage.value = error.message;
     setTimeout(() => {
       clearMessage();
     }, 5000);
     isEmailSending.value = false;
+    form.value.resetValidation();
   }
 };
 const observerFunc = () => {
@@ -163,12 +183,6 @@ const scrollFunc = (hash: string) => {
     }
   }, 1000);
 };
-const clearForm = () => {
-  formData.name = "";
-  formData.email = "";
-  formData.subject = "";
-  formData.message = "";
-};
 const clearMessage = () => {
   successMessage.value = "";
   errorMessage.value = "";
@@ -201,6 +215,26 @@ onBeforeUnmount(() => {
 <template #default="{ state: { valid } }">
   <PageLoading v-if="isLoading" />
   <main v-else class="about__bg transition" :style="backgroundStyle">
+    <v-snackbar
+      v-if="successMessage"
+      v-model="toast.snackbar"
+      :timeout="2000"
+      color="success"
+      bottom
+      left
+    >
+      {{ successMessage }}
+    </v-snackbar>
+    <v-snackbar
+      v-if="errorMessage"
+      v-model="toast.snackbar"
+      :timeout="2000"
+      color="error"
+      bottom
+      left
+    >
+      {{ errorMessage }}
+    </v-snackbar>
     <Navbar :isScrolledPast="isScrolledPast" />
     <div class="about__banner">
       <img
@@ -215,8 +249,6 @@ onBeforeUnmount(() => {
         :url="imageMap['about']?.imageURL"
         :publicID="imageMap['about']?.public_id"
         :id="imageMap['about']?._id"
-        :width="imageSizes['about']?.width"
-        :height="imageSizes['about']?.height"
       />
     </div>
     <div class="bg-amber-50">
@@ -235,8 +267,6 @@ onBeforeUnmount(() => {
             :url="imageMap['pai']?.imageURL"
             :publicID="imageMap['pai']?.public_id"
             :id="imageMap['pai']?._id"
-            :width="imageSizes['pai']?.width"
-            :height="imageSizes['pai']?.height"
           />
         </div>
         <div
@@ -264,8 +294,6 @@ onBeforeUnmount(() => {
             :url="imageMap['moto']?.imageURL"
             :publicID="imageMap['moto']?.public_id"
             :id="imageMap['moto']?._id"
-            :width="imageSizes['moto']?.width"
-            :height="imageSizes['moto']?.height"
           />
         </div>
         <div
@@ -279,23 +307,80 @@ onBeforeUnmount(() => {
           </h2>
           <div
             v-if="isEmailSending"
-            class="flex items-center absolute sm:top-1/7 md:top-1/5"
+            class="flex items-center absolute sm:top-1/7 md:top-1/4"
           >
             <div
               class="spinner border-4 border-gray-200 border-t-blue-500 rounded-full w-5 h-5 animate-spin"
             ></div>
             <span class="ml-2 text-gray-500 text-sm">{{ loadingmessage }}</span>
           </div>
-          <div class="absolute sm:top-1/7 md:top-1/5 text-green-500">
-            {{ successMessage }}
-          </div>
-          <div
-            v-if="errorMessage"
-            class="absolute sm:top-1/7 md:top-1/5 text-red-500"
+
+          <v-form
+            ref="form"
+            v-model="formValid"
+            @submit.prevent="handleSubmit"
+            class="w-full"
           >
-            {{ errorMessage }}
-          </div>
-          <FormKit
+            <!-- 上排輸入區：姓名 + Email -->
+            <div class="flex flex-col md:flex-row">
+              <v-text-field
+                v-model="formData.name"
+                :rules="[rules.required]"
+                label="姓名"
+                name="name"
+                class="mb-4 md:mr-8 w-full md:w-1/2 mt-4 font-noto"
+                hide-details="auto"
+                variant="underlined"
+              />
+
+              <v-text-field
+                v-model="formData.email"
+                :rules="[rules.required, rules.email]"
+                label="Email"
+                name="email"
+                class="mb-4 w-full md:w-1/2 mt-4 font-noto"
+                hide-details="auto"
+                variant="underlined"
+              />
+            </div>
+
+            <!-- 下排輸入區：標題 + 訊息 -->
+            <div class="flex flex-col">
+              <v-text-field
+                v-model="formData.subject"
+                :rules="[rules.required]"
+                label="標題"
+                name="subject"
+                class="mb-4 w-full mt-4 font-noto"
+                hide-details="auto"
+                variant="underlined"
+              />
+
+              <v-textarea
+                v-model="formData.message"
+                :rules="[rules.required]"
+                label="訊息"
+                name="message"
+                class="mb-4 mt-4 font-noto"
+                hide-details="auto"
+                auto-grow
+                rows="4"
+                variant="underlined"
+              />
+            </div>
+
+            <!-- 送出按鈕 -->
+            <div class="my-8 text-center">
+              <v-btn
+                type="submit"
+                color="grey-lighten-1"
+                class="text-black font-semibold py-2 px-16 rounded hover:bg-gray-400 transition duration-300"
+              >
+                送出
+              </v-btn>
+            </div>
+          </v-form>
+          <!--<FormKit
             type="form"
             :actions="false"
             @submit="handleSubmit"
@@ -384,7 +469,7 @@ onBeforeUnmount(() => {
                   'bg-gray-300 text-black font-semibold py-2 px-16 rounded hover:bg-gray-400 transition duration-300',
               }"
             />
-          </FormKit>
+          </FormKit>-->
         </div>
       </div>
     </div>

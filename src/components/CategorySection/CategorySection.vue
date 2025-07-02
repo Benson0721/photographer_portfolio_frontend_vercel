@@ -14,6 +14,8 @@ const { isSectionPastScroll } = defineProps<{
 
 const { device } = useWindowSize();
 const currentImage = ref(0);
+const isImageLoading = ref(false);
+
 let intervalId: ReturnType<typeof setInterval> | null = null;
 
 const changeImage = () => {
@@ -55,9 +57,14 @@ onMounted(async () => {
             :curOffsetY="image.offsetY"
           />
           <router-link :to="`/portfolio/${image.type}`">
+            <v-skeleton-loader
+              v-if="!isImageLoading"
+              type="image"
+            ></v-skeleton-loader>
             <img
+              v-show="isImageLoading"
               :src="image?.imageURL"
-              alt=""
+              alt="section_image"
               class="category-section__image"
               :class="{
                 '--visible': currentImage === index && device === 'mobile',
@@ -65,6 +72,7 @@ onMounted(async () => {
               :style="{
                 top: `${image.offsetY[device]}px`,
               }"
+              @load="isImageLoading = true"
               draggable="false"
             />
           </router-link>

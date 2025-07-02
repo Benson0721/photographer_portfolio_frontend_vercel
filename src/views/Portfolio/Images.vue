@@ -157,7 +157,7 @@ watch(
       >
         <div
           v-if="mode === 'Album'"
-          class="flex gap-0.5 md:gap-2 absolute z-10 top-1/18 left-11/18 md:top-1/10 md:left-5/8"
+          class="flex gap-0.5 md:gap-2 absolute z-10 top-1/18 left-[70%] md:top-1/10 md:left-[50%] lg:left-[65%]"
           :class="userStore.showEdit() ? 'block' : 'hidden'"
         >
           <EditAlbum

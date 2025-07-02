@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import DialogLoading from "./DialogLoading.vue";
-import { useUploadHandler } from "../utils/useUploadHandler.ts";
-import { useUserStore } from "../stores/userPinia.ts";
-import { useWindowSize } from "../utils/useWindowSize.js";
+import { useUploadHandler } from "../../utils/useUploadHandler.ts";
+import { useUserStore } from "../../stores/userPinia.ts";
+import { useWindowSize } from "../../utils/useWindowSize.js";
 import { watch } from "vue";
 
 const { device } = useWindowSize();
@@ -16,7 +16,6 @@ defineProps<{
   buttonText: string;
   buttonColor: string;
   title: string;
-  width?: string;
   isDialogLoading: boolean;
   loadingmessage: string;
   errormessage: string;
@@ -31,7 +30,13 @@ const { handleDragOver, handleDrop } = useUploadHandler();
     <v-btn
       :color="buttonColor"
       variant="flat"
-      :size="device === 'mobile' ? 'small' : 'default'"
+      :size="
+        device === 'mobile'
+          ? 'x-small'
+          : device === 'tablet'
+          ? 'small'
+          : 'default'
+      "
       :disabled="!userStore.showEdit()"
       class="z-10"
       @click="dialog = true"
@@ -46,7 +51,7 @@ const { handleDragOver, handleDrop } = useUploadHandler();
 
     <v-dialog
       v-model="dialog"
-      :width="width"
+      :width="device === 'mobile' ? '100vw' : '60vw'"
       @dragover="handleDragOver"
       @drop="handleDrop"
     >

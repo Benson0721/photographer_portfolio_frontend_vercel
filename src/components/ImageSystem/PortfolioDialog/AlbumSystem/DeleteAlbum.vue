@@ -2,7 +2,9 @@
 import { useUserStore } from "../../../../stores/userPinia.ts";
 import { useAlbumStore } from "../../../../stores/albumPinia.ts";
 import { useFrontStore } from "../../../../stores/frontPinia.ts";
+import { useWindowSize } from "../../../../utils/useWindowSize.js";
 
+const { device } = useWindowSize();
 const deleteMessage = defineModel("deleteMessage", {
   type: String,
   default: "",
@@ -48,6 +50,13 @@ const handleDelete = async () => {
         class="bg-red-500"
         @click="handleOpen"
         :class="!userStore.isEditing ? 'hidden' : 'block'"
+        :size="
+          device === 'mobile'
+            ? 'x-small'
+            : device === 'tablet'
+            ? 'small'
+            : 'default'
+        "
       ></v-btn>
     </template>
 

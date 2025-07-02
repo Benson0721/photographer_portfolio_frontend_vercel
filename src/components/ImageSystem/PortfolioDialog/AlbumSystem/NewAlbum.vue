@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import BaseDialog from "../../../BaseDialog.vue";
+import BaseDialog from "../../BaseDialog.vue";
 import UploadArea from "./UploadArea.vue";
 import { useUserStore } from "../../../../stores/userPinia";
 import { useAlbumStore } from "../../../../stores/albumPinia";
@@ -73,7 +73,7 @@ const handleAddImage = async () => {
     buttonText="新增合輯"
     buttonColor="success"
     position="relative"
-    :width="device !== 'mobile' ? '60vw' : '70vw'"
+  
     :isDialogLoading="isDialogLoading"
     :loadingmessage="loadingmessage"
     :errormessage="errormessage"

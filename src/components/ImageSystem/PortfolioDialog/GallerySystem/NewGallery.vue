@@ -3,7 +3,7 @@ import { useUploadHandler } from "../../../../utils/useUploadHandler.ts";
 import { useGalleryStore } from "../../../../stores/galleryPinia.ts";
 import { ref } from "vue";
 import { useWindowSize } from "../../../../utils/useWindowSize.js";
-import BaseDialog from "../../../../components/BaseDialog.vue";
+import BaseDialog from "../../BaseDialog.vue";
 import { imageCompression } from "../../../../utils/imageCompression.js";
 
 const props = defineProps({
@@ -84,7 +84,6 @@ const handleUpload = async () => {
   <div>
     <BaseDialog
       v-model:dialog="dialog"
-      :width="device !== 'mobile' ? '60vw' : '60vw'"
       title="新增圖片"
       color="secondary"
       buttonText="新增圖片"

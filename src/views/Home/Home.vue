@@ -134,7 +134,7 @@ onBeforeUnmount(() => {
       v-if="!userStore.user"
       class="absolute font-bellefair top-[10%] right-[1%] md:top-[5%] md:right-[5%] border-2 border-gray-100 text-gray-100 p-1 md:p-4"
     >
-      <p>可以登入測試喔~</p>
+      <p>可以登入測試管理功能喔~</p>
       <p>帳號: photographer</p>
       <p>密碼: pai0902</p>
     </div>

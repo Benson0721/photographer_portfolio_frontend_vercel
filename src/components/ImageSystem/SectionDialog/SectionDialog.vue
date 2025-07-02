@@ -5,7 +5,7 @@ import { ref, watch, computed } from "vue";
 import { useWindowSize } from "../../../utils/useWindowSize.js";
 import { useDragHandler } from "../../../utils/useDragHandler.ts";
 import { useUploadHandler } from "../../../utils/useUploadHandler.ts";
-import BaseDialog from "../../BaseDialog.vue";
+import BaseDialog from "../BaseDialog.vue";
 import { imageCompression } from "../../../utils/imageCompression.js";
 import Buttons from "../../Buttons.vue";
 
@@ -30,7 +30,7 @@ const newTitle = ref("");
 const isDialogLoading = ref(false);
 const dialog = ref(false);
 
-const loadingmessage = ref("調整中");
+const loadingmessage = ref("調整中...");
 
 const props = withDefaults(
   defineProps<{
@@ -175,7 +175,6 @@ watch(dragMessage, async () => {
     :successmessage="successmessage"
     :errormessage="errormessage"
     :isDialogLoading="isDialogLoading"
-    :width="device !== 'mobile' ? '60vw' : '100vw'"
   >
     <template #default>
       <v-card-text

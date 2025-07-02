@@ -4,7 +4,7 @@ import { ref, computed } from "vue";
 import { useUploadHandler } from "../../../utils/useUploadHandler.ts";
 import { useAboutStore } from "../../../stores/aboutPinia.ts";
 import { useWindowSize } from "../../../utils/useWindowSize.js";
-import BaseDialog from "../../BaseDialog.vue";
+import BaseDialog from "../BaseDialog.vue";
 import { imageCompression } from "../../../utils/imageCompression.js";
 
 const { device } = useWindowSize();
@@ -28,8 +28,6 @@ const props = defineProps<{
   url: string;
   publicID: string;
   id: string;
-  width: number;
-  height: number;
 }>();
 
 const handleOpen = async () => {
@@ -72,7 +70,6 @@ const previewImage = computed(() => {
     title="編輯圖片"
     buttonText="編輯"
     buttonColor="secondary"
-    :width="device !== 'mobile' ? '60vw' : '100vw'"
     :isDialogLoading="isDialogLoading"
     :loadingmessage="loadingmessage"
     :errormessage="errormessage"
@@ -81,17 +78,19 @@ const previewImage = computed(() => {
     vertical="top-[1%] md:top-[5%]"
     horizontal="right-[1%] md:right-[10%]"
   >
-    <v-card-text> 以下是現有的圖片... </v-card-text>
-    <div class="flex gap-2 justify-center flex-wrap my-2 w-full h-[550px]">
-      <img
-        :src="previewImage"
-        class="h-full object-cover"
-        alt="previewImage"
-        draggable="false"
-      />
-    </div>
+    <template #default>
+      <v-card-text> 以下是現有的圖片... </v-card-text>
+      <div class="flex gap-2 justify-center flex-wrap my-2 w-full h-[550px]">
+        <img
+          :src="previewImage"
+          class="h-full object-cover"
+          alt="previewImage"
+          draggable="false"
+        />
+      </div>
+    </template>
 
-    <v-card-actions>
+    <template #actions>
       <div class="flex w-full h-[75px] items-center relative">
         <v-file-input
           class="w-full h-full mt-4 mr-6"
@@ -104,6 +103,6 @@ const previewImage = computed(() => {
         />
         <v-btn text="送出" @click="handleUpload" />
       </div>
-    </v-card-actions>
+    </template>
   </BaseDialog>
 </template>
