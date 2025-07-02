@@ -5,7 +5,6 @@ const EMAILJS_TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
 const EMAILJS_USER_ID = import.meta.env.VITE_EMAILJS_USER_ID;
 
 export const sendEmail = async (data) => {
-  console.log(data);
   try {
     await emailjs.send(
       EMAILJS_SERVICE_ID,
